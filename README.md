@@ -1,8 +1,9 @@
 # :speech_balloon: Healthee Chatbot Service :runner:
 
-### Topic: Azure을 이용한 hometraining을 도와줄 chatbot 
+### Topic: Hometraining을 도와줄 Azure based chatbot 
 
 ### TEAM: Chatee
+<img src="https://user-images.githubusercontent.com/41981471/86508101-52734500-be18-11ea-90e0-92df415e79d2.JPG" width="50%">
 
 ## 파일 설명
 
@@ -15,8 +16,5 @@
 [Gate1 제출물, 결과 설명](https://github.com/yjo5252/chatee/blob/master/Gate1/Gate1.md)
 
 
-## 팀원 
-
-<img src="https://user-images.githubusercontent.com/41981471/86508101-52734500-be18-11ea-90e0-92df415e79d2.JPG" width="50%">
 
 
