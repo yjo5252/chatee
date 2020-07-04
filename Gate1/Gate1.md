@@ -8,6 +8,8 @@
 
 ### 파일 및 링크 설명
 * healthee.html : public 배포 가이드를 참고하여 만듦. 
+
+링크 : [시도](https://htmlpreview.github.io/?https://github.com/yjo5252/chatee/blob/master/Gate1/healthee.html)
 실행시키면 아래와 같이 chat을 할 수 있는 인터페이스 나타남.
 
 ![1](https://user-images.githubusercontent.com/41438361/86506923-f1933f00-be0e-11ea-894b-beaccfd02a62.JPG)
