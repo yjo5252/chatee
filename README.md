@@ -6,6 +6,10 @@
 
 ## 파일 설명
 
+
+## 과제
+[가이드 페이지](https://blog.naver.com/formktmkt/221994807603)
+
 ### 1. Gate 1
 
 [Gate1 제출물, 결과 설명](https://github.com/yjo5252/chatee/blob/master/Gate1/Gate1.md)
