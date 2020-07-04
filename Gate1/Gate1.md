@@ -14,7 +14,7 @@ html 파일 링크 : [Healthee.html](https://htmlpreview.github.io/?https://gith
 
 실행시키면 아래와 같이 chat을 할 수 있는 인터페이스가 나타납니다.
 
-![1](https://user-images.githubusercontent.com/41438361/86506923-f1933f00-be0e-11ea-894b-beaccfd02a62.JPG)
+![4](https://user-images.githubusercontent.com/41438361/86507641-d4616f00-be14-11ea-9dfc-647dc14a09b0.JPG)
 
 * https://healthee.azurewebsites.net
 
