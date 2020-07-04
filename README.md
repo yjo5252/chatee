@@ -14,3 +14,9 @@
 
 [Gate1 제출물, 결과 설명](https://github.com/yjo5252/chatee/blob/master/Gate1/Gate1.md)
 
+
+## 팀원 
+
+![save](https://user-images.githubusercontent.com/41981471/86508101-52734500-be18-11ea-90e0-92df415e79d2.JPG)
+
+
