@@ -1,13 +1,13 @@
 ## Gate 1 
 
-### 과제 : 최소기능으로 작동하는 Azure 기반 Chatbot 만들고 인터넷 링크 제출하기
+### 1. 과제 : 최소기능으로 작동하는 Azure 기반 Chatbot 만들고 인터넷 링크 제출하기
 (채팅을 하면 최소한 보낸 내용을 echo 하는 등 최소의 기능으로 작동하면 됨)
 
 html 파일 링크 : [Healthee.html](https://htmlpreview.github.io/?https://github.com/yjo5252/chatee/blob/master/Gate1/healthee.html)
 
-링크 : [echo 하는 Healthee 봇 endpoint url](https://healthee.azurewebsites.net) https://healthee.azurewebsites.net
+링크 : [https://healthee.azurewebsites.net](https://healthee.azurewebsites.net) => endpoint url
 
-### 파일 및 링크 설명
+### 2. 파일 및 링크 설명
 * healthee.html : public 배포 가이드를 참고하여 만듦. 
 
 링크 : [Healthee.html](https://htmlpreview.github.io/?https://github.com/yjo5252/chatee/blob/master/Gate1/healthee.html)
@@ -22,7 +22,7 @@ html 파일 링크 : [Healthee.html](https://htmlpreview.github.io/?https://gith
 
 ![2](https://user-images.githubusercontent.com/41438361/86506951-2bfcdc00-be0f-11ea-8f29-e5518d0f62dc.JPG)
 
-### Azure Portal에서 웹 채팅에서 테스트 기능 이용
+### 3. Azure Portal에서 웹 채팅에서 테스트 기능 이용
 
 ![3](https://user-images.githubusercontent.com/41438361/86507031-da088600-be0f-11ea-8257-2c670168c689.JPG)
 
