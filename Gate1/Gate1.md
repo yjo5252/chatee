@@ -3,8 +3,8 @@
 ### 과제 : 최소기능으로 작동하는 Azure 기반 Chatbot 만들고 인터넷 링크 제출하기
 (채팅을 하면 최소한 보낸 내용을 echo 하는 등 최소의 기능으로 작동하면 됨)
 
-링크 : [echo 하는 Healthee 봇 endpoint url](https://healthee.azurewebsites.net)
-* 링크2 : [](https://healthee.azurewebsites.net/api/messages) => Upgrade to WebSocket is required *
+링크 : [echo 하는 Healthee 봇 endpoint url](https://healthee.azurewebsites.net) https://healthee.azurewebsites.net
+* 링크2 : [수정필요](https://healthee.azurewebsites.net/api/messages) => Upgrade to WebSocket is required *
 
 ### 파일 및 링크 설명
 * healthee.html : public 배포 가이드를 참고하여 만듦. 
