@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Project\\chatee\\EchoBot1\\EchoBot1\\EchoBot1.csproj": {}
+    "C:\\Users\\YooJin\\Desktop\\chatee\\EchoBot1\\EchoBot1\\EchoBot1.csproj": {}
   },
   "projects": {
-    "C:\\Project\\chatee\\EchoBot1\\EchoBot1\\EchoBot1.csproj": {
+    "C:\\Users\\YooJin\\Desktop\\chatee\\EchoBot1\\EchoBot1\\EchoBot1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Project\\chatee\\EchoBot1\\EchoBot1\\EchoBot1.csproj",
+        "projectUniqueName": "C:\\Users\\YooJin\\Desktop\\chatee\\EchoBot1\\EchoBot1\\EchoBot1.csproj",
         "projectName": "EchoBot1",
-        "projectPath": "C:\\Project\\chatee\\EchoBot1\\EchoBot1\\EchoBot1.csproj",
-        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Project\\chatee\\EchoBot1\\EchoBot1\\obj\\",
+        "projectPath": "C:\\Users\\YooJin\\Desktop\\chatee\\EchoBot1\\EchoBot1\\EchoBot1.csproj",
+        "packagesPath": "C:\\Users\\YooJin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\YooJin\\Desktop\\chatee\\EchoBot1\\EchoBot1\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\YooJin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -40,11 +43,19 @@
           "dependencies": {
             "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
               "target": "Package",
-              "version": "[3.1.1, )"
+              "version": "[3.1.5, )"
+            },
+            "Microsoft.Bot.Builder.AI.QnA": {
+              "target": "Package",
+              "version": "[4.9.3, )"
             },
             "Microsoft.Bot.Builder.Integration.AspNet.Core": {
               "target": "Package",
-              "version": "[4.9.2, )"
+              "version": "[4.9.3, )"
+            },
+            "QnaMaker": {
+              "target": "Package",
+              "version": "[1.0.1, )"
             }
           },
           "imports": [
