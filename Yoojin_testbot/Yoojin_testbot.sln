@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yoojin_testbot", "Yoojin_testbot\Yoojin_testbot.csproj", "{A39E3BCC-5289-40B7-B3C4-B99283CDB217}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A39E3BCC-5289-40B7-B3C4-B99283CDB217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A39E3BCC-5289-40B7-B3C4-B99283CDB217}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A39E3BCC-5289-40B7-B3C4-B99283CDB217}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A39E3BCC-5289-40B7-B3C4-B99283CDB217}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AB3FA565-698A-440B-B019-0B21DE7D7F21}
+	EndGlobalSection
+EndGlobal
