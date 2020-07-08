@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rXS4/c9dHMHH3OXlcQ01DMRjGIbhLXsBs8u4hEfXWtEy5s5fBwWjEuZwcL2zxuYgreZcSMJ+6iT8jMnedaoC1A==",
+  "dgSpecHash": "l3FzdvHC0P0JLxanErE5RqynniHVr94niq2S+UleaW2MS8e4EDMG7OqjaqjkYIHJiaAeE0O4YkpSBfxxJwchVQ==",
   "success": true,
-  "projectFilePath": "C:\\Project\\EchoBot1\\EchoBot1\\EchoBot1.csproj",
+  "projectFilePath": "C:\\Project\\chatee\\EchoBot1\\EchoBot1\\EchoBot1.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\user\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\3.1.1\\microsoft.aspnetcore.jsonpatch.3.1.1.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\3.1.1\\microsoft.aspnetcore.mvc.newtonsoftjson.3.1.1.nupkg.sha512",

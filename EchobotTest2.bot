@@ -1,0 +1,18 @@
+{
+    "name": "EchobotTest2",
+    "description": "",
+    "services": [
+        {
+            "type": "endpoint",
+            "appId": "",
+            "appPassword": "",
+            "endpoint": "http://localhost:3978/api/messages",
+            "id": "adfc4260-bf2f-11ea-871f-7f6769c68cac",
+            "name": "http://localhost:3978/api/messages"
+        }
+    ],
+    "padlock": "",
+    "version": "2.0",
+    "overrides": null,
+    "path": "C:\\Project\\chatee\\EchobotTest2.bot"
+}
