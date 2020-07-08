@@ -6372,11 +6372,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Project\\EchoBot1\\EchoBot1\\EchoBot1.csproj",
+      "projectUniqueName": "C:\\Project\\chatee\\EchoBot1\\EchoBot1\\EchoBot1.csproj",
       "projectName": "EchoBot1",
-      "projectPath": "C:\\Project\\EchoBot1\\EchoBot1\\EchoBot1.csproj",
+      "projectPath": "C:\\Project\\chatee\\EchoBot1\\EchoBot1\\EchoBot1.csproj",
       "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Project\\EchoBot1\\EchoBot1\\obj\\",
+      "outputPath": "C:\\Project\\chatee\\EchoBot1\\EchoBot1\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
