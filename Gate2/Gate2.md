@@ -17,7 +17,7 @@ html 파일 링크 :
 
 * healthee.html : public 배포 가이드를 참고하여 만듦. 
 
-링크 :
+링크 : [heqltheeqna 링크](https://htmlpreview.github.io/?https://github.com/yjo5252/chatee/blob/master/Gate2/healtheeqna.html)
 
 ### 3. Azure Portal에서 웹 채팅에서 테스트 기능 이용
 
