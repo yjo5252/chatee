@@ -8,7 +8,7 @@
 
 #### 1.2. 어떤 것을 만들고자 하는지에 대한 설명과 시연영상 
 
-[![Video Label](https://img.youtube.com/vi/94DRW2vDCss/0.jpg)](https://youtu.be/94DRW2vDCss)
+[![Video Label](https://img.youtube.com/vi/OH_l1OpGFVc/0.jpg)](https://youtu.be/OH_l1OpGFVc)
 
 ### 2. 파일 및 링크 설명
 
