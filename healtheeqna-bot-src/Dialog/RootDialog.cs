@@ -1,12 +1,15 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Builder.AI.QnA.Dialogs;
 using Microsoft.Bot.Builder.Dialogs;
+
 
 namespace Microsoft.BotBuilderSamples.Dialog
 {
@@ -19,26 +22,41 @@ namespace Microsoft.BotBuilderSamples.Dialog
         /// QnA Maker initial dialog
         /// </summary>
         private const string InitialDialog = "initial-dialog";
-
+        private readonly UserState _userState;
         /// <summary>
         /// Initializes a new instance of the <see cref="RootDialog"/> class.
         /// </summary>
         /// <param name="services">Bot Services.</param>
+        //public RootDialog(IBotServices services, UserState userState)
         public RootDialog(IBotServices services)
             : base("root")
         {
+           // _userState = userState;
+
             AddDialog(new QnAMakerBaseDialog(services));
 
             AddDialog(new WaterfallDialog(InitialDialog)
                .AddStep(InitialStepAsync));
+          
+            /*
+            AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
+            {
+                InitialStepAsync,
+            }));
 
+             AddDialog(new UserProfileDialog(userState));
+            */
             // The initial child Dialog to run.
             InitialDialogId = InitialDialog;
         }
 
+      
         private async Task<DialogTurnResult> InitialStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             return await stepContext.BeginDialogAsync(nameof(QnAMakerDialog), null, cancellationToken);
+        
         }
+
+        
     }
 }
