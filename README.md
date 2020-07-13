@@ -15,6 +15,8 @@
 
 [Gate1 제출물, 결과 설명](https://github.com/yjo5252/chatee/blob/master/Gate1/Gate1.md)
 
+### 2. Gate 2
 
+[Gate2 제출물, 결과 설명](https://github.com/yjo5252/chatee/blob/master/Gate2/Gate2.md)
 
 
