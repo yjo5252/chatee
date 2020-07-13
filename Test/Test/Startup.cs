@@ -11,11 +11,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using Microsoft.Bot.Builder.AI.QnA;
+using Test.Bots;
 
-using EchoBot1.Bots;
-
-namespace EchoBot1
+namespace Test
 {
     public class Startup
     {
@@ -34,17 +32,14 @@ namespace EchoBot1
             // Create the Bot Framework Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
-            // Create QnAMaker endpoint as a singleton
-            services.AddSingleton(new QnAMakerEndpoint
-            {
-                KnowledgeBaseId = Configuration.GetValue<string>($"ffeb9a7f-5bf7-4414-8dc7-a7edd85affa8"),
-                EndpointKey = Configuration.GetValue<string>($"cc0d75dc-4dbf-4d60-84eb-78e36e0b1623"),
-                Host = Configuration.GetValue<string>($"https://healtheeqna.azurewebsites.net/qnamaker")
-            });
+            services.AddSingleton<IStorage, MemoryStorage>();
+
+            services.AddSingleton<UserState>();
+
+            services.AddSingleton<ConversationState>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, EchoBot>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

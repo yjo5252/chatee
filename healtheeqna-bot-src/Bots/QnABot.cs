@@ -55,7 +55,7 @@ namespace Microsoft.BotBuilderSamples.Bots
             // Create a HeroCard with options for the user to interact with the bot.
             var card = new HeroCard
             {
-                Images = new List<CardImage> { new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg") }
+                Images = new List<CardImage> { new CardImage("https://w7.pngwing.com/pngs/271/1006/png-transparent-power-strength-gym-fitness-centre-physical-fitness-bodybuilding-physical-strength-workout-boxing-glove-logo-fictional-character.png") }
             };
 
             var reply = MessageFactory.Attachment(card.ToAttachment());

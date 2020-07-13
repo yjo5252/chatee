@@ -21,13 +21,11 @@ namespace EchoBot1.Bots
 
         public EchoBot(QnAMakerEndpoint endpoint)
         {
-            try
-            {
-                // connects to QnA Maker endpoint for each turn
+            try {                 // connects to QnA Maker endpoint for each turn
                 EchoBotQnA = new QnAMaker(endpoint);
             }
             catch (ArgumentException e) {
-                Console.WriteLine("π∫∞° ¿ÃªÛ\n");
+                Console.WriteLine("ø÷?");
             }
             
         }
@@ -42,10 +40,10 @@ namespace EchoBot1.Bots
             
             await turnContext.SendActivityAsync(MessageFactory.Text($"Echo: {turnContext.Activity.Text}"), cancellationToken);
 
-            Console.WriteLine("This is turn Context "+turnContext);
-
             await AccessQnAMaker(turnContext, cancellationToken);
-            
+
+            await turnContext.SendActivityAsync(MessageFactory.Text($"Echo: {turnContext.Activity.Text}"), cancellationToken);
+
         }
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
