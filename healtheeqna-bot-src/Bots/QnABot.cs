@@ -64,7 +64,7 @@ namespace Microsoft.BotBuilderSamples.Bots
             {
                 Images = new List<CardImage> { new CardImage("https://w7.pngwing.com/pngs/271/1006/png-transparent-power-strength-gym-fitness-centre-physical-fitness-bodybuilding-physical-strength-workout-boxing-glove-logo-fictional-character.png") }
 
-                Images = new List<CardImage> { new CardImage("https://1.bp.blogspot.com/-055dCu7uAU0/XROZCKyjPPI/AAAAAAAAgzU/jLWMbfTdJXIHxxFC_0XrURGd0DUI5-1aQCEwYBhgL/s1600/2.jpg") }
+               // Images = new List<CardImage> { new CardImage("https://1.bp.blogspot.com/-055dCu7uAU0/XROZCKyjPPI/AAAAAAAAgzU/jLWMbfTdJXIHxxFC_0XrURGd0DUI5-1aQCEwYBhgL/s1600/2.jpg") }
 
             };
 
