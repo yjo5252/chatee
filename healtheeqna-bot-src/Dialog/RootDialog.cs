@@ -34,6 +34,8 @@ namespace Microsoft.BotBuilderSamples.Dialog
         /// Initializes a new instance of the <see cref="RootDialog"/> class.
         /// </summary>
         /// <param name="services">Bot Services.</param>
+        
+        
         public RootDialog(IBotServices services, UserState userState)
         //public RootDialog(IBotServices services)
             : base("root")
@@ -67,13 +69,17 @@ namespace Microsoft.BotBuilderSamples.Dialog
             // This array defines how the Waterfall will execute.
             var waterfallSteps = new WaterfallStep[]
             {
-               NameStepAsync,
+                NameStepAsync,
                TargetStepAsync,
                KnowHowStepAsync,
                PreWeightStepAsync,
                PostWeightStepAsync,
                DateStepAsync,
-               ConfirmStepAsync,
+               ShowAvatarStepAsync,
+               // avatar profile 설정 
+               AvatarNameStepAsync,
+               AlarmStepAsync,
+               AvatarSummaryStepAsync,
             };
 
             // Add named dialogs to the DialogSet. These names are saved in the dialog state.
@@ -111,6 +117,8 @@ namespace Microsoft.BotBuilderSamples.Dialog
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }
 
+
+        // -----
         private static async Task<DialogTurnResult> NameStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // WaterfallStep always finishes with the end of the Waterfall or with another dialog; here it is a Prompt Dialog.
@@ -126,6 +134,10 @@ namespace Microsoft.BotBuilderSamples.Dialog
         private async Task<DialogTurnResult> TargetStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             stepContext.Values["UserName"] = ((string)stepContext.Result);
+
+            // We can send messages to the user at any point in the WaterfallStep.
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Thanks {stepContext.Result}."), cancellationToken);
+
 
             return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions
             {
@@ -163,7 +175,11 @@ namespace Microsoft.BotBuilderSamples.Dialog
         {
             stepContext.Values["PreWeight"] = (int)stepContext.Result;
 
-         
+            //  var msg = (int)stepContext.Values["age"] == -1 ? "No age given." : $"I have your age as {stepContext.Values["age"]}.";
+
+            // We can send messages to the user at any point in the WaterfallStep.
+            //  await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
+
             var promptOptions = new PromptOptions
             {
                 Prompt = MessageFactory.Text("목표 체중을 알려주세요"),
@@ -187,23 +203,68 @@ namespace Microsoft.BotBuilderSamples.Dialog
 
         }
 
-        private async Task<DialogTurnResult> ConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> ShowAvatarStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             stepContext.Values["Date"] = (int)stepContext.Result;
 
             // Get the current profile object from user state.
             var userProfile = await _userProfileAccessor.GetAsync(stepContext.Context, () => new UserProfile(), cancellationToken);
 
-            return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = MessageFactory.Text("{UserProfile.Username}님과 함께 운동할 친구예요!") }, cancellationToken);
+            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = MessageFactory.Text("{userProfile.UserName}"+"님과 함께 운동할 친구예요!") }, cancellationToken);
+            // {UserProfile.Username}이 입력한 값을 불러오록 수정하기 
 
         }
 
+        private async Task<DialogTurnResult> AvatarNameStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            stepContext.Values["seenAvatar"] = ((string)stepContext.Result); // or  (bool)stepContext.Result)
+
+
+            var promptOptions = new PromptOptions
+            {
+                Prompt = MessageFactory.Text("그렇군요. 캐릭터의 이름을 설정해주세요!"),
+                RetryPrompt = MessageFactory.Text("The value entered must be greater than 0 and less than 150."),
+            };
+
+            return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> AlarmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            stepContext.Values["AvatarName"] = (string)stepContext.Result;
+
+            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = MessageFactory.Text("몇시에 {UsrProfile.AvatarName}과 같이 운동하실건가요?") }, cancellationToken);
+            // {UserProfile.Username}이 입력한 값을 불러오록 수정하기 
+            // 알람 설정하는 법? 
+        }
+
+        private async Task<DialogTurnResult> AvatarSummaryStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            stepContext.Values["AlarmSetup"] = (string)stepContext.Result;
+
+            // Get the current profile object from user state.
+            var userProfile = await _userProfileAccessor.GetAsync(stepContext.Context, () => new UserProfile(), cancellationToken);
+
+            userProfile.UserName = (string)stepContext.Values["UserName"];
+            userProfile.Target = (string)stepContext.Values["Target"];
+            userProfile.KnowHow = (string)stepContext.Values["KnowHow"];
+            userProfile.PreWeight = (int)stepContext.Values["PreWeight"];
+            userProfile.PostWeight = (int)stepContext.Values["PostWeight"];
+            userProfile.Date = (int)stepContext.Values["Date"];
+            userProfile.AvatarName = (string)stepContext.Values["AvatarName"];
+
+            var msg = $"I have your mode of name as {userProfile.UserName} and your Target as {userProfile.Target}";
+
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
+
+            return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
+
+        }
 
         private static Task<bool> AgePromptValidatorAsync(PromptValidatorContext<int> promptContext, CancellationToken cancellationToken)
         {
             // This condition is our validation rule. You can also change the value at this point.
             return Task.FromResult(promptContext.Recognized.Succeeded && promptContext.Recognized.Value > 0 && promptContext.Recognized.Value < 300);
         }
-
     }
 }
