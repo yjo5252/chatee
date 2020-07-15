@@ -69,26 +69,26 @@ namespace Microsoft.BotBuilderSamples.Dialog
             // This array defines how the Waterfall will execute.
             var waterfallSteps = new WaterfallStep[]
             {
-                NameStepAsync,
+               NameStepAsync,
                TargetStepAsync,
                KnowHowStepAsync,
                PreWeightStepAsync,
                PostWeightStepAsync,
                DateStepAsync,
+               // avatar profile 설정
                ShowAvatarStepAsync,
-               // avatar profile 설정 
                AvatarNameStepAsync,
                AlarmStepAsync,
                AvatarSummaryStepAsync,
+
             };
 
             // Add named dialogs to the DialogSet. These names are saved in the dialog state.
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
             AddDialog(new TextPrompt(nameof(TextPrompt)));
-            AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>), AgePromptValidatorAsync));
+           // AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>), WeightPromptValidatorAsync));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
-
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
         }
@@ -127,7 +127,7 @@ namespace Microsoft.BotBuilderSamples.Dialog
             return await stepContext.PromptAsync(nameof(TextPrompt),
                new PromptOptions
                {
-                   Prompt = MessageFactory.Text("여러분과 함께 운동할 Healthee입니다! 이름을 알려주세요?"),
+                   Prompt = MessageFactory.Text("안녕하세요! 여러분과 함께 운동할 Healthee입니다! 이름을 알려주세요!"),
                }, cancellationToken);
         }
 
@@ -142,7 +142,7 @@ namespace Microsoft.BotBuilderSamples.Dialog
             return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions
             {
                 Prompt = MessageFactory.Text("운동의 목표가 뭘까요? 다이어트, 근력, 유연성 중 하나를 골라주세요!"),
-                Choices = ChoiceFactory.ToChoices(new List<string> { "다이어트", "근력", "근력" }),
+                Choices = ChoiceFactory.ToChoices(new List<string> { "다이어트", "근력 운동", "유연성" }),
             }, cancellationToken);
         }
 
@@ -168,12 +168,12 @@ namespace Microsoft.BotBuilderSamples.Dialog
                 RetryPrompt = MessageFactory.Text("0보다 크고 300보다 작은 수치로 적어주세요."),
             };
 
-            return await stepContext.PromptAsync(nameof(NumberPrompt<int>), promptOptions, cancellationToken);
+            return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken);
 
         }
         private async Task<DialogTurnResult> PostWeightStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            stepContext.Values["PreWeight"] = (int)stepContext.Result;
+            stepContext.Values["PreWeight"] = (string)stepContext.Result;
 
             //  var msg = (int)stepContext.Values["age"] == -1 ? "No age given." : $"I have your age as {stepContext.Values["age"]}.";
 
@@ -186,12 +186,12 @@ namespace Microsoft.BotBuilderSamples.Dialog
                 RetryPrompt = MessageFactory.Text("0보다 크고 300보다 작은 수치로 적어주세요."),
             };
 
-            return await stepContext.PromptAsync(nameof(NumberPrompt<int>), promptOptions, cancellationToken);
+            return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken);
         }
 
         private async Task<DialogTurnResult> DateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            stepContext.Values["PostWeight"] = (int)stepContext.Result;
+            stepContext.Values["PostWeight"] = (string)stepContext.Result;
 
             var promptOptions = new PromptOptions
             {
@@ -199,18 +199,18 @@ namespace Microsoft.BotBuilderSamples.Dialog
                 RetryPrompt = MessageFactory.Text("날짜형식으로 작성해주세요."), // 입력받은 날짜는 현재로부터 D-day 기능
             };
 
-            return await stepContext.PromptAsync(nameof(NumberPrompt<int>), promptOptions, cancellationToken);
+            return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken);
 
         }
 
         private async Task<DialogTurnResult> ShowAvatarStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            stepContext.Values["Date"] = (int)stepContext.Result;
+            stepContext.Values["Date"] = (string)stepContext.Result;
 
             // Get the current profile object from user state.
             var userProfile = await _userProfileAccessor.GetAsync(stepContext.Context, () => new UserProfile(), cancellationToken);
 
-            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = MessageFactory.Text("{userProfile.UserName}"+"님과 함께 운동할 친구예요!") }, cancellationToken);
+            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = MessageFactory.Text("{UserProfile.UserName}님과 함께 운동할 친구예요!") }, cancellationToken);
             // {UserProfile.Username}이 입력한 값을 불러오록 수정하기 
 
         }
@@ -248,12 +248,14 @@ namespace Microsoft.BotBuilderSamples.Dialog
             userProfile.UserName = (string)stepContext.Values["UserName"];
             userProfile.Target = (string)stepContext.Values["Target"];
             userProfile.KnowHow = (string)stepContext.Values["KnowHow"];
-            userProfile.PreWeight = (int)stepContext.Values["PreWeight"];
-            userProfile.PostWeight = (int)stepContext.Values["PostWeight"];
-            userProfile.Date = (int)stepContext.Values["Date"];
+            userProfile.PreWeight = (string)stepContext.Values["PreWeight"];
+            userProfile.PostWeight = (string)stepContext.Values["PostWeight"];
+            userProfile.Date = (string)stepContext.Values["Date"];
             userProfile.AvatarName = (string)stepContext.Values["AvatarName"];
 
-            var msg = $"I have your mode of name as {userProfile.UserName} and your Target as {userProfile.Target}";
+            var msg = $"{userProfile.UserName}님 {userProfile.Date}일 기간동안 Healthee와 {userProfile.Target} 목표를 성실하게 수행해보아요! "
+                        + $"{ userProfile.PreWeight} 에서 { userProfile.PostWeight}으로 체중감량이 이루어질거에요!"
+                        + $"{ userProfile.UserName}님의 캐릭터 { userProfile.AvatarName} 변화도 눈여겨봐주세요!";
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
 
@@ -266,5 +268,6 @@ namespace Microsoft.BotBuilderSamples.Dialog
             // This condition is our validation rule. You can also change the value at this point.
             return Task.FromResult(promptContext.Recognized.Succeeded && promptContext.Recognized.Value > 0 && promptContext.Recognized.Value < 300);
         }
+
     }
 }
