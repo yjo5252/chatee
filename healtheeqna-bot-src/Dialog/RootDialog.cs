@@ -216,17 +216,17 @@ namespace Microsoft.BotBuilderSamples.Dialog
             // Get the current profile object from user state.
             var userProfile = await _userProfileAccessor.GetAsync(stepContext.Context, () => new UserProfile(), cancellationToken);
             userProfile.UserName = (string)stepContext.Values["UserName"];
-            /*
-                    var card = new HeroCard
-                    {
-                        Images = new List<CardImage> { new CardImage("https://images.app.goo.gl/WWS6igGQQ6C36Qsh6") }
+            
+            var card = new HeroCard
+            {
+                Images = new List<CardImage> { new CardImage("https://img1.daumcdn.net/thumb/R580x0/?fname=http%3A%2F%2Fimg1.daumcdn.net%2Falexander%2Fattach%2F2yb6eib1j9ekg43plpow7y14iiz7u9vff") }
 
-                    };
+            };
 
-                    var reply = MessageFactory.Attachment(card.ToAttachment());
-                    await stepContext.Context.SendActivityAsync(reply, cancellationToken);
-                    */
-           return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = MessageFactory.Text($"{userProfile.UserName}님과 함께 운동할 친구예요! 어떠신가요?") }, cancellationToken);
+            var reply = MessageFactory.Attachment(card.ToAttachment());
+            await stepContext.Context.SendActivityAsync(reply, cancellationToken);
+                    
+            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = MessageFactory.Text($"{userProfile.UserName}님과 함께 운동할 친구예요! 어떠신가요?") }, cancellationToken);
 
 
         }
