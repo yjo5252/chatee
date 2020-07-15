@@ -6,17 +6,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Bot.Builder.BotFramework;
+using Microsoft.Bot.Connector.Authentication;
 
-using Test.Bots;
-using Test.Dialogs;
+using EchoBot.Bots;
 
-namespace Test
+namespace EchoBot
 {
     public class Startup
     {
@@ -32,24 +31,17 @@ namespace Test
         {
             services.AddControllers().AddNewtonsoftJson();
 
-            // Create the Bot Framework Adapter with error handling enabled.
-
+            // Add the HttpClientFactory to be used for the QnAMaker calls.
             services.AddHttpClient();
 
+            // Create the credential provider to be used with the Bot Framework Adapter.
             services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
 
+            // Create the Bot Framework Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
-            services.AddSingleton<IStorage, MemoryStorage>();
-
-            services.AddSingleton<UserState>();
-
-            services.AddSingleton<ConversationState>();
-
-            services.AddSingleton<UserProfileDialog>();
-
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, EchoBot<UserProfileDialog>>();
+            services.AddTransient<IBot, QnABot>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
