@@ -1,0 +1,18 @@
+{
+    "name": "demo - ask profile",
+    "description": "",
+    "services": [
+        {
+            "type": "endpoint",
+            "appId": "cd7e5321-2d77-47da-bf88-c9b734ad1f42",
+            "appPassword": "]+vzi7.$5J5r_:t}ODlTW_+E5",
+            "endpoint": "http://localhost:3978/api/messages.",
+            "id": "b18bff10-c330-11ea-8b1f-0beef29ab29d",
+            "name": "http://localhost:3978/api/messages."
+        }
+    ],
+    "padlock": "",
+    "version": "2.0",
+    "overrides": null,
+    "path": "C:\\Project\\chatee\\demo - ask profile.bot"
+}
