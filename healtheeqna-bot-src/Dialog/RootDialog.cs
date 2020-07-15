@@ -14,6 +14,8 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using static Microsoft.Bot.Builder.Dialogs.Choices.Channel;
+using Microsoft.Bot.Connector;
+using Microsoft.Bot.Schema;
 
 namespace Microsoft.BotBuilderSamples.Dialog
 {
@@ -41,6 +43,7 @@ namespace Microsoft.BotBuilderSamples.Dialog
             AddDialog(new QnAMakerBaseDialog(services));
 
 
+            // userprofile.cs 에 있던 코드를 rootdialog 로 가져오는 게 낫다. 
            // AddDialog(new UserProfileDialog(userState));
 
 
@@ -79,7 +82,7 @@ namespace Microsoft.BotBuilderSamples.Dialog
             AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>), AgePromptValidatorAsync));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
-          //  AddDialog(new AttachmentPrompt(nameof(AttachmentPrompt), PicturePromptValidatorAsync));
+            AddDialog(new AttachmentPrompt(nameof(AttachmentPrompt), PicturePromptValidatorAsync));
 
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
@@ -170,7 +173,7 @@ namespace Microsoft.BotBuilderSamples.Dialog
             // We can send messages to the user at any point in the WaterfallStep.
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
 
-            if (stepContext.Context.Activity.ChannelId == Channels.Msteams)
+            if (stepContext.Context.Activity.ChannelId == Bot.Connector.Channels.Msteams) //Microsoft.Bot.Builder.Dialogs.Choices
             {
                 // This attachment prompt example is not designed to work for Teams attachments, so skip it in this case
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text("Skipping attachment prompt in Teams channel..."), cancellationToken);
@@ -247,16 +250,16 @@ namespace Microsoft.BotBuilderSamples.Dialog
             return Task.FromResult(promptContext.Recognized.Succeeded && promptContext.Recognized.Value > 0 && promptContext.Recognized.Value < 150);
         }
 
-        private static async Task<bool> PicturePromptValidatorAsync(PromptValidatorContext<IList<System.Net.Mail.Attachment>> promptContext, CancellationToken cancellationToken)
+        private static async Task<bool> PicturePromptValidatorAsync(PromptValidatorContext<IList<Bot.Schema.Attachment>> promptContext, CancellationToken cancellationToken)
         {
             if (promptContext.Recognized.Succeeded)
             {
                 var attachments = promptContext.Recognized.Value;
-                var validImages = new List<System.Net.Mail.Attachment>();
+                var validImages = new List<Bot.Schema.Attachment>();
 
                 foreach (var attachment in attachments)
                 {
-                  //  if (attachment.ContentType == "image/jpeg" || attachment.ContentType == "image/png")
+                  if (attachment.ContentType == "image/jpeg" || attachment.ContentType == "image/png")
                     {
                         validImages.Add(attachment);
                     }
