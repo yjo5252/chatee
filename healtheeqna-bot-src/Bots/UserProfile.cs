@@ -11,6 +11,24 @@ namespace Microsoft.BotBuilderSamples
     /// </summary>
     public class UserProfile
     {
+      
+        public string UserName { get; set; }
+
+        public string AvatarName { get; set; }
+
+        
+        public string Target { get; set; }
+        
+        public string KnowHow { get; set; }
+        
+        public string PreWeight { get; set; }
+        
+        public string PostWeight { get; set; }
+        
+        public string Date { get; set; }
+
+
+        // ======================================
         public string Transport { get; set; }
 
         public string Name { get; set; }
