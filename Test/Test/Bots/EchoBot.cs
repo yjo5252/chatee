@@ -9,9 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
-//using Microsoft.Recognizers.Text;
-//using Microsoft.Recognizers.Text.DateTime;
-//using Microsoft.Recognizers.Text.Number;
 using Microsoft.Extensions.Logging;
 using Microsoft.Bot.Builder.Dialogs;
 using Test.Dialogs;
@@ -52,6 +49,7 @@ namespace Test.Bots
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
+            /*
             var httpClient = _httpClientFactory.CreateClient();
 
             var qnaMaker = new QnAMaker(new QnAMakerEndpoint
@@ -66,6 +64,7 @@ namespace Test.Bots
             Logger.LogInformation("Running dialog with Message Activity.");
 
             if (UserProfileDialog.tutorial == 0)
+                //공통
                 await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
             else {
                 var options = new QnAMakerOptions { Top = 1 };
@@ -84,10 +83,16 @@ namespace Test.Bots
                 {
                     await turnContext.SendActivityAsync(MessageFactory.Text("No QnA Maker answers were found."), cancellationToken);
                 }
+
             }
+            */
+            var msg = "messageactivityasync";
+            await turnContext.SendActivityAsync(MessageFactory.Text(msg, msg), cancellationToken);
+
+            await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
 
-
+        /*
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
             var welcomeText = "Hello and welcome!";
@@ -101,6 +106,7 @@ namespace Test.Bots
                 }
             }
         }
+        */
 
         private static async Task DisplayOptionsAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
@@ -165,7 +171,7 @@ namespace Test.Bots
             heroCard = new HeroCard
             {
                 Title = "#### 5. 알림",
-                Text = "운동할 시간을 설정하여 정해진 시간에 알림을 받으세요.",
+                Text = "운동할 시간을 설정하여 정해진 시간에 알림을 받으세요.w",
                 Images = new List<CardImage> { new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg") },
                 Buttons = new List<CardAction> { new CardAction(ActionTypes.ImBack, "알림 설정하기" ,value: "알림 설정할래") },
             };

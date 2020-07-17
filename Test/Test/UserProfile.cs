@@ -15,5 +15,7 @@ namespace Test
         public int Age { get; set; }
 
         public Attachment Picture { get; set; }
+
+        public List<string> CompaniesToReview { get; set; } = new List<string>();
     }
 }
