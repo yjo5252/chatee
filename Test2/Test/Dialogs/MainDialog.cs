@@ -9,6 +9,7 @@ namespace Test.Dialogs
     public class MainDialog : ComponentDialog
     {
         private readonly UserState _userState;
+        public static int tutorial = 0;
 
         public MainDialog(UserState userState) : base(nameof(MainDialog))
         {
@@ -26,9 +27,6 @@ namespace Test.Dialogs
 
         private async Task<DialogTurnResult> InitialStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var msg = "InitialStepAsync start";
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg, msg), cancellationToken);
-
             return await stepContext.BeginDialogAsync(nameof(TutorialDialog), null, cancellationToken);
         }
 
@@ -37,11 +35,13 @@ namespace Test.Dialogs
             var userInfo = (UserProfile)stepContext.Result;
 
             
-            string status = "Thankyou "
+            string status = "튜토리얼이 끝났습니다 "
                 + (userInfo.UserName)
-                + ".";
+                + "님!";
 
             await stepContext.Context.SendActivityAsync(status);
+
+            tutorial = 1;
 
             var accessor = _userState.CreateProperty<UserProfile>(nameof(UserProfile));
             await accessor.SetAsync(stepContext.Context, userInfo, cancellationToken);

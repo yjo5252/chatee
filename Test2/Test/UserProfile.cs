@@ -37,5 +37,7 @@ namespace Test
 
         public string AlarmSetup { get; set; }
 
+        public int DidTutorial { get; set; }
+
     }
 }

@@ -52,7 +52,7 @@ namespace Test.Dialogs
                 // Create an object in which to collect the user's information within the dialog.
                 stepContext.Values[UserInfo] = new UserProfile();
 
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"안녕하세요! \n\n 여러분과 함께 운동할 Healthee입니다!"), cancellationToken);
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"안녕하세요! \n\n 여러분과 함께 운동할 Healthee입니다! \n\n 튜토리얼을 진행하도록 하겠습니다."), cancellationToken);
 
                 var promptOptions = new PromptOptions { Prompt = MessageFactory.Text("이름을 알려주세요!") };
 
@@ -84,9 +84,6 @@ namespace Test.Dialogs
                     Choices = ChoiceFactory.ToChoices(new List<string> { "상", "중", "하" })
                 };
 
-                await stepContext.Context.SendActivityAsync(
-                    MessageFactory.Text($"이전단계, {((UserProfile)stepContext.Values[UserInfo]).Target}."),
-                    cancellationToken);
 
                 return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
             }
@@ -99,7 +96,7 @@ namespace Test.Dialogs
 
                 var promptOptions = new PromptOptions
                 {
-                    Prompt = MessageFactory.Text("현재 체중을 알려주세요"),
+                    Prompt = MessageFactory.Text("현재 체중을 알려주세요(단위 : kg)"),
                     RetryPrompt = MessageFactory.Text("0보다 크고 300보다 작은 수치로 적어주세요."),
                 };
 
@@ -114,7 +111,7 @@ namespace Test.Dialogs
 
                 var promptOptions = new PromptOptions
                 {
-                    Prompt = MessageFactory.Text("목표 체중을 알려주세요"),
+                    Prompt = MessageFactory.Text("목표 체중을 알려주세요(단위 : kg)"),
                     RetryPrompt = MessageFactory.Text("0보다 크고 300보다 작은 수치로 적어주세요."),
                 };
 
@@ -132,14 +129,17 @@ namespace Test.Dialogs
                     RetryPrompt = MessageFactory.Text("날짜형식으로 작성해주세요."), // 입력받은 날짜는 현재로부터 D-day 기능
                 };
 
-                return await stepContext.PromptAsync(nameof(DateTimePrompt), promptOptions, cancellationToken); // DateTimePrompt 형식 설정?
+                return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken); // DateTimePrompt 형식 설정?
 
             }
 
             private async Task<DialogTurnResult> ShowAvatarStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
             {
                 var userProfile = (UserProfile)stepContext.Values[UserInfo];
-                userProfile.Date = stepContext.Result.ToString();
+                userProfile.Date = (string)stepContext.Result;
+
+
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"여러분과 함께 운동할 캐릭터에요. 지금은 비실비실하지만 같이 운동하면서 건강해질거에요!"), cancellationToken);
 
                 var card = new HeroCard
                 {
@@ -185,16 +185,12 @@ namespace Test.Dialogs
 
                 */
 
-                var msg = $"{userProfile.UserName}님 {userProfile.Date}일 기간동안 Healthee와 {userProfile.Target} 를 열심히 운동해보아요!\n "
-                            + $"{ userProfile.PreWeight}에서 { userProfile.PostWeight}으로 체중감량이 이루어질거에요!\n"
+                var msg = $"{userProfile.UserName}님 {userProfile.Date} 기간동안 Healthee와 {userProfile.Target} 를 열심히 운동해보아요!\n "
+                            + $"{ userProfile.PreWeight}kg에서 { userProfile.PostWeight}kg으로 체중감량이 이루어질거에요!\n"
                             + $"{ userProfile.UserName}님의 캐릭터 { userProfile.AvatarName} 변화도 눈여겨봐주세요!";
 
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
 
-                // Thank them for participating.
-                await stepContext.Context.SendActivityAsync(
-                        MessageFactory.Text($"Thanks for participating, {((UserProfile)stepContext.Values[UserInfo]).UserName}."),
-                        cancellationToken);
 
                     // Exit the dialog, returning the collected user information.
                     return await stepContext.EndDialogAsync(stepContext.Values[UserInfo], cancellationToken);
