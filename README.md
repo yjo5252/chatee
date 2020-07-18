@@ -33,12 +33,12 @@
 
 ### 구조
 * Bots
-** DialogAndWelcomeBot.cs : 새로운 사용자가 들어왔을 때 인사하는 부분. Echobot을 상속받았다.
-** EchoBot.cs : 기존의 Echobot 변형. 사용자의 입력을 처리한다.
+  * DialogAndWelcomeBot.cs : 새로운 사용자가 들어왔을 때 인사하는 부분. Echobot을 상속받았다.
+  * EchoBot.cs : 기존의 Echobot 변형. 사용자의 입력을 처리한다.
 
 * Dialogs
-** MainDialog.cs : 가장 상위 Dialog. TutorialDialog를 실행시킨다.
-** TutorialDialog.cs : 튜토리얼을 진행하는 Dialog. Waterfall Dialog를 이용하여 질문과 답변이 순차적으로 이루어질 수 있게 구현하였다.
+  * MainDialog.cs : 가장 상위 Dialog. TutorialDialog를 실행시킨다.
+  * TutorialDialog.cs : 튜토리얼을 진행하는 Dialog. Waterfall Dialog를 이용하여 질문과 답변이 순차적으로 이루어질 수 있게 구현하였다.
 
 * UserProfile.cs : 사용자의 정보를 담을 클래스 선언
 * Startup.cs : DialogAndWelcomeBot를 MainDialog로 실행시킨다.
