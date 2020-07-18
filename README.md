@@ -9,7 +9,6 @@
 ### TEAM: Chatee
 <img src="https://user-images.githubusercontent.com/41981471/86508101-52734500-be18-11ea-90e0-92df415e79d2.JPG" width="50%">
 
-## 파일 설명
 
 
 ## 과제
@@ -28,3 +27,8 @@
 
 [Gate 3 제출물, 결과 설명]()
 
+
+## 소스코드 설명
+소스 구조 설명 및 핵심 코드 설명
+
+Dialogs/TutorialDialog.cs : 튜토리얼 기능 구현. 워터 폴 다이얼로그를 이용해 각 메시지 질문을 순차적으로 물어볼 수 있게 구현했습니다. 
