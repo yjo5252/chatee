@@ -19,11 +19,10 @@
 
 #### 1.4 인터넷을 통한 접속 방법
 
+링크 : [healtheeqna 링크](https://htmlpreview.github.io/?https://github.com/yjo5252/chatee/blob/master/Gate3/healtheeqna.html)
 
 
 ### 2. 파일 및 링크 설명
 
-* healthee.html : public 배포 가이드를 참고하여 만듦. qna maker를 이용하여 "목적이 뭐야?" 같은 질문에 대답을 할 수 있도록 만들었습니다.
-
-링크 : [healtheeqna 링크](https://htmlpreview.github.io/?https://github.com/yjo5252/chatee/blob/master/Gate2/healtheeqna.html)
+* healtheeqna.html : 현재 튜토리얼까지만 구현이 되어 있습니다. 튜토리얼 이후에는 qnamaker를 이용해 "목적이 뭐야?"라는 질문에 답이 가능합니다.
 
