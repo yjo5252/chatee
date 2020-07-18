@@ -49,7 +49,7 @@ namespace Test.Bots
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            /*
+            
             var httpClient = _httpClientFactory.CreateClient();
 
             var qnaMaker = new QnAMaker(new QnAMakerEndpoint
@@ -63,7 +63,7 @@ namespace Test.Bots
 
             Logger.LogInformation("Running dialog with Message Activity.");
 
-            if (UserProfileDialog.tutorial == 0)
+            if (MainDialog.tutorial == 0)
                 //공통
                 await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
             else {
@@ -72,8 +72,6 @@ namespace Test.Bots
                 // The actual call to the QnA Maker service.
                 var response = await qnaMaker.GetAnswersAsync(turnContext, options);
 
-                var msg = "여기까지 ok";
-                await turnContext.SendActivityAsync(MessageFactory.Text(msg, msg), cancellationToken);
 
                 if (response != null && response.Length > 0)
                 {
@@ -85,11 +83,7 @@ namespace Test.Bots
                 }
 
             }
-            */
-            var msg = "messageactivityasync";
-            await turnContext.SendActivityAsync(MessageFactory.Text(msg, msg), cancellationToken);
 
-            await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
 
         /*
