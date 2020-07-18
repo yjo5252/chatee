@@ -138,6 +138,9 @@ namespace Test.Dialogs
                 var userProfile = (UserProfile)stepContext.Values[UserInfo];
                 userProfile.Date = (string)stepContext.Result;
 
+
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"여러분과 함께 운동할 캐릭터에요. 지금은 비실비실하지만 같이 운동하면서 건강해질거에요!"), cancellationToken);
+
                 var card = new HeroCard
                 {
                     Images = new List<CardImage> { new CardImage("https://t1.daumcdn.net/section/oc/b91f421cab1a46dd96a845f0c55b7f91") }
