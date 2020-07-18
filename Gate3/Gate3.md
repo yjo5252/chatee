@@ -17,6 +17,8 @@
 
 #### 1.3 어떤 것을 만들고자 하는지에 대한 설명과 시연영상 3분 이내
 
+[Youtube](https://youtu.be/A_i1DyIA23M)
+
 #### 1.4 인터넷을 통한 접속 방법
 
 링크 : [healtheeqna 링크](https://htmlpreview.github.io/?https://github.com/yjo5252/chatee/blob/master/Gate3/healtheeqna.html)
