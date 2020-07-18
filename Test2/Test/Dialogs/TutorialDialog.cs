@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 namespace Test.Dialogs
 {
     using System.Collections.Generic;
+    using System.Drawing;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Bot.Builder;
@@ -142,7 +143,7 @@ namespace Test.Dialogs
 
                 var card = new HeroCard
                 {
-                    Images = new List<CardImage> { new CardImage("https://img1.daumcdn.net/thumb/R580x0/?fname=http%3A%2F%2Fimg1.daumcdn.net%2Falexander%2Fattach%2F2yb6eib1j9ekg43plpow7y14iiz7u9vff") }
+                    Images = new List<CardImage> { new CardImage("https://t1.daumcdn.net/section/oc/b91f421cab1a46dd96a845f0c55b7f91") }
 
                 };
 
