@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using System.Net.Http;
 using Microsoft.Extensions.Configuration;
+using Test.Dialogs;
 
 namespace Test.Bots
 {
@@ -24,21 +25,12 @@ namespace Test.Bots
             CancellationToken cancellationToken)
         {
 
-            /*
-            foreach (var member in membersAdded) {
-                if (member.Id != turnContext.Activity.Recipient.Id) {
-                    var reply = MessageFactory.Text($"Welcome to Complex Dialog Bot {member.Name}. " +
-                        "This bot provides a complex conversation, with multiple dialogs. " +
-                        "Type anything to get started.");
-                    await turnContext.SendActivityAsync(reply, cancellationToken);
-                }
-            }*/
-
             foreach (var member in membersAdded)
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
                     await turnContext.SendActivityAsync(MessageFactory.Text($"안녕하세요! Healthee입니다."), cancellationToken);
+                    MainDialog.tutorial = 0;
                     await DisplayOptionsAsync(turnContext, cancellationToken);
                 }
             }
@@ -50,10 +42,7 @@ namespace Test.Bots
             // Create a HeroCard with options for the user to interact with the bot.
             var card = new HeroCard
             {
-                Images = new List<CardImage> { new CardImage("https://w7.pngwing.com/pngs/271/1006/png-transparent-power-strength-gym-fitness-centre-physical-fitness-bodybuilding-physical-strength-workout-boxing-glove-logo-fictional-character.png") }
-
-                // Images = new List<CardImage> { new CardImage("https://1.bp.blogspot.com/-055dCu7uAU0/XROZCKyjPPI/AAAAAAAAgzU/jLWMbfTdJXIHxxFC_0XrURGd0DUI5-1aQCEwYBhgL/s1600/2.jpg") }
-
+                Images = new List<CardImage> { new CardImage("https://user-images.githubusercontent.com/41981471/87846811-b6fccc80-c90d-11ea-9a1c-e136034394f0.png") }
             };
 
             var reply = MessageFactory.Attachment(card.ToAttachment());
