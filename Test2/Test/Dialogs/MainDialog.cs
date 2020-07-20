@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Extensions.Logging;
 using Test.Dialogs.Test.Dialogs;
 
 namespace Test.Dialogs
@@ -11,11 +12,13 @@ namespace Test.Dialogs
         private readonly UserState _userState;
         public static int tutorial = 0;
 
+
         public MainDialog(UserState userState) : base(nameof(MainDialog))
         {
             _userState = userState;
 
             AddDialog(new TutorialDialog());
+            AddDialog(new ShowFunctionsDialog());
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] {
                 InitialStepAsync,
@@ -27,14 +30,15 @@ namespace Test.Dialogs
 
         private async Task<DialogTurnResult> InitialStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            return await stepContext.BeginDialogAsync(nameof(TutorialDialog), null, cancellationToken);
+            //return await stepContext.BeginDialogAsync(nameof(TutorialDialog), null, cancellationToken);
+            return await stepContext.BeginDialogAsync(nameof(ShowFunctionsDialog), null, cancellationToken);
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var userInfo = (UserProfile)stepContext.Result;
 
-            
+            /*
             string status = "튜토리얼이 끝났습니다 "
                 + (userInfo.UserName)
                 + "님!";
@@ -45,7 +49,7 @@ namespace Test.Dialogs
 
             var accessor = _userState.CreateProperty<UserProfile>(nameof(UserProfile));
             await accessor.SetAsync(stepContext.Context, userInfo, cancellationToken);
-
+            */
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }
     }

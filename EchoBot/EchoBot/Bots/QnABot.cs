@@ -12,6 +12,12 @@ using System.Net.Http;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using AdaptiveCards;
+using System.IO;
+using System;
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Connector;
+using System.Web;
 
 namespace EchoBot.Bots
 {
@@ -22,44 +28,49 @@ namespace EchoBot.Bots
         private readonly ILogger<QnABot> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public QnABot(IConfiguration configuration, ILogger<QnABot> logger, IHttpClientFactory httpClientFactory)
+        public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
-            _configuration = configuration;
-            _logger = logger;
-            _httpClientFactory = httpClientFactory;
-        }
 
-        protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
+            await base.OnTurnAsync(turnContext, cancellationToken);
+
+            if (turnContext.Activity.Value != null)
+            {
+                var txt = turnContext.Activity.Text;
+                dynamic val = turnContext.Activity.Value;
+                await turnContext.SendActivityAsync(MessageFactory.Text("1","1"), cancellationToken);
+
+                // Check if the activity came from a submit action
+                if (string.IsNullOrEmpty(txt) && val != null)
+                {
+                    // Retrieve the data from the id_number field
+                    //var num = val.id_number;
+                    
+                    //await turnContext.SendActivityAsync(MessageFactory.Text((string)num, (string)num), cancellationToken);
+                }
+                
+                await turnContext.SendActivityAsync(turnContext.Activity.Value.ToString());
+            }
+
+            if (turnContext.Activity.Type == ActivityTypes.Message)
+            {
+                var response = turnContext.Activity.CreateReply();
+                response.Attachments = new List<Attachment>() { CreateAdaptiveCardUsingJson() };
+
+                await turnContext.SendActivityAsync(response);
+            }
+
+
+            }
+
+            private Attachment CreateAdaptiveCardUsingJson()
         {
-            var httpClient = _httpClientFactory.CreateClient();
-
-            var qnaMaker = new QnAMaker(new QnAMakerEndpoint
+            return new Attachment
             {
-                KnowledgeBaseId = _configuration["QnAKnowledgebaseId"],
-                EndpointKey = _configuration["QnAEndpointKey"],
-                Host = _configuration["QnAEndpointHostName"]
-            },
-            null,
-            httpClient);
-
-            _logger.LogInformation("Calling QnA Maker");
-
-            
-
-            var options = new QnAMakerOptions { Top = 1 };
-
-            // The actual call to the QnA Maker service.
-            var response = await qnaMaker.GetAnswersAsync(turnContext, options);
-            if (response != null && response.Length > 0)
-            {
-                await turnContext.SendActivityAsync(MessageFactory.Text(response[0].Answer), cancellationToken);
-            }
-            else
-            {
-                await turnContext.SendActivityAsync(MessageFactory.Text("No QnA Maker answers were found."), cancellationToken);
-            }
+                ContentType = AdaptiveCard.ContentType,
+                Content = AdaptiveCard.FromJson(File.ReadAllText("Cards/Test.json")).Card
+            };
+ 
         }
-    
 
     protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {

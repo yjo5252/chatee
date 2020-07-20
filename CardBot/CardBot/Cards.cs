@@ -1,20 +1,19 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.IO;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 
-namespace Test
+namespace CardBot.Bots
 {
-    public class Cards
+    public static class Cards
     {
-        public static Attachment CreateAdaptiveCardAttachment(string cardname)
+        public static Attachment CreateAdaptiveCardAttachment()
         {
             // combine path for cross platform support
-            var paths = new[] { ".", "Resources", cardname };
-
+            var paths = new[] { ".", "Resources", "adaptiveCard.json" };
             var adaptiveCardJson = File.ReadAllText(Path.Combine(paths));
 
             var adaptiveCardAttachment = new Attachment()
@@ -26,7 +25,7 @@ namespace Test
             return adaptiveCardAttachment;
         }
 
-        public static void GetHeroCards()
+        public static HeroCard GetHeroCard()
         {
             var heroCard = new HeroCard
             {
@@ -38,7 +37,7 @@ namespace Test
                 Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "Get Started", value: "https://docs.microsoft.com/bot-framework") },
             };
 
-
+            return heroCard;
         }
 
         public static ThumbnailCard GetThumbnailCard()
@@ -206,7 +205,5 @@ namespace Test
 
             return oauthCard;
         }
-    
-
-}
+    }
 }
