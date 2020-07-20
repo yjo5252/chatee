@@ -25,7 +25,7 @@
 
 ### 3. Gate 3 
 
-[Gate 3 제출물, 결과 설명]()
+[Gate 3 제출물, 결과 설명](https://github.com/yjo5252/chatee/blob/master/Gate3/Gate3.md)
 
 
 ## 소스코드 설명(2020-07-18 ver)
