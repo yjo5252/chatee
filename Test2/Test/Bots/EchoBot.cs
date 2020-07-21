@@ -63,13 +63,53 @@ namespace Test.Bots
             httpClient);
             Logger.LogInformation("Running dialog with Message Activity.");
 
-            if (turnContext.Activity.Text.Equals("1"))
-                await turnContext.SendActivityAsync(MessageFactory.Text("1을 입력하셨아요"), cancellationToken);
+            //사용자 입력은?
+            string msg_from_user = turnContext.Activity.Text;
+            msg_from_user = msg_from_user.Replace(" ","");
+
+            if (MainDialog.is_running_dialog == 0)
+            {
+
+                if (msg_from_user.Contains("운동추천"))
+                {
+                    MainDialog.mode = 1;
+                    await turnContext.SendActivityAsync(MessageFactory.Text("1"), cancellationToken);
+                }
+                else if (msg_from_user.Contains("운동기록"))
+                {
+                    MainDialog.mode = 2;
+                    await turnContext.SendActivityAsync(MessageFactory.Text("2"), cancellationToken);
+                }
+                else if (msg_from_user.Contains("음식추천"))
+                {
+                    MainDialog.mode = 3;
+                    await turnContext.SendActivityAsync(MessageFactory.Text("3"), cancellationToken);
+                }
+                else if (msg_from_user.Contains("운동기구추천"))
+                {
+                    MainDialog.mode = 4;
+                    await turnContext.SendActivityAsync(MessageFactory.Text("4"), cancellationToken);
+                }
+                else if (msg_from_user.Contains("알림설정"))
+                {
+                    MainDialog.mode = 5;
+                    await turnContext.SendActivityAsync(MessageFactory.Text("5"), cancellationToken);
+                }
+                else
+                {
+                    MainDialog.mode = 0;
+                    //await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+                    //await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Text), cancellationToken);
+                }
+                await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+
+            }
             else
             {
+                await turnContext.SendActivityAsync(MessageFactory.Text("is_running_dialog가 1입니다."), cancellationToken);
                 await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
-                await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Text), cancellationToken);
             }
+            //await turnContext.SendActivityAsync(MessageFactory.Text(MainDialog.is_running_dialog.ToString()), cancellationToken);
 
             /*
             if (MainDialog.tutorial == 0)

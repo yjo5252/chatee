@@ -18,11 +18,12 @@ namespace Test.Dialogs
         public ShowFunctionsDialog()
             : base(nameof(ShowFunctionsDialog))
         {
-           // Define the main dialog and its related components.
+            // Define the main dialog and its related components.
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 ShowCardStepAsync,
+                ShowResultStepAsync,
             }));
 
             // The initial child Dialog to run.
@@ -45,6 +46,9 @@ namespace Test.Dialogs
 
             // Display an Adaptive Card
             reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+
+            int check = 0;
+
 
             var heroCard = new HeroCard
             {
@@ -95,9 +99,19 @@ namespace Test.Dialogs
             await stepContext.Context.SendActivityAsync(reply, cancellationToken);
 
             // Give the user instructions about what to do next
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("Type anything to see another card."), cancellationToken);
+
+            return await stepContext.NextAsync();
+
+        }
+
+        private async Task<DialogTurnResult> ShowResultStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            var msg = (string)stepContext.Result;
+
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
 
             return await stepContext.EndDialogAsync();
+
         }
     }
 }
