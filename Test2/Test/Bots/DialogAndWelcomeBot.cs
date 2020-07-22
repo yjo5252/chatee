@@ -31,9 +31,22 @@ namespace Test.Bots
                 {
                     await turnContext.SendActivityAsync(MessageFactory.Text($"안녕하세요! Healthee입니다."), cancellationToken);
                     MainDialog.tutorial = 0;
-                    await DisplayOptionsAsync(turnContext, cancellationToken);
+                    await DisplayWelcomingcard(turnContext, cancellationToken);
+                    //await DisplayOptionsAsync(turnContext, cancellationToken);
                 }
             }
+
+        }
+
+        private static async Task DisplayWelcomingcard(ITurnContext turnContext, CancellationToken cancellationToken) {
+            var attachments = new List<Attachment>();
+
+            // Reply to the activity we received with an activity.
+            var reply = MessageFactory.Attachment(attachments);
+
+            reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+            reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("Welcoming.json"));
+            await turnContext.SendActivityAsync(reply, cancellationToken);
 
         }
 

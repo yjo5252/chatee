@@ -15,6 +15,8 @@ using Test.Dialogs;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
+using AdaptiveCards;
+using System.IO;
 
 namespace Test.Bots
 {
@@ -49,9 +51,8 @@ namespace Test.Bots
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            
+            //QnAMaker 불러오기
             var httpClient = _httpClientFactory.CreateClient();
-
             var qnaMaker = new QnAMaker(new QnAMakerEndpoint
                 {
                     KnowledgeBaseId = _configuration["QnAKnowledgebaseId"],
@@ -60,9 +61,62 @@ namespace Test.Bots
                 },
             null,
             httpClient);
-
             Logger.LogInformation("Running dialog with Message Activity.");
 
+            //사용자 입력 텍스트
+            string msg_from_user = turnContext.Activity.Text;
+            msg_from_user = msg_from_user.Replace(" ","");
+
+            //현재 Dialog running 중이 아닐때
+            if (MainDialog.is_running_dialog == 0)
+            {
+                if (msg_from_user.Contains("운동추천"))
+                {
+                    ModeManager.mode = (int)ModeManager.Modes.RecommendExercise;
+                    await turnContext.SendActivityAsync(MessageFactory.Text("운동 추천 기능 시작"), cancellationToken);
+                }
+                else if (msg_from_user.Contains("운동기록"))
+                {
+                    ModeManager.mode = (int)ModeManager.Modes.Record;
+                    await turnContext.SendActivityAsync(MessageFactory.Text("운동 기록 시작"), cancellationToken);
+                }
+                else if (msg_from_user.Contains("음식추천"))
+                {
+                    ModeManager.mode = (int)ModeManager.Modes.RecommendFood;
+                    await turnContext.SendActivityAsync(MessageFactory.Text("음식 추천 시작"), cancellationToken);
+                }
+                else if (msg_from_user.Contains("운동기구추천"))
+                {
+                    ModeManager.mode = (int)ModeManager.Modes.RecommendEquipment;
+                    await turnContext.SendActivityAsync(MessageFactory.Text("기구 추천 시작"), cancellationToken);
+                }
+                else if (msg_from_user.Contains("캐릭터"))
+                {
+                    ModeManager.mode = (int)ModeManager.Modes.CheckCharacterState;
+                    await turnContext.SendActivityAsync(MessageFactory.Text("캐릭터"), cancellationToken);
+                }
+                else if (msg_from_user.Contains("기록볼래"))
+                {
+                    ModeManager.mode = (int)ModeManager.Modes.SeeMyRecord;
+                    await turnContext.SendActivityAsync(MessageFactory.Text("기록 보기"), cancellationToken);
+                }
+                else
+                {
+                    ModeManager.mode = 0;
+                    //await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+                    //await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Text), cancellationToken);
+                }
+                await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+
+            }
+            else
+            {
+                await turnContext.SendActivityAsync(MessageFactory.Text("is_running_dialog가 1입니다."), cancellationToken);
+                await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+            }
+            //await turnContext.SendActivityAsync(MessageFactory.Text(MainDialog.is_running_dialog.ToString()), cancellationToken);
+
+            /*
             if (MainDialog.tutorial == 0)
                 //공통
                 await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
@@ -82,97 +136,9 @@ namespace Test.Bots
                     await turnContext.SendActivityAsync(MessageFactory.Text("No QnA Maker answers were found."), cancellationToken);
                 }
 
-            }
+            }*/
 
         }
 
-        /*
-        protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
-        {
-            var welcomeText = "Hello and welcome!";
-            foreach (var member in membersAdded)
-            {
-                if (member.Id != turnContext.Activity.Recipient.Id)
-                {
-                    await turnContext.SendActivityAsync(MessageFactory.Text(welcomeText, welcomeText), cancellationToken);
-                    //await DisplayOptionsAsync(turnContext, cancellationToken);
-                    await DisplayAnimationCard(turnContext, cancellationToken);
-                }
-            }
-        }
-        */
-
-        private static async Task DisplayOptionsAsync(ITurnContext turnContext, CancellationToken cancellationToken)
-        {
-            // Create a HeroCard with options for the user to interact with the bot.
-            var card = new HeroCard
-            {
-                Title = "Hi!",
-                Images = new List<CardImage> { new CardImage("https://user-images.githubusercontent.com/41981471/87846811-b6fccc80-c90d-11ea-9a1c-e136034394f0.png") } 
-
-            };
-
-            var reply = MessageFactory.Attachment(card.ToAttachment());
-            await turnContext.SendActivityAsync(reply, cancellationToken);
-        }
-
-        private static async Task DisplayAnimationCard(ITurnContext turnContext, CancellationToken cancellationToken) {
-
-            // Cards are sent as Attachments in the Bot Framework.
-            // So we need to create a list of attachments for the reply activity.
-            var attachments = new List<Attachment>();
-
-            // Reply to the activity we received with an activity.
-            var reply = MessageFactory.Attachment(attachments);
-            reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-
-            var heroCard = new HeroCard
-            {
-                Title = "#### 1. 운동 추천",
-                Text = "운동 부위, 기구 유무, 운동 종류를 설정하여 맞춤 운동을 추천받아보세요! 운동 방법과 운동할 세트, 시간, 자세 등 적절한 운동과 정보를 알려드립니다.",
-                Images = new List<CardImage> { new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg") },
-                Buttons = new List<CardAction> { new CardAction(ActionTypes.ImBack, "운동 추천받기", value: "운동 추천 받을래") },
-            };
-            reply.Attachments.Add(heroCard.ToAttachment());
-
-            heroCard = new HeroCard
-            {
-                Title = "#### 2. 운동 기록",
-                Text = "운동한 것을 기록해보세요! 운동 이름, 시간, 운동한 부위를 기록할 수 있습니다. 운동을 많이 하고 기록할 수록 캐릭터가 성장해요!",
-                Images = new List<CardImage> { new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg") },
-                Buttons = new List<CardAction> { new CardAction(ActionTypes.ImBack, "운동 기록하기", value: "운동 기록할래") },
-            };
-            reply.Attachments.Add(heroCard.ToAttachment());
-
-            heroCard = new HeroCard
-            {
-                Title = "#### 3. 음식 추천",
-                Text = "운동하고 싶은 부위와 운동의 종류를 골라 맞춤 음식을 추천받으세요!",
-                Images = new List<CardImage> { new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg") },
-                Buttons = new List<CardAction> { new CardAction(ActionTypes.ImBack, "음식 추천받기", value: "음식 추천해줘") },
-            };
-            reply.Attachments.Add(heroCard.ToAttachment());
-
-            heroCard = new HeroCard
-            {
-                Title = "#### 4. 운동 기구 추천",
-                Text = "운동하고 싶은 부위와 운동 종류에 따라 맞춤 운동 기구를 추천받으세요! 운동 기구를 살 수 있는 곳도 알려드립니다.",
-                Images = new List<CardImage> { new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg") },
-                Buttons = new List<CardAction> { new CardAction(ActionTypes.ImBack,"운동 기구 추천받기", value: "운동 기구 추천해줘") },
-            };
-            reply.Attachments.Add(heroCard.ToAttachment());
-
-            heroCard = new HeroCard
-            {
-                Title = "#### 5. 알림",
-                Text = "운동할 시간을 설정하여 정해진 시간에 알림을 받으세요.w",
-                Images = new List<CardImage> { new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg") },
-                Buttons = new List<CardAction> { new CardAction(ActionTypes.ImBack, "알림 설정하기" ,value: "알림 설정할래") },
-            };
-            reply.Attachments.Add(heroCard.ToAttachment());
-
-
-            await turnContext.SendActivityAsync(reply, cancellationToken);
-        }
     }
 }
