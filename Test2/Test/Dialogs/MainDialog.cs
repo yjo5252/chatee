@@ -11,7 +11,6 @@ namespace Test.Dialogs
     {
         private readonly UserState _userState;
         public static int tutorial = 0;
-        public static int mode = 0;
         public static int is_running_dialog = 0;
 
 
@@ -19,9 +18,14 @@ namespace Test.Dialogs
         {
             _userState = userState;
 
-            AddDialog(new TutorialDialog());
             AddDialog(new ShowFunctionsDialog());
+            AddDialog(new TutorialDialog());
             AddDialog(new RecommendExerciseDialog());
+            AddDialog(new RecordDialog());
+            AddDialog(new RecommendFood());
+            AddDialog(new RecommendEquipment());
+            AddDialog(new SeeMyCharacterDialog());
+            AddDialog(new SeeMyRecord());
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] {
                 InitialStepAsync,
@@ -41,32 +45,44 @@ namespace Test.Dialogs
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(is_running_dialog.ToString()), cancellationToken);
 
-            if (mode == 0)
+            if (ModeManager.mode == 0)
             {
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 0입니다."), cancellationToken);
                 return await stepContext.BeginDialogAsync(nameof(ShowFunctionsDialog), null, cancellationToken);
+            }
+            else if (ModeManager.mode == 1)
+            {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 1입니다."), cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(TutorialDialog), null, cancellationToken);
 
             }
-            else {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 0이 아닙니다."), cancellationToken);
+            else if (ModeManager.mode == 2)
+            {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 2입니다."), cancellationToken);
                 return await stepContext.BeginDialogAsync(nameof(RecommendExerciseDialog), null, cancellationToken);
+
             }
-            /*
-            else if (mode == 1) { 
+            else if (ModeManager.mode == 3) {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 3입니다."), cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(RecordDialog), null, cancellationToken);
             }
-            else if (mode == 1)
+            else if (ModeManager.mode == 4) {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 4입니다."), cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(RecommendFood), null, cancellationToken);
+            }
+            else if (ModeManager.mode == 5) {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 5입니다."), cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(RecommendEquipment), null, cancellationToken);
+            }
+            else if (ModeManager.mode == 6) {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 6입니다."), cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(SeeMyCharacterDialog), null, cancellationToken);
+            }
+            else
             {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 7입니다."), cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(SeeMyRecord), null, cancellationToken);
             }
-            else if (mode == 1)
-            {
-            }
-            else if (mode == 1)
-            {
-            }
-            else if (mode == 1)
-            {
-            }*/
-            //return await stepContext.BeginDialogAsync(nameof(TutorialDialog), null, cancellationToken);
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)

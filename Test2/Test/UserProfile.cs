@@ -20,24 +20,26 @@ namespace Test
 
         //여기서부터
 
-        public string UserName { get; set; }
+        
+        public string UserName { get; set; } //유저 이름
 
-        public string AvatarName { get; set; }
+        public string AvatarName { get; set; } //캐릭터 이름
+
+        public string Target { get; set; } //운동 종류
+
+        public string KnowHow { get; set; } //숙련도
+
+        public int PreWeight { get; set; } //현재 체중
+
+        public int PostWeight { get; set; } //목표 체중
+
+        public string Date { get; set; } //목표 기간
+
+        public string AlarmSetup { get; set; } //알람 설정 여부
+
+        public int DidTutorial { get; set; } //튜토리얼 했는지
 
 
-        public string Target { get; set; }
-
-        public string KnowHow { get; set; }
-
-        public int PreWeight { get; set; }
-
-        public int PostWeight { get; set; }
-
-        public string Date { get; set; }
-
-        public string AlarmSetup { get; set; }
-
-        public int DidTutorial { get; set; }
 
     }
 }

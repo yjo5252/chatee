@@ -9,10 +9,12 @@ namespace Test.Dialogs
     using System.Drawing;
     using System.Threading;
     using System.Threading.Tasks;
+    using AdaptiveCards;
     using Microsoft.Bot.Builder;
     using Microsoft.Bot.Builder.Dialogs;
     using Microsoft.Bot.Builder.Dialogs.Choices;
     using Microsoft.Bot.Schema;
+    using Newtonsoft.Json.Linq;
 
     namespace Test.Dialogs
     {
@@ -33,15 +35,16 @@ namespace Test.Dialogs
                 AddDialog(new DateTimePrompt(nameof(DateTimePrompt)));
 
                 AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] {
-                NameStepAsync,
-                TargetStepAsync,
-                KnowHowStepAsync,
-                PreWeightStepAsync,
-                PostWeightStepAsync,
-                DateStepAsync,
-                ShowAvatarStepAsync,
-                AlarmStepAsync,
-                AcknowledgementStepAsync,
+                NameStepAsync, //사용자 이름
+                TargetStepAsync, //운동 종류
+                KnowHowStepAsync, //숙련도
+                PreWeightStepAsync, //현재 체중
+                PostWeightStepAsync, //목표 체중
+                DateStepAsync, //목표 기간
+                ShowAvatarStepAsync, //캐릭터 보여주기
+                AvatarNameAsync, //캐릭터 이름 설정
+                AlarmStepAsync, //알람 설정
+                AcknowledgementStepAsync, //결과 보여주기
             }));
 
                 InitialDialogId = nameof(WaterfallDialog);
@@ -60,14 +63,15 @@ namespace Test.Dialogs
                 return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken);
             }
 
-            private async Task<DialogTurnResult> TargetStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+
+                private async Task<DialogTurnResult> TargetStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
             {
                 var userProfile = (UserProfile)stepContext.Values[UserInfo];
                 userProfile.UserName = (string)stepContext.Result;
 
                 var promptOptions = new PromptOptions {
                     Prompt = MessageFactory.Text($"{stepContext.Result}님의 운동의 목표가 뭘까요? \n\n 다이어트, 근력, 유연성 중 하나를 골라주세요!"),
-                    Choices = ChoiceFactory.ToChoices(new List<string> { "다이어트", "근력 운동", "유연성" })
+                    Choices = ChoiceFactory.ToChoices(new List<string> { "다이어트", "근력", "유연성" })
                 };
 
                 return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
@@ -138,25 +142,38 @@ namespace Test.Dialogs
                 var userProfile = (UserProfile)stepContext.Values[UserInfo];
                 userProfile.Date = (string)stepContext.Result;
 
+                var attachments = new List<Attachment>();
+                var reply = MessageFactory.Attachment(attachments);
 
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"여러분과 함께 운동할 캐릭터에요. 지금은 비실비실하지만 같이 운동하면서 건강해질거에요!"), cancellationToken);
-
-                var card = new HeroCard
-                {
-                    Images = new List<CardImage> { new CardImage("https://t1.daumcdn.net/section/oc/b91f421cab1a46dd96a845f0c55b7f91") }
-
-                };
-
-                var reply = MessageFactory.Attachment(card.ToAttachment());
+                reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("CharacterShow.json"));
                 await stepContext.Context.SendActivityAsync(reply, cancellationToken);
 
                 var promptOptions = new PromptOptions
                 {
-                    Prompt = MessageFactory.Text("캐릭터의 이름을 설정해주세요!"),
+                    Prompt = MessageFactory.Text(""),
                 };
 
-                return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken);
+                return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken); // DateTimePrompt 형식 설정?
 
+            }
+
+            private async Task<DialogTurnResult> AvatarNameAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+            {
+                var attachments = new List<Attachment>();
+                var reply = MessageFactory.Attachment(attachments);
+
+                reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("CharacterName.json"));
+                await stepContext.Context.SendActivityAsync(reply, cancellationToken);
+
+                var promptOptions = new PromptOptions
+                {
+                    Prompt = MessageFactory.Text(""),
+                };
+
+
+                return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken);
             }
 
             private async Task<DialogTurnResult> AlarmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -185,7 +202,7 @@ namespace Test.Dialogs
 
                 */
 
-                var msg = $"{userProfile.UserName}님 {userProfile.Date} 기간동안 Healthee와 {userProfile.Target} 를 열심히 운동해보아요!\n "
+                var msg = $"{userProfile.UserName}님 {userProfile.Date} 기간동안 Healthee와 {userProfile.Target}을 위해 열심히 운동해봐요!\n "
                             + $"{ userProfile.PreWeight}kg에서 { userProfile.PostWeight}kg으로 체중감량이 이루어질거에요!\n"
                             + $"{ userProfile.UserName}님의 캐릭터 { userProfile.AvatarName} 변화도 눈여겨봐주세요!";
 

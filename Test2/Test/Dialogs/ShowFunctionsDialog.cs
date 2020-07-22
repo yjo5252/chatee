@@ -88,12 +88,22 @@ namespace Test.Dialogs
 
             heroCard = new HeroCard
             {
-                Title = "#### 5. 알림",
-                Text = "운동할 시간을 설정하여 정해진 시간에 알림을 받으세요.w",
+                Title = "#### 5. 내 캐릭터 보기",
+                Text = "현재 캐릭터의 상태를 화인하세요!",
                 Images = new List<CardImage> { new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg") },
-                Buttons = new List<CardAction> { new CardAction(ActionTypes.ImBack, "알림 설정하기", value: "알림 설정할래") },
+                Buttons = new List<CardAction> { new CardAction(ActionTypes.ImBack, "내 캐릭터 보기", value: "캐릭터 볼래") },
             };
             reply.Attachments.Add(heroCard.ToAttachment());
+
+            heroCard = new HeroCard
+            {
+                Title = "#### 6. 내 운동 기록 보기",
+                Text = "지금까지 운동한 기록을 화인하세요!",
+                Images = new List<CardImage> { new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg") },
+                Buttons = new List<CardAction> { new CardAction(ActionTypes.ImBack, "운동 기록 보기", value: "기록 볼래") },
+            };
+            reply.Attachments.Add(heroCard.ToAttachment());
+
 
             // Send the card(s) to the user as an attachment to the activity
             await stepContext.Context.SendActivityAsync(reply, cancellationToken);

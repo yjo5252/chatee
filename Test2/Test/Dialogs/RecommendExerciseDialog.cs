@@ -122,7 +122,18 @@ namespace Test.Dialogs
 
         private async Task<DialogTurnResult> ShowResultStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {//5
+            /*
+            var attachments = new List<Attachment>();
+
+            // Reply to the activity we received with an activity.
+            var reply = MessageFactory.Attachment(attachments);
+
+            reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+            reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("Welcoming.json"));
+            await stepContext.Context.SendActivityAsync(reply, cancellationToken);
+            */
             var msg = "끝입니다.";
+            
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
 
