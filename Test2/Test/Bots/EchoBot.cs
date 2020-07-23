@@ -63,6 +63,9 @@ namespace Test.Bots
             httpClient);
             Logger.LogInformation("Running dialog with Message Activity.");
 
+            //모드 확인용
+            await turnContext.SendActivityAsync(MessageFactory.Text("현재 모드는 " + ModeManager.mode + "입니다,"), cancellationToken);
+
             //사용자 입력 텍스트
             string msg_from_user = turnContext.Activity.Text;
             msg_from_user = msg_from_user.Replace(" ","");
@@ -102,19 +105,16 @@ namespace Test.Bots
                 }
                 else
                 {
-                    ModeManager.mode = 0;
-                    //await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
-                    //await turnContext.SendActivityAsync(MessageFactory.Text(turnContext.Activity.Text), cancellationToken);
+                    //ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //임시 튜토리얼
                 }
                 await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
 
             }
-            else
+            else //다이얼로그 실행중일때
             {
-                await turnContext.SendActivityAsync(MessageFactory.Text("is_running_dialog가 1입니다."), cancellationToken);
+                await turnContext.SendActivityAsync(MessageFactory.Text("EchoBot - 다이얼로그 실행중입니다."), cancellationToken);
                 await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
             }
-            //await turnContext.SendActivityAsync(MessageFactory.Text(MainDialog.is_running_dialog.ToString()), cancellationToken);
 
             /*
             if (MainDialog.tutorial == 0)
