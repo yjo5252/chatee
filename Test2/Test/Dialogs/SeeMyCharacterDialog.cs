@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,12 +30,32 @@ namespace Test.Dialogs
         { //-1
 
             //캐릭터 상태 보여주기
+          
 
-            var promptOptions = new PromptOptions
+            string status = "ok";
+            await stepContext.Context.SendActivityAsync(status);
+
+            var attachments = new List<Attachment>();
+
+            var reply = MessageFactory.Attachment(attachments);
+
+            reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+
+            string[] ImageUrlList = {"https://t1.daumcdn.net/section/oc/b91f421cab1a46dd96a845f0c55b7f91",
+                "https://image.librewiki.net/thumb/1/10/%EA%B7%BC%EC%9C%A1%EB%AA%AC.png/360px-%EA%B7%BC%EC%9C%A1%EB%AA%AC.png"};
+            int index =1 ;
+            var heroCard = new HeroCard
             {
-                Prompt = MessageFactory.Text(""),
+                Title = "#### 캐릭터의 상태"+ index,
+                Images = new List<CardImage> { new CardImage(ImageUrlList[index]) }
             };
-            return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken);
+            reply.Attachments.Add(heroCard.ToAttachment());
+
+
+            await stepContext.Context.SendActivityAsync(reply, cancellationToken);
+
+            
+            return await stepContext.NextAsync();
         }
 
         private async Task<DialogTurnResult> EndAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
