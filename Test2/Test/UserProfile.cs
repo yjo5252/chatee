@@ -9,9 +9,6 @@ namespace Test
     public class UserProfile
     {
         //public List<string> CompaniesToReview { get; set; } = new List<string>();
-
-        //여기서부터
-
         
         public string UserName { get; set; } //유저 이름
 

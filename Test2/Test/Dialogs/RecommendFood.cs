@@ -187,6 +187,8 @@ namespace Test.Dialogs
             // Send the card(s) to the user as an attachment to the activity
             await stepContext.Context.SendActivityAsync(reply, cancellationToken);
 
+            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
+
             return await stepContext.EndDialogAsync();
         }
 

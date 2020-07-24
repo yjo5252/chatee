@@ -31,7 +31,7 @@ namespace Test5_sql.Bots
                     connection.Open();
                     await turnContext.SendActivityAsync(MessageFactory.Text("connected"), cancellationToken);
 
-                    string query = "INSERT INTO [dbo].[Persons] VALUES ( 'lalala', 'quququ', 30);";
+                    string query = "INSERT INTO [dbo].[Persons] VALUES ( 'hiii', 'quququ', 30);";
 
                     SqlCommand command = new SqlCommand(query, connection);
                     command.ExecuteNonQuery();

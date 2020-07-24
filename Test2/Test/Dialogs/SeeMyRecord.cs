@@ -31,7 +31,7 @@ namespace Test.Dialogs
 
             //운동 기록 보여주기
 
-
+            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
             return await stepContext.EndDialogAsync();
         }
     }

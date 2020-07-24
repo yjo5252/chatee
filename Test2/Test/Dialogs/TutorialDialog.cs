@@ -10,6 +10,8 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
+using System.Data.SqlClient;
+using System.Text;
 
 namespace Test.Dialogs
 {
@@ -189,6 +191,31 @@ namespace Test.Dialogs
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
 
+            try
+            {
+                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+
+                builder.ConnectionString = "Server=tcp:team02-server.database.windows.net,1433;Initial Catalog=healtheeDB;Persist Security Info=False;User ID=chatbot02;Password=chatee17!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+
+                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                {
+                    connection.Open();
+
+                    string query1 = "INSERT INTO [dbo].[UserInfo] VALUES( " + CheckUserDialog.PrimaryNumber + ", '" + userProfile.UserName + "', " + userProfile.PreWeight + ", " + userProfile.PostWeight + ", '" + userProfile.SkillLevel + "', '" + userProfile.Area + "', '" + userProfile.Category + "', " + 0 + ");";
+                    string query2 = "INSERT INTO [dbo].[AvatarInfo] VALUES( " + CheckUserDialog.PrimaryNumber + ", '" + userProfile.AvatarName + "', " + 0 + ");";
+
+                    SqlCommand command = new SqlCommand(query1, connection);
+                    command.ExecuteNonQuery();
+
+                    command = new SqlCommand(query2, connection);
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (SqlException e)
+            {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("문제가 있습니다."), cancellationToken);
+                Console.WriteLine(e.ToString());
+            }
 
             ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
 

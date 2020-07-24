@@ -104,7 +104,7 @@ namespace Test.Dialogs
                         {
                             while (reader.Read())
                             {
-                                PrimaryNumber = reader.GetInt32(0);
+                                PrimaryNumber = reader.GetInt32(0)+1;
                             }
                         }
                     }

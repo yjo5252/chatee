@@ -142,6 +142,8 @@ namespace Test.Dialogs
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
 
+            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
+
             return await stepContext.EndDialogAsync();
 
         }
