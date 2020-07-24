@@ -41,8 +41,6 @@ namespace Test.Dialogs
             //Dialog running 중인 상태를 1로 바꿉니다.
             is_running_dialog = 1;
 
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("MainDialog.cs InitialStep Async"), cancellationToken);
-
             if (ModeManager.mode == (int)ModeManager.Modes.ShowFunction) //기능 보여주기
             {
                 return await stepContext.BeginDialogAsync(nameof(ShowFunctionsDialog), null, cancellationToken);
@@ -82,15 +80,9 @@ namespace Test.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            /*
-            var userInfo = (UserProfile)stepContext.Result;
-            var accessor = _userState.CreateProperty<UserProfile>(nameof(UserProfile));
-            await accessor.SetAsync(stepContext.Context, userInfo, cancellationToken);
-            */
             
             is_running_dialog = 0; //다이얼로그 실행 중인 것이 없다.
 
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("MainDialog.cs finalStepAsync"), cancellationToken);
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }
     }

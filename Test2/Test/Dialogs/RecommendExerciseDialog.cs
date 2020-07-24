@@ -9,6 +9,7 @@ using Microsoft.Bot.Schema;
 using System.Data.SqlClient;
 using System.Text;
 using System;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Test.Dialogs
 {
@@ -25,12 +26,17 @@ namespace Test.Dialogs
         private string Kind;
         private string Level;
 
+        private string sportsName;
+        private string videourl;
+        private string explanation;
+        private string time;
+        private int set;
+
 
         public RecommendExerciseDialog() : base(nameof(RecommendExerciseDialog))
         {
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
-            AddDialog(new DateTimePrompt(nameof(DateTimePrompt)));
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] {
                 AskUserAsync, //맞춤운동 추천할지 물어보기
@@ -38,9 +44,10 @@ namespace Test.Dialogs
                 SelectAreaAsync, //부위 묻기 
                 SelectKindAsync, //종류
                 SelectLevelAsync, //난이도
-                ShowExerciseAsync,
-                DidExerciseAsync,
-                ShowResultStepAsync
+                ShowExerciseAsync, //운동 보여주기
+                DidExerciseAsync, //운동을 했는지 확인
+                ShowResultStepAsync, //결과
+                EndAsync //끝
             }));
             InitialDialogId = nameof(WaterfallDialog);
         }
@@ -52,10 +59,15 @@ namespace Test.Dialogs
             Kind = "";
             Level = "";
 
-            //await stepContext.Context.SendActivityAsync(MessageFactory.Text(UserInfoManager.UserName), cancellationToken);
-
             var attachments = new List<Attachment>();
             var reply = MessageFactory.Attachment(attachments);
+            reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("REInitial.json"));
+            await stepContext.Context.SendActivityAsync(reply, cancellationToken);
+
+            Thread.Sleep(1500);
+
+            attachments = new List<Attachment>();
+            reply = MessageFactory.Attachment(attachments);
             reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("REFirst.json"));
             await stepContext.Context.SendActivityAsync(reply, cancellationToken);
 
@@ -113,7 +125,7 @@ namespace Test.Dialogs
             var promptOptions = new PromptOptions
             {
                 Prompt = MessageFactory.Text($"난이도는 어느 정도이면 좋을까요?"),
-                Choices = ChoiceFactory.ToChoices(new List<string> { "유산소", "근력", "스트레칭" })
+                Choices = ChoiceFactory.ToChoices(new List<string> { "상", "중", "하" })
             };
 
             return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
@@ -124,13 +136,11 @@ namespace Test.Dialogs
             if(stepContext.Result != null)
                 Level = ((FoundChoice)stepContext.Result).Value; //난이도
 
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("Debugpoint1"), cancellationToken);
-
-            string sportsName = "";
-            string videourl = "";
-            string explanation = "";
-            string time = "";
-            int set = 0;
+            sportsName = "";
+            videourl = "";
+            explanation = "";
+            time = "";
+            set = 0;
 
             //DB 서치
             try
@@ -145,11 +155,12 @@ namespace Test.Dialogs
 
                     if (Area.Equals("")) //맞춤 운동을 설정했을 경우 값을 사용자 정보에서 가져옴
                     {
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Text("Debugpoint2"), cancellationToken);
                         Area = UserInfoManager.Area;
                         Kind = UserInfoManager.Category;
                         Level = UserInfoManager.SkillLevel;
                     }
+
+                    if (Kind.Equals("스트레칭")) Level = "하"; //스트레칭은 레벨이 무조건 하이다.
 
                     //사용자가 설정한 정보에 해당하는 데이터 개수 세기
 
@@ -169,7 +180,6 @@ namespace Test.Dialogs
                             }
                         }
                     }
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Text("Debugpoint3"), cancellationToken);
 
                     //DB에서 운동 정보 가져오기
 
@@ -197,13 +207,12 @@ namespace Test.Dialogs
                         }
                     }
 
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Text("Debugpoint3"), cancellationToken);
                     connection.Close();
                 }
             }
             catch (SqlException e)
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("문제가 있습니다."), cancellationToken);
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("DB 연결에 문제가 있습니다."), cancellationToken);
                 Console.WriteLine(e.ToString());
             }
 
@@ -215,8 +224,8 @@ namespace Test.Dialogs
             var videoCard = new VideoCard
             {
                 Title = sportsName,
-                Subtitle = "by the Blender Institute",
-                Text = "Big Buck Bunny (code-named Peach) is a short computer-animated comedy film by the Blender Institute,",
+                Subtitle = time+", "+set+"세트 진행하세요.",
+                Text = explanation,
                 Media = new List<MediaUrl>
                 {
                     new MediaUrl()
@@ -228,7 +237,7 @@ namespace Test.Dialogs
                 {
                     new CardAction()
                     {
-                        Title = "imBack",
+                        Title = "확인했어!",
                         Type = ActionTypes.ImBack,
                         Value = "확인했어!",
                     },
@@ -254,14 +263,108 @@ namespace Test.Dialogs
 
         private async Task<DialogTurnResult> ShowResultStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {//5
-            var msg = "끝입니다.";
-           
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
+            string check = ((FoundChoice)stepContext.Result).Value;
 
-            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
+            if (check.Equals("응")) //기록 DB에 업데이트 해야 함.
+            {
+                try
+                {
+                    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
+                    builder.ConnectionString = "Server=tcp:team02-server.database.windows.net,1433;Initial Catalog=healtheeDB;Persist Security Info=False;User ID=chatbot02;Password=chatee17!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+
+                    using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                    {
+                        connection.Open();
+
+                        //기록 DB에 사용자가 있는지 찾는다.
+                        StringBuilder sb = new StringBuilder();
+                        sb.Append("SELECT COUNT(*) FROM [dbo].[ExerciseRecord] WHERE UserID='" + UserInfoManager.keyNum + "'"); //유저의 고유번호로 DB에서 사용자 찾기
+                        String sql = sb.ToString();
+
+                        int count = 0;
+
+                        using (SqlCommand command = new SqlCommand(sql, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    count = reader.GetInt32(0);
+                                }
+                            }
+                        }
+
+                        SqlCommand q;
+                        string query;
+
+                        if (count == 0) //기록이 없을 때
+                        {
+                            query = "INSERT INTO [dbo].[ExerciseRecord] VALUES(" + UserInfoManager.keyNum + ", 0, 0, 0, 0, 0);"; //사용자 기록을 만든다.
+                            q = new SqlCommand(query, connection);
+                            q.ExecuteNonQuery();
+                        }
+
+                        string area = ""; //DB에서 찾을 부위 string 값
+                        int index = 0; //DB에서 찾을 부분 index 값
+                        int Time = 0; //새로 업데이트 할 시간
+
+                        if (Area.Equals("복근")) { area = "Abs"; index = 1; }
+                        else if (Area.Equals("다리, 힙")) { area = "Leg"; index = 2; }
+                        else if (Area.Equals("팔")) { area = "Arm"; index = 3; }
+                        else if (Area.Equals("어깨 및 등")) { area = "Shoulder"; index = 4; }
+                        else if (Area.Equals("가슴")) { area = "Chest"; index = 5; }
+
+                        //이전 기록 읽어옴
+                        sb = new StringBuilder();
+                        sb.Append("SELECT * FROM [dbo].[ExerciseRecord] WHERE UserID='" + UserInfoManager.keyNum + "'"); //유저의 고유번호로 DB에서 사용자 찾기
+                        sql = sb.ToString();
+
+                        if (time[time.Length - 1] == '회') { //몇 회로 데이터베이스에 저장된 경우
+                            Time = 60; //1분으로 기록(초단위)
+                        }
+                        else { //몇 초라고 데이터베이스에 저장된 경우
+                            Time = Convert.ToInt32(time.Substring(0, time.Length - 2)); //DB에 저장된 초를 가져온다.
+                        }
+
+                        using (SqlCommand command = new SqlCommand(sql, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    Time += reader.GetInt32(index); //시간 가져오기
+                                }
+                            }
+                        }
+
+                        //사용자 기록 업데이트
+                        query = "UPDATE [dbo].[ExerciseRecord] SET [" + area + "]=" + Time + " WHERE UserID=" + UserInfoManager.keyNum; //사용자 기록 업데이트
+                        q = new SqlCommand(query, connection);
+                        q.ExecuteNonQuery();
+
+                        connection.Close();
+
+                    }
+                }
+                catch (SqlException e)
+                {
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text($"운동 /예외 발생"));
+
+                }
+
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("기록되었습니다."), cancellationToken);
+            }
+
+            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보여주기 모드로 바꾼다.
+            Thread.Sleep(3000);
+            return await stepContext.BeginDialogAsync(nameof(ShowFunctionsDialog), null, cancellationToken);
+
+        }
+
+        private async Task<DialogTurnResult> EndAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
             return await stepContext.EndDialogAsync();
-
         }
     }
 }

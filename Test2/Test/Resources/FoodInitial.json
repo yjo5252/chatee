@@ -1,0 +1,33 @@
+﻿{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "backgroundImage": {
+    "url": "https://thumbs.dreamstime.com/b/horizontal-backdrop-border-consisted-fresh-organic-food-banner-template-tasty-eco-wholesome-ripe-vegetables-fruits-142317833.jpg"
+  },
+  "body": [
+    {
+      "type": "Container"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "RichTextBlock",
+          "horizontalAlignment": "Center",
+          "inlines": [
+            {
+              "type": "TextRun",
+              "text": "🍏 랜덤 음식 추천 🍅",
+              "size": "ExtraLarge",
+              "weight": "Bolder"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Container"
+    }
+  ]
+}

@@ -63,9 +63,6 @@ namespace Test.Bots
             httpClient);
             Logger.LogInformation("Running dialog with Message Activity.");
 
-            //모드 확인용
-            await turnContext.SendActivityAsync(MessageFactory.Text("현재 모드는 " + ModeManager.mode + "입니다,"), cancellationToken);
-
             //사용자 입력 텍스트
             string msg_from_user = turnContext.Activity.Text;
             msg_from_user = msg_from_user.Replace(" ","");
@@ -76,68 +73,53 @@ namespace Test.Bots
                 if (msg_from_user.Contains("운동추천"))
                 {
                     ModeManager.mode = (int)ModeManager.Modes.RecommendExercise;
-                    await turnContext.SendActivityAsync(MessageFactory.Text("운동 추천 기능 시작"), cancellationToken);
                 }
                 else if (msg_from_user.Contains("운동기록"))
                 {
                     ModeManager.mode = (int)ModeManager.Modes.Record;
-                    await turnContext.SendActivityAsync(MessageFactory.Text("운동 기록 시작"), cancellationToken);
                 }
                 else if (msg_from_user.Contains("음식추천"))
                 {
                     ModeManager.mode = (int)ModeManager.Modes.RecommendFood;
-                    await turnContext.SendActivityAsync(MessageFactory.Text("음식 추천 시작"), cancellationToken);
                 }
                 else if (msg_from_user.Contains("운동기구추천"))
                 {
                     ModeManager.mode = (int)ModeManager.Modes.RecommendEquipment;
-                    await turnContext.SendActivityAsync(MessageFactory.Text("기구 추천 시작"), cancellationToken);
                 }
                 else if (msg_from_user.Contains("캐릭터"))
                 {
                     ModeManager.mode = (int)ModeManager.Modes.CheckCharacterState;
-                    await turnContext.SendActivityAsync(MessageFactory.Text("캐릭터"), cancellationToken);
                 }
                 else if (msg_from_user.Contains("기록볼래"))
                 {
                     ModeManager.mode = (int)ModeManager.Modes.SeeMyRecord;
-                    await turnContext.SendActivityAsync(MessageFactory.Text("기록 보기"), cancellationToken);
+                }
+                else if (msg_from_user.Contains("목적") || msg_from_user.Contains("안녕")) {
+                    var options = new QnAMakerOptions { Top = 1 };
+
+                    // The actual call to the QnA Maker service.
+                    var response = await qnaMaker.GetAnswersAsync(turnContext, options);
+
+
+                    if (response != null && response.Length > 0)
+                    {
+                        await turnContext.SendActivityAsync(MessageFactory.Text(response[0].Answer), cancellationToken);
+                    }
+                    else
+                    {
+                        await turnContext.SendActivityAsync(MessageFactory.Text("기능을 보여드릴게요."), cancellationToken);
+                    }
+
+                    Thread.Sleep(3000);
                 }
                 else
                 {
-                    //ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //임시 튜토리얼
+                    ModeManager.mode = (int)ModeManager.Modes.ShowFunction;
                 }
-                await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+                //await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
 
             }
-            else //다이얼로그 실행중일때
-            {
-                await turnContext.SendActivityAsync(MessageFactory.Text("EchoBot - 다이얼로그 실행중입니다."), cancellationToken);
-                await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
-            }
-
-            /*
-            if (MainDialog.tutorial == 0)
-                //공통
-                await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
-            else {
-                var options = new QnAMakerOptions { Top = 1 };
-
-                // The actual call to the QnA Maker service.
-                var response = await qnaMaker.GetAnswersAsync(turnContext, options);
-
-
-                if (response != null && response.Length > 0)
-                {
-                    await turnContext.SendActivityAsync(MessageFactory.Text(response[0].Answer), cancellationToken);
-                }
-                else
-                {
-                    await turnContext.SendActivityAsync(MessageFactory.Text("No QnA Maker answers were found."), cancellationToken);
-                }
-
-            }*/
-
+            await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
         }
 
     }

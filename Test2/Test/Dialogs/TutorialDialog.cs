@@ -41,6 +41,7 @@ namespace Test.Dialogs
             ShowAvatarStepAsync, //캐릭터 보여주기
             AvatarNameAsync, //캐릭터 이름 설정
             AcknowledgementStepAsync, //결과 보여주기
+            EndAsync
         }));
 
             InitialDialogId = nameof(WaterfallDialog);
@@ -189,6 +190,7 @@ namespace Test.Dialogs
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
 
+            UserInfoManager.keyNum = CheckUserDialog.PrimaryNumber;
             UserInfoManager.UserName = userProfile.UserName;
             UserInfoManager.PreWeight = userProfile.PreWeight;
             UserInfoManager.PostWeight = userProfile.PostWeight;
@@ -223,15 +225,20 @@ namespace Test.Dialogs
             }
             catch (SqlException e)
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("문제가 있습니다."), cancellationToken);
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("DB 연결에 문제가 있습니다."), cancellationToken);
                 Console.WriteLine(e.ToString());
             }
 
             ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
+            Thread.Sleep(3000);
+            return await stepContext.BeginDialogAsync(nameof(ShowFunctionsDialog), null, cancellationToken);
 
-                // Exit the dialog, returning the collected user information.
-            return await stepContext.EndDialogAsync(stepContext.Values[UserInfo], cancellationToken);
                 
+        }
+        private async Task<DialogTurnResult> EndAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        { //-1
+            //끝내기
+            return await stepContext.EndDialogAsync();
         }
 
         private static Task<bool> WeightPromptValidatorAsync(PromptValidatorContext<int> promptContext, CancellationToken cancellationToken)

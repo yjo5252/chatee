@@ -30,7 +30,6 @@
                     {
                       "type": "TextRun",
                       "text": "👈 캐릭터의 이름을\n설정해주세요!",
-                      "size": "Medium"
                     }
                   ]
                 }

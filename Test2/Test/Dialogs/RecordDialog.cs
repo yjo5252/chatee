@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -18,84 +19,73 @@ namespace Test.Dialogs
     {
         public string sportName = "달리기";
 
-        // Define value names for values tracked inside the dialogs.
-        private const string Record = "value-record";
-        // Define value names for values tracked inside the dialogs.
-        private const string UserInfo = "value-userInfo";
+        private string Area;
+        private int Time;
 
         public RecordDialog() : base(nameof(RecordDialog))
         {
             AddDialog(new TextPrompt(nameof(TextPrompt)));
-            AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
-            AddDialog(new DateTimePrompt(nameof(DateTimePrompt)));
             AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>), TimePromptValidatorAsync));
-
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] {
-                //AskUserWhatExerciseAsync,
-                CheckExerciseAsync,
-                SelectAreaAsync,
-                SelectExerciseAsync,
-                AskExerciseMinuteAsync,
-                SummaryAsync
-
+                InitialRecordAsync, //운동 기록하겠습니다. 보여줌
+                CheckAreaAsync,//어디 부위를 운동하셨나요?
+                CheckTimeAsync, //얼마나 운동하셨나요?
+                RecordAsync, //운동 
+                EndAsync 
             }));
             InitialDialogId = nameof(WaterfallDialog);
         }
 
 
-        private async Task<DialogTurnResult> AskUserWhatExerciseAsync (WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> InitialRecordAsync (WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var promptOptions = new PromptOptions { 
-                Prompt = MessageFactory.Text("오늘 운동을 하셨나요?") ,
-                RetryPrompt = MessageFactory.Text("응이라고 입력해주세요.")
-            };
+            //변수 초기화
+            Area = "";
+            Time = 0;
 
-            // Ask the user to enter their name.
-            return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken);
+            //운동 기록할거라는 json 카드 보여줘야 함.
+            //처음 카드 보여주기
+            var attachments = new List<Attachment>();
+            var reply = MessageFactory.Attachment(attachments);
+
+            reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+            reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("RecordInitial.json"));
+            await stepContext.Context.SendActivityAsync(reply, cancellationToken);
+
+            Thread.Sleep(1500);
+
+            return await stepContext.NextAsync();
         }
 
-        private async Task<DialogTurnResult> CheckExerciseAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        { //-1
-          // Create an object in which to collect the user's information within the dialog.
-            stepContext.Values[Record]= new Record();
-
+        private async Task<DialogTurnResult> CheckAreaAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        { 
             var promptOptions = new PromptOptions
             {
-                Prompt = MessageFactory.Text($"구체적으로 기록을 남겨볼까요?"),
-                Choices = ChoiceFactory.ToChoices(new List<string> { "기록할래" })
+                Prompt = MessageFactory.Text($"어떤 부위를 운동하셨나요?"),
+                Choices = ChoiceFactory.ToChoices(new List<string> { "복근", "다리, 힙", "팔", "어깨 및 등", "가슴" })
             };
 
             return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
         }
 
        
-        private async Task<DialogTurnResult> SelectAreaAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> CheckTimeAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var record = (Record)stepContext.Values[Record];
-            record.startRecord = (string)stepContext.Result.ToString().Trim(); //기록 시작
-
+            Area = ((FoundChoice)stepContext.Result).Value; //부위 설정
 
             var promptOptions = new PromptOptions
             {
-                Prompt = MessageFactory.Text($"어디를 운동하셨나요??"),
-                Choices = ChoiceFactory.ToChoices(new List<string> { "복근","가슴", "팔", "다리" ,"어깨 등","힙" })
+                Prompt = MessageFactory.Text($"몇 분 동안 운동하셨나요?"),
+                RetryPrompt = MessageFactory.Text("0보다 큰 값을 입력해주세요!"),
             };
-
-            return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
+            return await stepContext.PromptAsync(nameof(NumberPrompt<int>), promptOptions, cancellationToken);
         }
 
-        private async Task<DialogTurnResult> SelectExerciseAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> RecordAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var record = (Record)stepContext.Values[Record];
-            record.Area = ((FoundChoice)stepContext.Result).Value; //목표 부위에 할당
-
-            String[] str = { };
-            List<String> list = new List<String>();
-            var choice = (FoundChoice)stepContext.Result; //운동 부위
-            var areaName = choice.Value.ToString();
-            int count = 0;
-
+            Time = ((int)stepContext.Result) * 60; //시간 설정(초단위로 집어넣는다)
+            UserInfoManager.ConversationCount += 1; //기록 횟수 + 1
 
             try
             {
@@ -106,11 +96,13 @@ namespace Test.Dialogs
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
                     connection.Open();
+
+                    //기록 DB에 사용자가 있는지 찾는다.
                     StringBuilder sb = new StringBuilder();
-                    sb.Append("SELECT * ");
-                    sb.Append("FROM [dbo].[Sports] pc ");
-                    sb.Append("WHERE [Area]='" + "복근" + "'");
+                    sb.Append("SELECT COUNT(*) FROM [dbo].[ExerciseRecord] WHERE UserID='" + UserInfoManager.keyNum + "'"); //유저의 고유번호로 DB에서 사용자 찾기
                     String sql = sb.ToString();
+
+                    int count = 0;
 
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
@@ -118,13 +110,57 @@ namespace Test.Dialogs
                         {
                             while (reader.Read())
                             {
-
-                                sportName = reader.GetString(1);
-                                list.Add("\""+sportName+"\"");
-
+                                count = reader.GetInt32(0);
                             }
                         }
                     }
+
+                    SqlCommand q;
+                    string query;
+
+                    if (count == 0) //기록이 없을 때
+                    {
+                        query = "INSERT INTO [dbo].[ExerciseRecord] VALUES(" + UserInfoManager.keyNum + ", 0, 0, 0, 0, 0);"; //사용자 기록을 만든다.
+                        q = new SqlCommand(query, connection);
+                        q.ExecuteNonQuery();
+                    }
+
+                    string area=""; //DB에서 찾을 부위 string 값
+                    int index = 0; //DB에서 찾을 부분 index 값
+
+                    if (Area.Equals("복근")) { area = "Abs"; index = 1; }
+                    else if (Area.Equals("다리, 힙")) { area = "Leg"; index = 2; }
+                    else if (Area.Equals("팔")) { area = "Arm"; index = 3; }
+                    else if (Area.Equals("어깨 및 등")) { area = "Shoulder"; index = 4; }
+                    else if (Area.Equals("가슴")) { area = "Chest"; index = 5; }
+
+                    //이전 기록 읽어옴
+                    sb = new StringBuilder();
+                    sb.Append("SELECT * FROM [dbo].[ExerciseRecord] WHERE UserID='" + UserInfoManager.keyNum + "'"); //유저의 고유번호로 DB에서 사용자 찾기
+                    sql = sb.ToString();
+                    
+
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Time += reader.GetInt32(index);
+                            }
+                        }
+                    }
+
+                    //사용자 운동 기록 업데이트
+                    query = "UPDATE [dbo].[ExerciseRecord] SET ["+area+"]="+Time+" WHERE UserID="+UserInfoManager.keyNum; //사용자 기록 업데이트
+                    q = new SqlCommand(query, connection);
+                    q.ExecuteNonQuery();
+
+                    //사용자 정보 업데이트
+                    query = "UPDATE [dbo].[UserInfo] SET [ConversationCount]=" + UserInfoManager.ConversationCount + " WHERE UserID=" + UserInfoManager.keyNum; //사용자 정보 업데이트
+                    q = new SqlCommand(query, connection);
+                    q.ExecuteNonQuery();
+
                     connection.Close();
 
                 }
@@ -135,102 +171,23 @@ namespace Test.Dialogs
 
             }
 
+            //기록되었다는 거 알려줌 herocard/Adaptivecard 필요
 
-            int randomIndex = 0;
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text("기록되었습니다."), cancellationToken);
 
-            str = list.ToArray();
-            // { "복근","가슴", "팔", "다리" ,"어깨 등","힙" }
-            string options = "{ ";
-            string joined = string.Join(", ", list);
-
-          
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("joined string:" + joined));
-            options = options+joined+ " }";
-            options.ToString();
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("options:"+options));
-
-
-            sportName = (string)str[randomIndex];
-           
-            var promptOptions = new PromptOptions
-            {
-                Prompt = MessageFactory.Text($"어떤 운동을 하셨나요??"),
-                //Choices = ChoiceFactory.ToChoices(new List<string> { "하이 플랭크", "다리 들어올리기" }),
-                 Choices = ChoiceFactory.ToChoices(new List<string> { options })
-            };
-
-            return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
-            //return await stepContext.NextAsync();
+            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기록 보여주기 모드로 전환함.
+            Thread.Sleep(3000);
+            return await stepContext.BeginDialogAsync(nameof(ShowFunctionsDialog), null, cancellationToken);
         }
 
-        private async Task<DialogTurnResult> AskExerciseMinuteAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> EndAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var record = (Record)stepContext.Values[Record];
-            record.SportName = ((FoundChoice)stepContext.Result).Value; // 운동 이름에 할당
-
-
-
-            // User said "yes" so we will be prompting for the age.
-            // WaterfallStep always finishes with the end of the Waterfall or with another dialog; here it is a Prompt Dialog.
-            var promptOptions = new PromptOptions
-            {
-                Prompt = MessageFactory.Text("운동을 얼마나 했는지 입력해주세요!(단위 : 분)"),
-                RetryPrompt = MessageFactory.Text("1이상의 값을 입력해주세요."),
-            };
-            return await stepContext.PromptAsync(nameof(NumberPrompt<int>), promptOptions, cancellationToken);
-        }
-
-        private async Task<DialogTurnResult> SummaryAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text(("summary 시작")));
-            var userProfile = (UserProfile)stepContext.Values[UserInfo];
-            var record = (Record)stepContext.Values[Record];
-            record.ExerciseHour = (int)stepContext.Result;  // 운동 시간에 할당
-
-            //결과 보여줘야 함
-
-            var msg = $"{userProfile.UserName}님!\nHealthee와 {record.Area}를 위해 {record.SportName} 운동을 { record.ExerciseHour } 했어요!!\n"
-                        + $"{ userProfile.UserName}님의 캐릭터 { userProfile.AvatarName} 변화도 눈여겨봐주세요!";
-
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("msg 작성함"));
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
-
-            // insert 
-            try
-            {
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-
-                builder.ConnectionString = "Server=tcp:team02-server.database.windows.net,1433;Initial Catalog=healtheeDB;Persist Security Info=False;User ID=chatbot02;Password=chatee17!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-                {
-                    connection.Open();
-
-                    string query1 = "INSERT INTO [dbo].[ExerciseRecord] VALUES( " + CheckUserDialog.PrimaryNumber + ", '" + record.ExerciseHour + "', " + record.Area + ", " + record.SportName + ", '" + 0 + ");";
-                 
-                    SqlCommand command = new SqlCommand(query1, connection);
-                    command.ExecuteNonQuery();
-
-                }
-            }
-            catch (SqlException e)
-            {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("문제가 있습니다."), cancellationToken);
-                Console.WriteLine(e.ToString());
-            }
-
-            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
-           // return await stepContext.EndDialogAsync();
-
-            
-            // Exit the dialog, returning the collected user information.
-            return await stepContext.EndDialogAsync(stepContext.Values[Record], cancellationToken);
-
+            return await stepContext.EndDialogAsync();
         }
 
         private static Task<bool> TimePromptValidatorAsync(PromptValidatorContext<int> promptContext, CancellationToken cancellationToken)
         {
-            // This condition is our validation rule. You can also change the value at this point.
+            //0보다 큰 값을 입력하도록 해야 한다.
             return Task.FromResult(promptContext.Recognized.Succeeded && promptContext.Recognized.Value > 0);
         }
 

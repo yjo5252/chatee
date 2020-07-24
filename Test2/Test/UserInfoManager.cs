@@ -22,7 +22,7 @@ namespace Test
 
         public static string Category { get; set; } //종류
 
-        public static int ConversationCount { get; set; }
+        public static int ConversationCount { get; set; } //운동 기록 횟수
 
         public static string AvatarName { get; set; } //캐릭터 이름
 

@@ -110,14 +110,10 @@ namespace Test.Dialogs
                             }
                         }
                     }
-
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Text("count : "+ count), cancellationToken);
-
                     
                     if (count == 0) //DB에 기록이 없을 때, tutorial Async 실행시켜야 함
                     { 
                         connection.Close();
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Text("CheckUserDialog - Tutorial을 진행합니다."), cancellationToken);
                         ModeManager.mode = (int)ModeManager.Modes.Tutorial;
                         return await stepContext.BeginDialogAsync(nameof(TutorialDialog), null, cancellationToken);
 
@@ -134,6 +130,7 @@ namespace Test.Dialogs
                             {
                                 while (reader.Read())
                                 {
+                                    UserInfoManager.keyNum = (int)reader.GetValue(0);
                                     UserInfoManager.UserName = (string)reader.GetValue(1);
                                     UserInfoManager.PreWeight = (int)reader.GetValue(2);
                                     UserInfoManager.PostWeight = (int)reader.GetValue(3);
@@ -147,7 +144,6 @@ namespace Test.Dialogs
                         }
 
                         connection.Close();
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Text("CheckUserDialog - ShowFunctions을 진행합니다."), cancellationToken);
                         ModeManager.mode = (int)ModeManager.Modes.ShowFunction;
                         return await stepContext.BeginDialogAsync(nameof(ShowFunctionsDialog), null, cancellationToken);
                     }
@@ -156,15 +152,15 @@ namespace Test.Dialogs
             }
             catch (SqlException e)
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("문제가 있습니다."), cancellationToken);
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text("DB 연결에 문제가 있습니다."), cancellationToken);
                 Console.WriteLine(e.ToString());
                 return await stepContext.NextAsync();
             }
+
         }
 
         private static async Task<DialogTurnResult> EndCheckUserAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {//1
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("CheckUserDialog 종료합니다."), cancellationToken);
             return await stepContext.EndDialogAsync();
         }
     }

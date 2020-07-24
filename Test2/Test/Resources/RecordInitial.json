@@ -1,0 +1,55 @@
+﻿{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "backgroundImage": {
+    "url": "https://img.freepik.com/free-vector/woman-doing-squats-exercises-with-dumbbells-overweight-girl-training-workout-weight-loss-concept-modern-house-bedroom-interior-flat-full-length-horizontal_48369-27034.jpg?size=626&ext=jpg"
+  },
+  "body": [
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "RichTextBlock",
+          "inlines": [
+            {
+              "type": "TextRun",
+              "text": "\n\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "RichTextBlock",
+          "horizontalAlignment": "Center",
+          "inlines": [
+            {
+              "type": "TextRun",
+              "text": "🏃 운동 기록하기 ⌚",
+              "size": "ExtraLarge",
+              "weight": "Bolder"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "RichTextBlock",
+          "inlines": [
+            {
+              "type": "TextRun",
+              "text": "\n\n"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

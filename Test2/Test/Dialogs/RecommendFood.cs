@@ -19,46 +19,50 @@ namespace Test.Dialogs
 {
     public class RecommendFood : ComponentDialog
     {
-        public string foodName = "고구마";
-        public string ImageUrl = "url";
-        public string Outline = "outline";
+        private string foodName;
+        private string ImageUrl;
+        private string Outline;
 
 
         public RecommendFood() : base(nameof(RecommendFood))
         {
-            AddDialog(new TextPrompt(nameof(TextPrompt)));
-            AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
-            AddDialog(new DateTimePrompt(nameof(DateTimePrompt)));
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] {
-                SelectAreaAsync, //어떤 부위
-                RecommendResultAsync, //추천
-                ShowFoodCardAsync // 음식정보 카드 
+                InitialAsync, //카드 보여주는 부분
+                RecommendResultAsync, // 음식정보 카드 
+                EndAsync //끝내기
             }));
 
             InitialDialogId = nameof(WaterfallDialog);
         }
 
-       
+        private async Task<DialogTurnResult> InitialAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            //변수 초기화
+            foodName = "";
+            ImageUrl = "";
+            Outline = "";
 
-        private async Task<DialogTurnResult> SelectAreaAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        { //-1
+            //처음 카드 보여주기
+            var attachments = new List<Attachment>();
+            var reply = MessageFactory.Attachment(attachments);
 
-            var promptOptions = new PromptOptions
-            {
-                Prompt = MessageFactory.Text($"음식 추천을 시작할까요?"),
-                Choices = ChoiceFactory.ToChoices(new List<string> { "시작하기" })
-            };
+            reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+            reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("FoodInitial.json"));
+            await stepContext.Context.SendActivityAsync(reply, cancellationToken);
 
-            return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
+            Thread.Sleep(1500);
+
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text("랜덤으로 음식을 추천해드려요!"), cancellationToken);
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text("추천해 드리는 음식은..."), cancellationToken);
+
+            Thread.Sleep(1500);
+
+            return await stepContext.NextAsync();
+
         }
-
-        private async Task<DialogTurnResult> RecommendResultAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+            private async Task<DialogTurnResult> RecommendResultAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         { //-1
-            var promptOptions = new PromptOptions { Prompt = MessageFactory.Text($"추천을 시작합니다.") }; ;
-            String[] str = { };
-            List<String> list = new List<String>();
-
             try
             {
                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
@@ -67,13 +71,14 @@ namespace Test.Dialogs
 
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
+                    Random r = new Random();
+                    int randomnumber = r.Next(1, 28);
+
                     connection.Open();
                     StringBuilder sb = new StringBuilder();
-                    sb.Append("SELECT * ");
-                    sb.Append("FROM [dbo].[Food] pc ");
-
-                   
+                    sb.Append("SELECT * FROM [dbo].[Food] WHERE Number=" + randomnumber);
                     String sql = sb.ToString();
+
 
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
@@ -81,118 +86,42 @@ namespace Test.Dialogs
                         {
                             while (reader.Read())
                             {
-
-                                list.Add(reader.GetString(0));
-                                //await turnContext.SendActivityAsync(reader.GetString(0), reader.GetString(1));
+                                foodName = (string)reader.GetValue(1);
+                                ImageUrl = (string)reader.GetValue(2);
+                                Outline = (string)reader.GetValue(3);
                             }
                         }
                     }
-                  /*
-                    foreach (var item in list)
-                    {
-                        promptOptions = new PromptOptions { Prompt = MessageFactory.Text(item) };
-                        return await stepContext.PromptAsync(nameof(TextPrompt), promptOptions, cancellationToken);
-                    }
-                 */
                 }
             }
             catch (SqlException e)
             {
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text($"예외 발생"));
-               
+
             }
-            
-            Random food = new Random();
-            int randomIndex = 0;
-            str = list.ToArray();
-          //  String [] str = { "고구마", "고기 구이", "블루베리" };
-            randomIndex = food.Next(str.Length);
-            foodName = (string)str[randomIndex];
 
-           await stepContext.Context.SendActivityAsync(MessageFactory.Text($"오늘의 추천음식은 " + (string)str[randomIndex]+" 입니다."));
-          
-           return await stepContext.NextAsync();
-        }
-
-
-        private async Task<DialogTurnResult> ShowFoodCardAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            string status = "ok";
-
-            await stepContext.Context.SendActivityAsync(status);
-
-            // Cards are sent as Attachments in the Bot Framework.
-            // So we need to create a list of attachments for the reply activity.
             var attachments = new List<Attachment>();
-
-            // Reply to the activity we received with an activity.
             var reply = MessageFactory.Attachment(attachments);
 
-            // Display an Adaptive Card
-            reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-
-
-            try
-            {
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-
-                builder.ConnectionString = "Server=tcp:team02-server.database.windows.net,1433;Initial Catalog=healtheeDB;Persist Security Info=False;User ID=chatbot02;Password=chatee17!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-                {
-                    connection.Open();
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("SELECT * ");
-                    sb.Append("FROM [dbo].[Food] pc ");
-                    sb.Append("WHERE [Name]='"+ foodName+"'");
-                    String sql = sb.ToString();
-
-                    using (SqlCommand command = new SqlCommand(sql, connection))
-                    {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-
-                                ImageUrl = reader.GetString(2);
-                                Outline = reader.GetString(3);
-                               // await stepContext.Context.SendActivityAsync(MessageFactory.Text(reader.GetString(1)));
-
-                               // await stepContext.Context.SendActivityAsync(MessageFactory.Text(foodName));
-
-                            }
-                        }
-                    }
-                    connection.Close();
-
-                }
-            }
-            catch (SqlException e)
-            {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"음식카드 /예외 발생"));
-
-            }
-
-            //await stepContext.Context.SendActivityAsync(MessageFactory.Text(ImageUrl));
             var heroCard = new HeroCard
             {
-                Title = "#### 오늘의 추천 음식: "+ foodName,
-                Text = Outline,
                 Images = new List<CardImage> { new CardImage(ImageUrl) },
-                
+                Title = "#### 오늘의 추천 음식: " + foodName,
+                Text = Outline,
+
             };
             reply.Attachments.Add(heroCard.ToAttachment());
-
-
-            // Send the card(s) to the user as an attachment to the activity
             await stepContext.Context.SendActivityAsync(reply, cancellationToken);
 
-            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
+            ModeManager.mode = (int)ModeManager.Modes.ShowFunction;
+            Thread.Sleep(3000);
+            return await stepContext.BeginDialogAsync(nameof(ShowFunctionsDialog), null, cancellationToken);
 
-            return await stepContext.EndDialogAsync();
         }
 
-
-
+        private async Task<DialogTurnResult> EndAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            return await stepContext.EndDialogAsync();
+        }
     }
 }

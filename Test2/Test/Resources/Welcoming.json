@@ -3,13 +3,12 @@
   "type": "AdaptiveCard",
   "version": "1.2",
   "backgroundImage": {
-    "url": "https://img.freepik.com/free-photo/fitness-man-exercising-with-stretching-band-muscular-sports-man-exercising-with-elastic-rubber-band-guy-working-out-with-rubber-band-fit-fitness-exercise-workout-healthy-lifestyle_136403-4823.jpg?size=626&ext=jpg"
+    "url": ""
   },
   "body": [
     {
       "type": "TextBlock",
-      "text": "안녕하세요!",
-      "color": "Light",
+      "text": "안녕하세요!👋",
       "size": "ExtraLarge",
       "weight": "Bolder"
     },
@@ -35,21 +34,19 @@
       "inlines": [
         {
           "type": "TextRun",
-          "text": "여러분과 함께 홈트레이닝할",
-          "size": "Large",
-          "color": "light"
+          "text": "여러분과 함께 홈트레이닝할💪",
+          "size": "Large"
         },
         {
           "type": "TextRun",
           "text": "\nHealthee",
           "size": "Large",
-          "color": "light"
+          "weight": "bolder"
         },
         {
           "type": "TextRun",
           "text": "입니다!",
-          "size": "Large",
-          "color": "light"
+          "size": "Large"
         }
       ]
     }

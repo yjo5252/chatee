@@ -1,0 +1,55 @@
+﻿{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "backgroundImage": {
+    "url": "https://imgix.bustle.com/uploads/shutterstock/2020/3/11/5db1bc6b-4d71-4000-951f-eb147257fc21-shutterstock-1667721061.jpg"
+  },
+  "body": [
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "RichTextBlock",
+          "inlines": [
+            {
+              "type": "TextRun",
+              "text": "\n\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "RichTextBlock",
+          "horizontalAlignment": "Center",
+          "inlines": [
+            {
+              "type": "TextRun",
+              "text": "💪 운동 추천받기 🏃",
+              "size": "ExtraLarge",
+              "weight": "Bolder"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "RichTextBlock",
+          "inlines": [
+            {
+              "type": "TextRun",
+              "text": "\n\n"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -19,33 +19,41 @@ namespace Test5_sql.Bots
     {
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            var videoCard = new VideoCard
+            var receiptCard = new ReceiptCard
             {
-                Title = "Big Buck Bunny",
-                Subtitle = "by the Blender Institute",
-                Text = "Big Buck Bunny (code-named Peach) is a short computer-animated comedy film by the Blender Institute," +
-                       " part of the Blender Foundation. Like the foundation's previous film Elephants Dream," +
-                       " the film was made using Blender, a free software application for animation made by the same foundation." +
-                       " It was released as an open-source film under Creative Commons License Attribution 3.0.",
-                Media = new List<MediaUrl>
+                Title = "운동 기록",
+                Facts = new List<Fact> { new Fact("Order Number", "1234"), new Fact("Payment Method", "VISA 5555-****") },
+                Items = new List<ReceiptItem>
                 {
-                    new MediaUrl()
-                    {
-                        Url = "https://www.youtube.com/watch?v=k9BoDgN6Jek&t=11s",
-                    },
-                },
-                Buttons = new List<CardAction>
-                {
-                    new CardAction()
-                    {
-                        Title = "Learn More",
-                        Type = ActionTypes.OpenUrl,
-                        Value = "https://peach.blender.org/",
-                    },
-                },
+                    new ReceiptItem(
+                        "Data Transfer",
+                        price: "$ 38.45",
+                        quantity: "368",
+                        image: new CardImage(url: "")),
+                    new ReceiptItem(
+                        "App Service",
+                        price: "$ 45.00",
+                        quantity: "720",
+                        image: new CardImage(url: "https://github.com/amido/azure-vector-icons/raw/master/renders/cloud-service.png")),
+                     new ReceiptItem(
+                        "App Service",
+                        price: "$ 45.00",
+                        quantity: "720",
+                        image: new CardImage(url: "https://github.com/amido/azure-vector-icons/raw/master/renders/cloud-service.png")),
+                      new ReceiptItem(
+                        "Shoulder",
+                        price: "10",
+                        image: new CardImage(url: "https://manofmany.com/wp-content/uploads/2019/03/10-Best-Shoulder-Exercises-for-Men-Man-lifting-weights-shoulder-muscle-1280x720.jpg")),
+                       new ReceiptItem(
+                        title: "App Service",
+                        subtitle: "HI",
+                        price: "$ 45.00",
+                        quantity: "720",
+                        image: new CardImage(url: "https://github.com/amido/azure-vector-icons/raw/master/renders/cloud-service.png")),
+                }
             };
 
-            var reply = MessageFactory.Attachment(videoCard.ToAttachment());
+            var reply = MessageFactory.Attachment(receiptCard.ToAttachment());
             await turnContext.SendActivityAsync(reply, cancellationToken);
 
             await turnContext.SendActivityAsync(MessageFactory.Text("hi"), cancellationToken);
