@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Logging;
-using Test.Dialogs.Test.Dialogs;
 
 namespace Test.Dialogs
 {
     public class MainDialog : ComponentDialog
     {
-        private readonly UserState _userState;
-        public static int tutorial = 0;
+        private readonly UserState _userState; //수정?
+
+        //실행중인 Dialog가 있는지 확인하는 용도. 
         public static int is_running_dialog = 0;
 
 
@@ -18,14 +18,15 @@ namespace Test.Dialogs
         {
             _userState = userState;
 
-            AddDialog(new ShowFunctionsDialog());
-            AddDialog(new TutorialDialog());
-            AddDialog(new RecommendExerciseDialog());
-            AddDialog(new RecordDialog());
-            AddDialog(new RecommendFood());
-            AddDialog(new RecommendEquipment());
-            AddDialog(new SeeMyCharacterDialog());
-            AddDialog(new SeeMyRecord());
+            AddDialog(new CheckUserDialog());       //사용자 확인(초기)
+            AddDialog(new ShowFunctionsDialog());   //기능 카드 보여주기
+            AddDialog(new TutorialDialog());        //튜토리얼
+            AddDialog(new RecommendExerciseDialog());   //운동 추천
+            AddDialog(new RecordDialog());          //운동 기록
+            AddDialog(new RecommendFood());         //음식 추천
+            AddDialog(new RecommendEquipment());    //기구 추천
+            AddDialog(new SeeMyCharacterDialog());  //내 캐릭터 상태 보기
+            AddDialog(new SeeMyRecord());           //내 기록 보기
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] {
                 InitialStepAsync,
@@ -37,74 +38,59 @@ namespace Test.Dialogs
 
         private async Task<DialogTurnResult> InitialStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            //Dialog running 중인 상태를 1로 바꿉니다.
             is_running_dialog = 1;
 
-            var msg = $"MainDialog.cs InitialStep Async";
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text("MainDialog.cs InitialStep Async"), cancellationToken);
 
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
-
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text(is_running_dialog.ToString()), cancellationToken);
-
-            if (ModeManager.mode == 0)
+            if (ModeManager.mode == (int)ModeManager.Modes.ShowFunction) //기능 보여주기
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 0입니다."), cancellationToken);
                 return await stepContext.BeginDialogAsync(nameof(ShowFunctionsDialog), null, cancellationToken);
             }
-            else if (ModeManager.mode == 1)
+            else if (ModeManager.mode == (int)ModeManager.Modes.Tutorial) //튜토리얼
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 1입니다."), cancellationToken);
                 return await stepContext.BeginDialogAsync(nameof(TutorialDialog), null, cancellationToken);
-
             }
-            else if (ModeManager.mode == 2)
+            else if (ModeManager.mode == (int)ModeManager.Modes.RecommendExercise) //운동 추천
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 2입니다."), cancellationToken);
                 return await stepContext.BeginDialogAsync(nameof(RecommendExerciseDialog), null, cancellationToken);
-
             }
-            else if (ModeManager.mode == 3) {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 3입니다."), cancellationToken);
+            else if (ModeManager.mode == (int)ModeManager.Modes.Record) //운동 기록
+            {
                 return await stepContext.BeginDialogAsync(nameof(RecordDialog), null, cancellationToken);
             }
-            else if (ModeManager.mode == 4) {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 4입니다."), cancellationToken);
+            else if (ModeManager.mode == (int)ModeManager.Modes.RecommendFood) //음식 추천
+            {
                 return await stepContext.BeginDialogAsync(nameof(RecommendFood), null, cancellationToken);
             }
-            else if (ModeManager.mode == 5) {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 5입니다."), cancellationToken);
+            else if (ModeManager.mode == (int)ModeManager.Modes.RecommendEquipment) //기구 추천
+            {
                 return await stepContext.BeginDialogAsync(nameof(RecommendEquipment), null, cancellationToken);
             }
-            else if (ModeManager.mode == 6) {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 6입니다."), cancellationToken);
+            else if (ModeManager.mode == (int)ModeManager.Modes.CheckCharacterState) //내 캐릭터 확인
+            {
                 return await stepContext.BeginDialogAsync(nameof(SeeMyCharacterDialog), null, cancellationToken);
             }
-            else
+            else if (ModeManager.mode == (int)ModeManager.Modes.SeeMyRecord) //내 기록
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("mode가 현재 7입니다."), cancellationToken);
                 return await stepContext.BeginDialogAsync(nameof(SeeMyRecord), null, cancellationToken);
+            }
+            else { //처음에 사용자 확인
+                return await stepContext.BeginDialogAsync(nameof(CheckUserDialog), null, cancellationToken);
             }
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var userInfo = (UserProfile)stepContext.Result;
-
             /*
-            string status = "튜토리얼이 끝났습니다 "
-                + (userInfo.UserName)
-                + "님!";
-
-            await stepContext.Context.SendActivityAsync(status);
-
-            tutorial = 1;
-
+            var userInfo = (UserProfile)stepContext.Result;
             var accessor = _userState.CreateProperty<UserProfile>(nameof(UserProfile));
             await accessor.SetAsync(stepContext.Context, userInfo, cancellationToken);
             */
-            is_running_dialog = 0;
-            var msg = $"MainDialog.cs finalStepAsync";
+            
+            is_running_dialog = 0; //다이얼로그 실행 중인 것이 없다.
 
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text("MainDialog.cs finalStepAsync"), cancellationToken);
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }
     }

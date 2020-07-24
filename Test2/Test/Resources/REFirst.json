@@ -1,0 +1,31 @@
+﻿{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "RichTextBlock",
+          "inlines": [
+            {
+              "type": "TextRun",
+              "text": "맞춤 운동을 추천해 드릴까요?",
+              "size": "Medium"
+            }
+          ]
+        },
+        {
+          "type": "RichTextBlock",
+          "inlines": [
+            {
+              "type": "TextRun",
+              "text": "💡 맞춤운동이란 미리 설정하신 운동 부위와 숙련도에 \n맞는 운동입니다."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

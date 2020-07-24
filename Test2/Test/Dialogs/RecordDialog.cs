@@ -153,6 +153,7 @@ namespace Test.Dialogs
         {
             //결과 보여줘야 함
 
+            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
             return await stepContext.EndDialogAsync();
 
         }

@@ -89,7 +89,7 @@ namespace Test.Dialogs
             heroCard = new HeroCard
             {
                 Title = "#### 5. 내 캐릭터 보기",
-                Text = "현재 캐릭터의 상태를 화인하세요!",
+                Text = "현재 캐릭터의 상태를 확인하세요!",
                 Images = new List<CardImage> { new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg") },
                 Buttons = new List<CardAction> { new CardAction(ActionTypes.ImBack, "내 캐릭터 보기", value: "캐릭터 볼래") },
             };
@@ -120,6 +120,7 @@ namespace Test.Dialogs
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
 
+            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
             return await stepContext.EndDialogAsync();
 
         }

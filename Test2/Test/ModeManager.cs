@@ -11,7 +11,8 @@ namespace Test
 
         public enum Modes
         {
-            None = 0,
+            InitialCheckUser = -1,
+            ShowFunction = 0,
             Tutorial = 1,
             RecommendExercise = 2,
             Record = 3,

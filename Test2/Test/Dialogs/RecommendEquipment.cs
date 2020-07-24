@@ -26,10 +26,9 @@ namespace Test.Dialogs
         {
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
-            AddDialog(new DateTimePrompt(nameof(DateTimePrompt)));
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] {
-                SelectAreaAsync, //어떤 부위
+                SelectAreaAsync, //어떤 부위인지 물어보기
                 RecommendResultAsync //추천
             }));
 
@@ -51,22 +50,17 @@ namespace Test.Dialogs
 
         private async Task<DialogTurnResult> RecommendResultAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         { //-1
+            var Area = ((FoundChoice)stepContext.Result).Value.ToString(); //선택했던 결과
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text(Area)); 
+
             String[] str = { };
             List<String> list = new List<String>();
-
-            var choice = (FoundChoice)stepContext.Result;
-            var Area = choice.Value.ToString();
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text(Area));
-            string status = "ok";
-
-            await stepContext.Context.SendActivityAsync(status);
 
             // hero card 생성
             var attachments = new List<Attachment>();
             var reply = MessageFactory.Attachment(attachments);
             reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
             
-
 
             try
             {
@@ -152,7 +146,7 @@ namespace Test.Dialogs
             // Send the card(s) to the user as an attachment to the activity
             await stepContext.Context.SendActivityAsync(reply, cancellationToken);
 
-
+            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
             return await stepContext.EndDialogAsync();
         }
 

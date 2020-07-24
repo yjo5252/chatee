@@ -24,13 +24,16 @@ namespace Test.Bots
             ITurnContext<IConversationUpdateActivity> turnContext,
             CancellationToken cancellationToken)
         {
-
             foreach (var member in membersAdded)
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    await turnContext.SendActivityAsync(MessageFactory.Text($"안녕하세요! Healthee입니다."), cancellationToken);
-                    MainDialog.tutorial = 0;
+                    //처음 변수 설정
+                    ModeManager.mode = (int)ModeManager.Modes.InitialCheckUser; //사용자 확인 모드로 설정
+                    MainDialog.is_running_dialog = 1; //처음에 initial dialog 실행해야하기 때문에
+
+                    //사용자 환영 메세지 보내기
+                    await turnContext.SendActivityAsync(MessageFactory.Text($"안녕하세요! Healthee입니다. 시작하려면 아무말이나 입력해주세요."), cancellationToken);
                     await DisplayWelcomingcard(turnContext, cancellationToken);
                     //await DisplayOptionsAsync(turnContext, cancellationToken);
                 }

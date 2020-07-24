@@ -61,6 +61,8 @@ namespace Test.Dialogs
         private async Task<DialogTurnResult> EndAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         { //-1
 
+            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
+
             //끝내기
             return await stepContext.EndDialogAsync();
         }

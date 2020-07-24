@@ -39,16 +39,21 @@ namespace Test.Dialogs
 
         private async Task<DialogTurnResult>AskUserAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("AskUserAsync 실행합니다."), cancellationToken);
+            //var userProfile = (UserProfile)stepContext.Values[UserInfo];
+            //var name = userProfile.UserName;
 
-            /*
-            var userProfile = (UserProfile)stepContext.Values[UserInfo];
-            userProfile.UserName = (string)stepContext.Result;
-            */
+            //await stepContext.Context.SendActivityAsync(MessageFactory.Text(name), cancellationToken);
+
+            var attachments = new List<Attachment>();
+            var reply = MessageFactory.Attachment(attachments);
+
+            reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+            reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("REFirst.json"));
+            await stepContext.Context.SendActivityAsync(reply, cancellationToken);
 
             var promptOptions = new PromptOptions
             {
-                Prompt = MessageFactory.Text($"맞춤 운동을 추천해드릴까요?"),
+                Prompt = MessageFactory.Text($""),
                 Choices = ChoiceFactory.ToChoices(new List<string> { "응", "아니" })
             };
 
@@ -136,6 +141,8 @@ namespace Test.Dialogs
             
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
+
+            ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
 
             return await stepContext.EndDialogAsync();
 
