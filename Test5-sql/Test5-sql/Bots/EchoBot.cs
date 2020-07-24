@@ -19,43 +19,34 @@ namespace Test5_sql.Bots
     {
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-
-            try
+            var videoCard = new VideoCard
             {
-                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-
-                builder.ConnectionString = "Server=tcp:team02-server.database.windows.net,1433;Initial Catalog=healtheeDB;Persist Security Info=False;User ID=chatbot02;Password=chatee17!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-
-                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                Title = "Big Buck Bunny",
+                Subtitle = "by the Blender Institute",
+                Text = "Big Buck Bunny (code-named Peach) is a short computer-animated comedy film by the Blender Institute," +
+                       " part of the Blender Foundation. Like the foundation's previous film Elephants Dream," +
+                       " the film was made using Blender, a free software application for animation made by the same foundation." +
+                       " It was released as an open-source film under Creative Commons License Attribution 3.0.",
+                Media = new List<MediaUrl>
                 {
-                    connection.Open();
-                    await turnContext.SendActivityAsync(MessageFactory.Text("connected"), cancellationToken);
-
-                    string query = "INSERT INTO [dbo].[Persons] VALUES ( 'hiii', 'quququ', 30);";
-
-                    SqlCommand command = new SqlCommand(query, connection);
-                    command.ExecuteNonQuery();
-                    /*
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    new MediaUrl()
                     {
+                        Url = "https://www.youtube.com/watch?v=k9BoDgN6Jek&t=11s",
+                    },
+                },
+                Buttons = new List<CardAction>
+                {
+                    new CardAction()
+                    {
+                        Title = "Learn More",
+                        Type = ActionTypes.OpenUrl,
+                        Value = "https://peach.blender.org/",
+                    },
+                },
+            };
 
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                await turnContext.SendActivityAsync(MessageFactory.Text("ok"), cancellationToken);
-                                Console.WriteLine(reader.GetString(0));
-                                await turnContext.SendActivityAsync(MessageFactory.Text(reader.GetString(0)), cancellationToken);
-                            }
-                        }
-
-                    }*/
-                }
-            }
-            catch (SqlException e)
-            {
-                Console.WriteLine(e.ToString());
-            }
+            var reply = MessageFactory.Attachment(videoCard.ToAttachment());
+            await turnContext.SendActivityAsync(reply, cancellationToken);
 
             await turnContext.SendActivityAsync(MessageFactory.Text("hi"), cancellationToken);
         }

@@ -182,14 +182,22 @@ namespace Test.Dialogs
             var userProfile = (UserProfile)stepContext.Values[UserInfo];
             /*
             userProfile.CompaniesToReview = stepContext.Result as List<string> ?? new List<string>();
-
             */
-
             var msg = $"{userProfile.UserName}님!\nHealthee와 {userProfile.Area}를 위해 {userProfile.Category} 운동을 열심히 해봐요!\n"
                         + $"{ userProfile.PreWeight}kg에서 { userProfile.PostWeight}kg으로 체중 감량이 이루어질거에요!\n"
                         + $"{ userProfile.UserName}님의 캐릭터 { userProfile.AvatarName} 변화도 눈여겨봐주세요!";
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
+
+            UserInfoManager.UserName = userProfile.UserName;
+            UserInfoManager.PreWeight = userProfile.PreWeight;
+            UserInfoManager.PostWeight = userProfile.PostWeight;
+            UserInfoManager.SkillLevel = userProfile.SkillLevel;
+            UserInfoManager.Area = userProfile.Area;
+            UserInfoManager.Category = userProfile.Category;
+            UserInfoManager.ConversationCount = 0;
+            UserInfoManager.AvatarName = userProfile.AvatarName;
+            UserInfoManager.AvatarState = userProfile.AvatarState;
 
             try
             {
@@ -209,6 +217,8 @@ namespace Test.Dialogs
 
                     command = new SqlCommand(query2, connection);
                     command.ExecuteNonQuery();
+
+                    connection.Close();
                 }
             }
             catch (SqlException e)

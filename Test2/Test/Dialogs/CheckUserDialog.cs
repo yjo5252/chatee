@@ -15,6 +15,8 @@ namespace Test.Dialogs
     public class CheckUserDialog : ComponentDialog
     {
         public static int PrimaryNumber = 0;
+        // Define value names for values tracked inside the dialogs.
+        private const string UserInfo = "value-userInfo";
 
         public CheckUserDialog() : base(nameof(CheckUserDialog))
         {
@@ -109,24 +111,47 @@ namespace Test.Dialogs
                         }
                     }
 
-                    connection.Close();
-
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text("count : "+ count), cancellationToken);
 
                     
                     if (count == 0) //DB에 기록이 없을 때, tutorial Async 실행시켜야 함
-                    {
+                    { 
+                        connection.Close();
                         await stepContext.Context.SendActivityAsync(MessageFactory.Text("CheckUserDialog - Tutorial을 진행합니다."), cancellationToken);
                         ModeManager.mode = (int)ModeManager.Modes.Tutorial;
                         return await stepContext.BeginDialogAsync(nameof(TutorialDialog), null, cancellationToken);
 
                     }
-                    else //DB에 기록이 없으면 기능 보여주기로 넘어감
+                    else //DB에 기록이 있으면 기능 보여주기로 넘어감
                     {
+                        sb = new StringBuilder();
+                        sb.Append("SELECT * FROM [dbo].[UserInfo] WHERE UserName='" + username + "'");
+                        sql = sb.ToString();
+
+                        using (SqlCommand command = new SqlCommand(sql, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    UserInfoManager.UserName = (string)reader.GetValue(1);
+                                    UserInfoManager.PreWeight = (int)reader.GetValue(2);
+                                    UserInfoManager.PostWeight = (int)reader.GetValue(3);
+                                    UserInfoManager.SkillLevel = (string)reader.GetValue(4);
+                                    UserInfoManager.Area = (string)reader.GetValue(5);
+                                    UserInfoManager.Category = (string)reader.GetValue(6);
+                                    UserInfoManager.ConversationCount = (int)reader.GetValue(7);
+                                    break;
+                                }
+                            }
+                        }
+
+                        connection.Close();
                         await stepContext.Context.SendActivityAsync(MessageFactory.Text("CheckUserDialog - ShowFunctions을 진행합니다."), cancellationToken);
                         ModeManager.mode = (int)ModeManager.Modes.ShowFunction;
                         return await stepContext.BeginDialogAsync(nameof(ShowFunctionsDialog), null, cancellationToken);
                     }
+
                 }
             }
             catch (SqlException e)

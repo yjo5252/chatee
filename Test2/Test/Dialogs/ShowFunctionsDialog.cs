@@ -47,8 +47,6 @@ namespace Test.Dialogs
             // Display an Adaptive Card
             reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
 
-            int check = 0;
-
 
             var heroCard = new HeroCard
             {
