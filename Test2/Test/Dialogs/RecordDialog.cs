@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Drawing;
+using System.Runtime.InteropServices.ComTypes;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
@@ -20,10 +24,11 @@ namespace Test.Dialogs
             AddDialog(new NumberPrompt<int>(nameof(NumberPrompt<int>), TimePromptValidatorAsync));
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] {
-                AskUserWhatExerciseAsync,
+                //AskUserWhatExerciseAsync,
                 CheckExerciseAsync,
-                AskExerciseMinuteAsync,
                 SelectAreaAsync,
+                SelectExerciseAsync,
+                AskExerciseMinuteAsync,
                 SummaryAsync
 
             }));
@@ -31,10 +36,10 @@ namespace Test.Dialogs
         }
 
 
-        private async Task<DialogTurnResult> AskUserWhatExerciseAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> AskUserWhatExerciseAsync (WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var promptOptions = new PromptOptions { 
-                Prompt = MessageFactory.Text("오늘은 어떤 운동을 하셨나요?") ,
+                Prompt = MessageFactory.Text("오늘 운동을 하셨나요?") ,
                 RetryPrompt = MessageFactory.Text("응이라고 입력해주세요.")
             };
 
@@ -45,9 +50,90 @@ namespace Test.Dialogs
         private async Task<DialogTurnResult> CheckExerciseAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         { //-1
 
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text("체크할 부분입니다."), cancellationToken);
+           
+            var promptOptions = new PromptOptions
+            {
+                Prompt = MessageFactory.Text($"구체적으로 기록을 남겨볼까요?"),
+                Choices = ChoiceFactory.ToChoices(new List<string> { "기록할래" })
+            };
 
-            return await stepContext.EndDialogAsync();
+            return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
+        }
+
+       
+        private async Task<DialogTurnResult> SelectAreaAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            var promptOptions = new PromptOptions
+            {
+                Prompt = MessageFactory.Text($"어디를 운동하셨나요??"),
+                Choices = ChoiceFactory.ToChoices(new List<string> { "복근","가슴", "팔", "다리" ,"어깨 등","힙" })
+            };
+
+            return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> SelectExerciseAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            String[] str = { };
+            List<String> list = new List<String>();
+            var choice = (FoundChoice)stepContext.Result;
+            var areaName = choice.Value.ToString();
+            
+
+            try
+            {
+                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+
+                builder.ConnectionString = "Server=tcp:team02-server.database.windows.net,1433;Initial Catalog=healtheeDB;Persist Security Info=False;User ID=chatbot02;Password=chatee17!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+
+                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                {                    
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("SELECT * ");
+                    sb.Append("FROM [dbo].[Sports]  ");
+                    sb.Append("WHERE [Area] = "+ areaName );
+                    
+                    String sql = sb.ToString();
+                    connection.Open();
+                    
+
+                    // 수정 바람 #2 (4:32am)
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                await stepContext.Context.SendActivityAsync(MessageFactory.Text(reader.GetString(1)));
+                                list.Add(reader.GetString(1));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException e)
+            {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"운동 이름 조회 /예외 발생"));
+
+            }
+            str = list.ToArray();
+            // 수정 바람.#1
+            foreach (var item in list)
+            {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"운동: " + (string)item ));
+
+            }
+            await stepContext.Context.SendActivityAsync(str.ToString());
+
+            //{ "복근", "가슴", "팔", "다리", "어깨 등", "힙" })
+
+            var promptOptions = new PromptOptions
+            {
+                Prompt = MessageFactory.Text($"어떤 운동을 하셨나요??"),
+                Choices = ChoiceFactory.ToChoices(new List<string> { str.ToString()})
+            };
+
+            return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
         }
 
         private async Task<DialogTurnResult> AskExerciseMinuteAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -61,17 +147,6 @@ namespace Test.Dialogs
             };
 
             return await stepContext.PromptAsync(nameof(NumberPrompt<int>), promptOptions, cancellationToken);
-        }
-
-        private async Task<DialogTurnResult> SelectAreaAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            var promptOptions = new PromptOptions
-            {
-                Prompt = MessageFactory.Text($"어디를 운동하셨나요??"),
-                Choices = ChoiceFactory.ToChoices(new List<string> { "복근","가슴", "팔", "다리" ,"어깨 등","힙" })
-            };
-
-            return await stepContext.PromptAsync(nameof(ChoicePrompt), promptOptions, cancellationToken);
         }
 
         private async Task<DialogTurnResult> SummaryAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
