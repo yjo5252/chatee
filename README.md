@@ -318,9 +318,33 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 `appsettings.json`에서는 위와 같이 필요한 key와 value를 설정합니다.
 
 
+### 주의 사항
 
+#### 모듈
 
+추가적으로 모듈을 설치할 필요는 없습니다. 현재 Healthee에서 사용하고 있는 NuGet Package는 다음과 같습니다.
 
+* AdaptiveCards
+* AutoMapper
+* EntityFramework
+* Microsoft.AspNetCore.Mvc.NewtonsoftJson
+* Microsoft.Bot.Builder
+* Microsoft.Bot.Builder.AI.QnA
+* Microsoft.Bot.Builder.Dialogs
+* Microsoft.Bot.Builder.Integration.AspNet.Core
+* Microsoft.Recognizers.Text
+* Microsoft.Recognizers.Text.DateTime
+* Microsoft.Recognizers.Text.Number
+
+#### 데이터베이스 관련(방화벽)
+
+![37](https://user-images.githubusercontent.com/41438361/88443331-d25a6100-ce52-11ea-967c-0156d9faf43c.JPG)
+
+Azue sql server 설정을 다음과 같이 해놓았지만 항상 새로운 IP에서 접속하기 위해서는 해당 IP주소를 portal을 이용해서 추가해 주어야 했습니다.
+
+![38](https://user-images.githubusercontent.com/41438361/88443389-18afc000-ce53-11ea-9183-fd2077a7355d.JPG)
+
+만약 Chatbot을 구동중 DB 연결 오류가 계속 뜰 시에는 Azure Portal > 해당 sql server > 보안 > 방화벽 및 가상 네트워크에서 위에 있는 클라이언트 IP 주소를 시작 IP,  종료 IP에 넣어주고 추가한다음, 위에 있는 저장 버튼을 누르고 다시 접속해주세요. (규칙이름은 아무 값이나 넣어도 됩니다.)
 
 
 
