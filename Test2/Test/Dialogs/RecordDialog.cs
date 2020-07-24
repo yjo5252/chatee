@@ -121,10 +121,6 @@ namespace Test.Dialogs
 
                                 sportName = reader.GetString(1);
                                 list.Add("\""+sportName+"\"");
-                                ///Outline = reader.GetString(3);
-                                // await stepContext.Context.SendActivityAsync(MessageFactory.Text(reader.GetString(1)));
-
-                                //await stepContext.Context.SendActivityAsync(MessageFactory.Text(sportName));
 
                             }
                         }
@@ -147,39 +143,15 @@ namespace Test.Dialogs
             string options = "{ ";
             string joined = string.Join(", ", list);
 
-            /*
-            foreach (string element in list)
-            {
-
-                joined = string.Join(", ", element);
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("element:"+element));
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("joined string:"+joined));
-            }
-            */
+          
             await stepContext.Context.SendActivityAsync(MessageFactory.Text("joined string:" + joined));
             options = options+joined+ " }";
+            options.ToString();
             await stepContext.Context.SendActivityAsync(MessageFactory.Text("options:"+options));
 
 
             sportName = (string)str[randomIndex];
-            //await stepContext.Context.SendActivityAsync(MessageFactory.Text("string[]"+str)); //string[]System.String[]
-            //await stepContext.Context.SendActivityAsync(MessageFactory.Text("list<String>"+list)); //list<String>System.Collections.Generic.List`1[System.String]
-            //await stepContext.Context.SendActivityAsync(MessageFactory.Text(options));
-
-
-
-
-            //await stepContext.Context.SendActivityAsync(MessageFactory.Text($"그에 해당하는 운동이라면 이건가요? " + randomIndex ));
-
-
-            // 수정 바람.#1
-            /*  foreach (var item in list)
-              {
-                  await stepContext.Context.SendActivityAsync(MessageFactory.Text($"운동: " + (string)item ));
-
-              }
-              await stepContext.Context.SendActivityAsync(str.ToString());
-            */
+           
             var promptOptions = new PromptOptions
             {
                 Prompt = MessageFactory.Text($"어떤 운동을 하셨나요??"),
