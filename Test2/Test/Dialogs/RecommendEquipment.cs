@@ -21,6 +21,7 @@ namespace Test.Dialogs
         public string EquipmentName = "덤벨";
         public string Videolink = "url";
         public string Salelink = "url";
+        public string ImageUrl = "url";
         public RecommendEquipment() : base(nameof(RecommendEquipment))
         {
             AddDialog(new TextPrompt(nameof(TextPrompt)));
@@ -113,6 +114,7 @@ namespace Test.Dialogs
                                 EquipmentName = reader.GetString(0);
                                 Videolink = reader.GetString(2);
                                 Salelink = reader.GetString(3);
+                                ImageUrl = reader.GetString(4);
 
                             }
                         }
@@ -126,13 +128,15 @@ namespace Test.Dialogs
                 
             }
 
-           
+
             var heroCard = new HeroCard
             {
-                Title = "####  " + EquipmentName+": " + Area +"부위를 발달시키는 기구" ,
+                Title = "####  " + EquipmentName,
+                Images = new List<CardImage> { new CardImage(ImageUrl) },
                 Buttons = new List<CardAction> 
-                {   new CardAction(ActionTypes.PlayVideo, "기구 사용법 시청하기", value: Videolink), 
-                    new CardAction(ActionTypes.OpenUrl, "구매 링크 열기", value: Salelink ) 
+                {   
+                    new CardAction(ActionTypes.PlayVideo, "기구 사용법 ", value: Videolink), 
+                    new CardAction(ActionTypes.OpenUrl, "구매 링크 ", value: Salelink ) 
                 },
 
             };

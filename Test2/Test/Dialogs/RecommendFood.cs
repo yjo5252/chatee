@@ -173,7 +173,7 @@ namespace Test.Dialogs
 
             }
 
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text(ImageUrl));
+            //await stepContext.Context.SendActivityAsync(MessageFactory.Text(ImageUrl));
             var heroCard = new HeroCard
             {
                 Title = "#### 오늘의 추천 음식: "+ foodName,
