@@ -7,7 +7,13 @@
   },
   "body": [
     {
-      "type": "Container"
+      "type": "Container",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "\n"
+        }
+      ]
     },
     {
       "type": "Container",
@@ -27,7 +33,13 @@
       ]
     },
     {
-      "type": "Container"
+      "type": "Container",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "\n"
+        }
+      ]
     }
   ]
 }

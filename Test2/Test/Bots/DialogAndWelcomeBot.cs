@@ -33,7 +33,15 @@ namespace Test.Bots
                     MainDialog.is_running_dialog = 1; //처음에 initial dialog 실행해야하기 때문에
 
                     //사용자 환영 메세지 보내기
-                    await DisplayWelcomingcard(turnContext, cancellationToken);
+                    var attachments = new List<Attachment>();
+
+                    // Reply to the activity we received with an activity.
+                    var reply = MessageFactory.Attachment(attachments);
+
+                    reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                    reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("Welcoming.json"));
+                    await turnContext.SendActivityAsync(reply, cancellationToken);
+                    //await DisplayWelcomingcard(turnContext, cancellationToken);
                     await turnContext.SendActivityAsync(MessageFactory.Text($"본격적으로 운동하기 전에, Healthee와 대화하셨는지 확인할게요!\n시작하려면 아무말이나 입력해주세요."), cancellationToken);
                     //await DisplayOptionsAsync(turnContext, cancellationToken);
                 }

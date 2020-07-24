@@ -59,8 +59,6 @@ namespace Test.Dialogs
             reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("StartTutorial.json"));
             await stepContext.Context.SendActivityAsync(reply, cancellationToken);
 
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"안녕하세요! \n\n 여러분과 함께 운동할 Healthee입니다! \n\n 튜토리얼을 진행하도록 하겠습니다."), cancellationToken);
-
             var promptOptions = new PromptOptions { Prompt = MessageFactory.Text("이름을 알려주세요!") };
 
             // Ask the user to enter their name.
@@ -181,6 +179,7 @@ namespace Test.Dialogs
         {
             // Set the user's company selection to what they entered in the review-selection dialog.
             var userProfile = (UserProfile)stepContext.Values[UserInfo];
+            userProfile.AvatarName = (string)stepContext.Result.ToString().Trim();
             /*
             userProfile.CompaniesToReview = stepContext.Result as List<string> ?? new List<string>();
             */
@@ -189,17 +188,6 @@ namespace Test.Dialogs
                         + $"{ userProfile.UserName}님의 캐릭터 { userProfile.AvatarName} 변화도 눈여겨봐주세요!";
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
-
-            UserInfoManager.keyNum = CheckUserDialog.PrimaryNumber;
-            UserInfoManager.UserName = userProfile.UserName;
-            UserInfoManager.PreWeight = userProfile.PreWeight;
-            UserInfoManager.PostWeight = userProfile.PostWeight;
-            UserInfoManager.SkillLevel = userProfile.SkillLevel;
-            UserInfoManager.Area = userProfile.Area;
-            UserInfoManager.Category = userProfile.Category;
-            UserInfoManager.ConversationCount = 0;
-            UserInfoManager.AvatarName = userProfile.AvatarName;
-            UserInfoManager.AvatarState = userProfile.AvatarState;
 
             try
             {
@@ -211,10 +199,26 @@ namespace Test.Dialogs
                 {
                     connection.Open();
 
+                    SqlCommand command;
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("SELECT COUNT(*) FROM [dbo].[UserInfo] ");
+                    String sql = sb.ToString();
+
+                    using (command = new SqlCommand(sql, connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                CheckUserDialog.PrimaryNumber = reader.GetInt32(0) + 1;
+                            }
+                        }
+                    }
+
                     string query1 = "INSERT INTO [dbo].[UserInfo] VALUES( " + CheckUserDialog.PrimaryNumber + ", '" + userProfile.UserName + "', " + userProfile.PreWeight + ", " + userProfile.PostWeight + ", '" + userProfile.SkillLevel + "', '" + userProfile.Area + "', '" + userProfile.Category + "', " + 0 + ");";
                     string query2 = "INSERT INTO [dbo].[AvatarInfo] VALUES( " + CheckUserDialog.PrimaryNumber + ", '" + userProfile.AvatarName + "', " + 0 + ");";
 
-                    SqlCommand command = new SqlCommand(query1, connection);
+                    command = new SqlCommand(query1, connection);
                     command.ExecuteNonQuery();
 
                     command = new SqlCommand(query2, connection);
@@ -228,6 +232,17 @@ namespace Test.Dialogs
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text("DB 연결에 문제가 있습니다."), cancellationToken);
                 Console.WriteLine(e.ToString());
             }
+
+            UserInfoManager.keyNum = CheckUserDialog.PrimaryNumber;
+            UserInfoManager.UserName = userProfile.UserName;
+            UserInfoManager.PreWeight = userProfile.PreWeight;
+            UserInfoManager.PostWeight = userProfile.PostWeight;
+            UserInfoManager.SkillLevel = userProfile.SkillLevel;
+            UserInfoManager.Area = userProfile.Area;
+            UserInfoManager.Category = userProfile.Category;
+            UserInfoManager.ConversationCount = 0;
+            UserInfoManager.AvatarName = userProfile.AvatarName;
+            UserInfoManager.AvatarState = userProfile.AvatarState;
 
             ModeManager.mode = (int)ModeManager.Modes.ShowFunction; //기능 보기 모드로 바꾼다.
             Thread.Sleep(3000);

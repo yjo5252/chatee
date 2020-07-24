@@ -42,7 +42,7 @@ namespace Test.Dialogs
                 "https://t1.daumcdn.net/section/oc/b91f421cab1a46dd96a845f0c55b7f91", //가취가욥[2]
                 "https://1.gall-img.com/hygall/files/attach/images/82/921/061/279/481b3fedcc3b8dcabdff8c9c6a0bfcda.jpg",//농담곰 천재[3]
                 "https://lh3.googleusercontent.com/proxy/FLiXOTZpuXPEEYDMoOaFozAlSkMXpSR4XKMN7ffTtAGXUHXhZeLxUKPsM_h4bAvRscoQS_HhRhQhfGH6kjtx2yI_Mdr_8ODLX8WEud8LRMqmJ6lKurfqh7J-ivyycZw6tkTZXrFkpHWJDbqor-muWAaVTgL9_RBexYUVy0QNGovSeJka3MeF0P34cA",//시바견[4]
-                "https://image.librewiki.net/thumb/1/10/%EA%B7%BC%EC%9C%A1%EB%AA%AC.png/360px-%EA%B7%BC%EC%9C%A1%EB%AA%AC.png"//근육몬 [5]
+                "https://cdn.univ20.com/wp-content/uploads/2017/02/06e5f20df09636b2aa5b320355c4102e.jpg"//근육몬 [5]
             };
 
             string[] command = {

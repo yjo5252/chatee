@@ -87,6 +87,7 @@ namespace Test.Dialogs
 
                     if (count == 0) //기록이 없을 때
                     {
+                        
                         query = "INSERT INTO [dbo].[ExerciseRecord] VALUES(" + UserInfoManager.keyNum + ", 0, 0, 0, 0, 0);"; //사용자 기록을 만든다.
                         q = new SqlCommand(query, connection);
                         q.ExecuteNonQuery();
