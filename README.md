@@ -97,6 +97,15 @@ MainDialog에서는 필요한 Dialog들을 모두 모아 실행시킵니다.
 
 `TutorialDialog`에서도 `MainDialog`같이 WaterfallDialog를 이용하여 실행시킬 step을 구현합니다.
 
+
+##### `Dialogs/RecommendFood.cs `
+
+![]()
+
+RecommendFood에서는 유저가 선택한 특정 부위에 좋은 음식을 랜덤하게 추천해줍니다.  
+
+`RecommendFood`에서 WaterfallDialog를 설정하여 `SelectAreaAsync `, `RecommendResultAsync `, `ShowFoodCardAsync `가 차례대로 실행되게 해줍니다.
+
 #### `UserProfile.cs`
 
 ![8](https://user-images.githubusercontent.com/41438361/87850137-e0772180-c928-11ea-986d-709a28e34a8f.JPG)
