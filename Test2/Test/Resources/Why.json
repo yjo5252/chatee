@@ -1,0 +1,54 @@
+﻿{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.2",
+  "backgroundImage": {
+    "url": ""
+  },
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "안녕하세요!👋",
+      "size": "ExtraLarge",
+      "weight": "Bolder"
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": 1,
+          "items": [
+            {
+              "type": "Image",
+              "url": "https://user-images.githubusercontent.com/41981471/87846811-b6fccc80-c90d-11ea-9a1c-e136034394f0.png",
+              "size": "Stretch"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "RichTextBlock",
+      "horizontalAlignment": "center",
+      "inlines": [
+        {
+          "type": "TextRun",
+          "text": "여러분과 함께 홈트레이닝할💪",
+          "size": "Large"
+        },
+        {
+          "type": "TextRun",
+          "text": "\nHealthee",
+          "size": "Large",
+          "weight": "bolder"
+        },
+        {
+          "type": "TextRun",
+          "text": "입니다!",
+          "size": "Large"
+        }
+      ]
+    }
+  ]
+}
