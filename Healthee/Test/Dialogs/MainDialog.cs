@@ -8,7 +8,7 @@ namespace Test.Dialogs
 {
     public class MainDialog : ComponentDialog
     {
-        private readonly UserState _userState; //수정?
+        private readonly UserState _userState; 
 
         //실행중인 Dialog가 있는지 확인하는 용도. 
         public static int is_running_dialog = 0;

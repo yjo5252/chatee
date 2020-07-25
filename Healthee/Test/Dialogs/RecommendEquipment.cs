@@ -29,7 +29,6 @@ namespace Test.Dialogs
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[] {
                 InitialAsync, //카드 보여주는 부분
-                //CheckAnswerAsync,
                 SelectAreaAsync, //어떤 부위인지 물어보기
                 RecommendResultAsync, //추천
                 EndAsync //종료

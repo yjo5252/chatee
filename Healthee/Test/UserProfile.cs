@@ -8,8 +8,6 @@ namespace Test
 {
     public class UserProfile
     {
-        //public List<string> CompaniesToReview { get; set; } = new List<string>();
-        
         public string UserName { get; set; } //유저 이름
 
         public int PreWeight { get; set; } //현재 체중
