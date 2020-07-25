@@ -28,6 +28,11 @@
 
 :tada:[Gate 4 제출물, 결과 설명](https://github.com/yjo5252/chatee/blob/master/%EC%B5%9C%EC%A2%85%20%EA%B2%8C%EC%9D%B4%ED%8A%B8(Gate%204)/%EC%B5%9C%EC%A2%85%EA%B2%8C%EC%9D%B4%ED%8A%B8%20%EC%84%A4%EB%AA%85.md):tada:
 
+## Healthee가 제공하는 기능
+
+|---------|----|
+|<img src="https://user-images.githubusercontent.com/41438361/88453651-d9f62600-cea3-11ea-9df4-3661cd686d8f.JPG", width=75%>|<img src="https://user-images.githubusercontent.com/41438361/88453716-73bdd300-cea4-11ea-8e1f-8b475738f534.JPG", width=75%>|
+
 ## 소스코드 설명(Final ver)
 소스 구조 설명 및 핵심 코드 설명
 
@@ -69,11 +74,11 @@
 
 ### 코드 설명
 
-#### * Bots
+#### * Bots 
 
-실질적인 'Bot'의 역할을 하는 부분. 사용자가 처음 Healthee에 입장했을 때 환영 인사를 하거나, 사용자가 보낸 메세지에 응답을 하기 위한 기능을 구현하는 부분이 존재한다.
-
-##### * `Bots/DialogAndWelcomeBot.cs`
+> 실질적인 'Bot'의 역할을 하는 부분. 사용자가 처음 Healthee에 입장했을 때 환영 인사를 하거나, 사용자가 보낸 메세지에 응답을 하기 위한 기능을 구현하는 부분이 존재한다.
+>
+> ##### * `Bots/DialogAndWelcomeBot.cs`
 
 ![1](https://user-images.githubusercontent.com/41438361/87849805-76f61380-c926-11ea-9390-325600857f96.JPG)
 
@@ -121,7 +126,7 @@ QnA Maker를 불러오는 코드는 위와 같습니다. 이 코드를 QnA Maker
 
 다시 돌아가서,
 
-`MainDialog.is_running_dialog`가 1이면 현재 실행중인 Dialog가 있다는 말입니다.(현재 실행중인 기능이 있다. 기능이 진행중이다.) 따라서 이때는 현재 실행중인 기능이 있으므로 기능 수행 도중에 다른 모드로 전환이 되어버리면 안됩니다. 따라서 이때는 모드 전환 부분이 없스비다.
+`MainDialog.is_running_dialog`가 1이면 현재 실행중인 Dialog가 있다는 말입니다.(현재 실행중인 기능이 있다. 기능이 진행중이다.) 따라서 이때는 현재 실행중인 기능이 있으므로 기능 수행 도중에 다른 모드로 전환이 되어버리면 안됩니다. 따라서 이때는 모드 전환 부분이 없습니다.
 
 마지막으로 `OnMessageActivityAsync` method의 마지막 부분에 아래와 같이 추가하여 Dialog을 실행시킬 수 있도록 합니다. 
 
@@ -131,9 +136,9 @@ QnA Maker를 불러오는 코드는 위와 같습니다. 이 코드를 QnA Maker
 
 `MainDialog.cs` 및 Dialog들에서 Dialog의 흐름 및 실행되는 순서만 잘 설정하면 원하는 순서에 맞게 원하는 Dialog들을 실행시킬 수 있습니다. 
 
-#### * Dialogs
+#### * Dialogs 폴더
 
-Dialog는 봇의 기능과 같은 역할을 합니다. 즉, Dialog들은 저마다 개별적으로 실행시킬 수 있는 step을 가지고 있는데, 이 step들을 순차적으로 실행시켜 특정 기능을 구현하는 것이라고 생각하면 되겠습니다.
+Dialog는 봇의 기능과 같은 역할을 합니다. 즉, Dialog들은 저마다 개별적으로 실행시킬 수 있는 step을 가지고 있는데, 이 step들을 `WaterfallDialog`를 이용하여 순차적으로 실행시켜 특정 기능을 구현하는 것이라고 생각하면 되겠습니다.
 
 예시) `Dialog A(step 1)->Dialog A(step 2)->Dialog A(step 3)->Dialog B(step 1)->Dialog B(step 2)->Dialog A(step 4)`와 같이 실행시킬 수 있습니다.
 
