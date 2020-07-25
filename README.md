@@ -88,9 +88,9 @@
 
 DialogAndWelcomeBot은 EchoBot을 상속받았습니다. EchoBot에 대한 설명은 바로 뒤에서 나옵니다.
 
-**사용자 환영하기** :**`OnMemebersAddedAsync`** 
+**사용자 환영하기**
 
-사용자를 환영 하는 메소드. \
+**`OnMemebersAddedAsync`** : 사용자를 환영 하는 메소드. \
 이 메소드는 봇이 사용자를 처음 인식했을 때, 즉 사용자가 봇에 처음 입장했을 때 실행되는 함수입니다. 말 그대로 사용자가 추가되었을 때 봇이 할 수 있는 동작을 써 놓는 곳입니다.
 
 ![41](https://user-images.githubusercontent.com/41438361/88453991-ff386380-cea6-11ea-98fb-79c5791c0740.JPG)
@@ -112,10 +112,10 @@ DialogAndWelcomeBot은 EchoBot을 상속받았습니다. EchoBot에 대한 설�
 
 *사용자가 봇에 메세지를 보내면 응답을 처리하는 부분*
 
-**사용자 응답에 대응하기** : **`OnMessageActivityAsync`**
+**사용자 응답에 대응하기** 
 
-사용자 응답에 대응하는 메소드 \
-이 함수는 사용자가 봇에 메세지를 보낼때마다 실행이 됩니다. 즉, 사용자가 봇에 메세지를 보낸 것이 인식이 되면 실행이 됩니다. \
+**`OnMessageActivityAsync`** : 사용자 응답에 대응하는 메소드 \
+이 함수는 사용자가 봇에 메세지를 보낼때마다 실행이 됩니다. 즉, 사용자가 봇에 메세지를 보낸 것이 인식이 되면 실행이 됩니다. 
 
 아무런 기능이 실행 중이지 않으면 **사용자의 입력이 들어올때마다 현재 봇의 문맥(상황)에 맞는 Dialog를 실행시킬 수 있게 모드를 설정할 수 있습니다**. 
 기능이 실행 중이라면 **진행중이던 Dialog를 계속 진행합니다**. 
@@ -132,7 +132,8 @@ DialogAndWelcomeBot은 EchoBot을 상속받았습니다. EchoBot에 대한 설�
 
 사용자의 입력을 처리한 후에는 **`MainDialog.is_running_dialog`** 가 0인지 아닌지 판별하여 봇을 실행시킵니다.
 
-`MainDialog.is_running_dialog`는 현재 실행중인 Dialog(기능)가 있는지 없는지 확인할 수 있게 하는 변수입니다.\ **`MainDialog.is_running_dialog`가 0이면** 현재 실행중인 Dialog가 없다는 뜻입니다.(현재 실행중인 기능이 없다. 기능 실행 명령을 대기중이다.) 이때는 사용자의 입력을 받아 사용자의 입력 메세지에 특정 기능을 나타내는 **키워드**가 있을 경우 해당 기능을 실행시킬 수 있도록 모드)(`ModeManager.mode`)를 설정합니다. 이 모드에 대한 설명도 뒤에서 보겠습니다.
+`MainDialog.is_running_dialog`는 현재 실행중인 Dialog(기능)가 있는지 없는지 확인할 수 있게 하는 변수입니다.\ 
+**`MainDialog.is_running_dialog`가 0이면** 현재 실행중인 Dialog가 없다는 뜻입니다.(현재 실행중인 기능이 없다. 기능 실행 명령을 대기중이다.) 이때는 사용자의 입력을 받아 사용자의 입력 메세지에 특정 기능을 나타내는 **키워드**가 있을 경우 해당 기능을 실행시킬 수 있도록 모드)(`ModeManager.mode`)를 설정합니다. 이 모드에 대한 설명도 뒤에서 보겠습니다.
 
 ![5](https://user-images.githubusercontent.com/41438361/88438660-34f83080-ce44-11ea-9eda-2a12b6e9906a.JPG)
 
