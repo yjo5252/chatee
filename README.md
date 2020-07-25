@@ -86,15 +86,12 @@
 
 ![1](https://user-images.githubusercontent.com/41438361/87849805-76f61380-c926-11ea-9390-325600857f96.JPG)
 
-```C#
-public class DialogAndWelcomeBot<T> : EchoBot<T> where T : Dialog
-```
-
 DialogAndWelcomeBot은 EchoBot을 상속받았습니다. EchoBot에 대한 설명은 바로 뒤에서 나옵니다.
 
-**사용자 환영하기**
+**사용자 환영하기** :**`OnMemebersAddedAsync`** 
 
-사용자를 환영 하는 방법은 **`OnMemebersAddedAsync`** method를 활용하는 것입니다. 이 method는 봇이 사용자를 처음 인식했을 때, 즉 사용자가 봇에 처음 입장했을 때 실행되는 함수입니다. 말 그대로 사용자가 추가되었을 때 봇이 할 수 있는 동작을 써 놓는 곳입니다.
+사용자를 환영 하는 메소드. \
+이 메소드는 봇이 사용자를 처음 인식했을 때, 즉 사용자가 봇에 처음 입장했을 때 실행되는 함수입니다. 말 그대로 사용자가 추가되었을 때 봇이 할 수 있는 동작을 써 놓는 곳입니다.
 
 ![41](https://user-images.githubusercontent.com/41438361/88453991-ff386380-cea6-11ea-98fb-79c5791c0740.JPG)
 
@@ -102,11 +99,12 @@ DialogAndWelcomeBot은 EchoBot을 상속받았습니다. EchoBot에 대한 설�
 
 ![1](https://user-images.githubusercontent.com/41438361/88454160-85a17500-cea8-11ea-87f2-6770f005b105.JPG)
 
-처음에 Healthee는 사용자가 이전에 Healthee를 방문했는지 안했는지 확인하기 위해 사용자 확인 작업을 해야 합니다. 따라서 `ModeManager.mode`와 `MainDialog.is_running_dialog`를 설정합니다. 이것들에 대한 자세한 설명은 뒷 부분에 나옵니다.
+`ModeManager.mode`와 `MainDialog.is_running_dialog`를 설정합니다.
+처음에 Healthee는 사용자가 이전에 Healthee를 방문했는지 안했는지 확인하기 위해 사용자 확인 작업을 합니다. 이에 대한 자세한 설명은 뒷 부분에 나옵니다.
 
 ![2](https://user-images.githubusercontent.com/41438361/88454179-ac5fab80-cea8-11ea-842b-c9c0e9368c35.JPG)
 
-뒤로 카드를 붙일 `attachments`를 생성하고 `reply.Attachments.Add(객체)`로 객체를 붙여줍니다. 위의 코드에서는 `Cards.CreateAdaptiveCardAttachment("Welcoming.json")`과 'heroCard' 를 이용하여 객체를 생성하여 `attachment`에 붙였습니다. `CreateAdaptiveCardAttachment` method는 위의 코드에서 `Welcoming.json` 파일을 Adaptive Card로 변환하여 사용자에게 보여질 수 있게 했습니다. 이 함수는 뒷부분(Cards)에 설명되어 있습니다.
+뒤로 카드를 붙일 `attachments`를 생성하고 `reply.Attachments.Add(객체)`로 객체를 붙여줍니다. 위의 코드에서는 'heroCard'와 `Cards.CreateAdaptiveCardAttachment("Welcoming.json")`를 이용하여 객체를 생성하여 `attachment`에 붙였습니다. `CreateAdaptiveCardAttachment` method는 위의 코드에서 `Welcoming.json` 파일을 Adaptive Card로 변환하여 사용자에게 보여질 수 있게 했습니다. 이 메소드는 뒷부분(Cards)에 설명되어 있습니다.
 
 추가로 `turnContext.SendActivityAsync` method를 이용해서 사용자에게 메세지를 보냅니다.
 
@@ -114,9 +112,13 @@ DialogAndWelcomeBot은 EchoBot을 상속받았습니다. EchoBot에 대한 설�
 
 *사용자가 봇에 메세지를 보내면 응답을 처리하는 부분*
 
-**사용자 응답에 대응하기**
+**사용자 응답에 대응하기** : **`OnMessageActivityAsync`**
 
-사용자 응답에 대응하는 방법은 **`OnMessageActivityAsync`** method를 활용하는 것입니다. 사용자 응답에 대응이라 하긴 했지만, 이 함수는 사용자가 봇에 메세지를 보낼때마다 실행이 되는 함수입니다. 즉, 사용자가 봇에 메세지를 보낸 것이 인식이 되면 실행이 됩니다. 
+사용자 응답에 대응하는 메소드 \
+이 함수는 사용자가 봇에 메세지를 보낼때마다 실행이 됩니다. 즉, 사용자가 봇에 메세지를 보낸 것이 인식이 되면 실행이 됩니다. \
+
+아무런 기능이 실행 중이지 않으면 **사용자의 입력이 들어올때마다 현재 봇의 문맥(상황)에 맞는 Dialog를 실행시킬 수 있게 모드를 설정할 수 있습니다**. 
+기능이 실행 중이라면 **진행중이던 Dialog를 계속 진행합니다**. 
 
 **`OnMessageActivityAsync`** method 안의 내용을 보면 다음과 같습니다.
 
@@ -130,7 +132,7 @@ DialogAndWelcomeBot은 EchoBot을 상속받았습니다. EchoBot에 대한 설�
 
 사용자의 입력을 처리한 후에는 **`MainDialog.is_running_dialog`** 가 0인지 아닌지 판별하여 봇을 실행시킵니다.
 
-`MainDialog.is_running_dialog`는 현재 실행중인 Dialog(기능)가 있는지 없는지 확인할 수 있게 하는 변수입니다. `0`이면 현재 실행중인 Dialog가 없다는 뜻입니다.(현재 실행중인 기능이 없다. 기능 실행 명령을 대기중이다.) 이때는 사용자의 입력을 받아 사용자의 입력 메세지에 특정 기능을 나타내는 **키워드**가 있을 경우 해당 기능을 실행시킬 수 있도록 모드)(`ModeManager.mode`)를 설정합니다. 이 모드에 대한 설명도 뒤에서 보겠습니다.
+`MainDialog.is_running_dialog`는 현재 실행중인 Dialog(기능)가 있는지 없는지 확인할 수 있게 하는 변수입니다.\ **`MainDialog.is_running_dialog`가 0이면** 현재 실행중인 Dialog가 없다는 뜻입니다.(현재 실행중인 기능이 없다. 기능 실행 명령을 대기중이다.) 이때는 사용자의 입력을 받아 사용자의 입력 메세지에 특정 기능을 나타내는 **키워드**가 있을 경우 해당 기능을 실행시킬 수 있도록 모드)(`ModeManager.mode`)를 설정합니다. 이 모드에 대한 설명도 뒤에서 보겠습니다.
 
 ![5](https://user-images.githubusercontent.com/41438361/88438660-34f83080-ce44-11ea-9eda-2a12b6e9906a.JPG)
 
@@ -140,13 +142,7 @@ DialogAndWelcomeBot은 EchoBot을 상속받았습니다. EchoBot에 대한 설�
 
 ![4](https://user-images.githubusercontent.com/41438361/88438548-f06c9500-ce43-11ea-9f7f-67bb2533aee4.JPG)
 
-마지막으로 `OnMessageActivityAsync` method의 마지막 부분에 위의 코드를 추가하여 Dialog을 실행시킬 수 있도록 합니다. `Dialog.RunAsync`는 Dialog를 실행시킬 수 있게 하는 method입니다.
-
-위와 같이 설정하면 아무런 기능이 실행 중이지 않으면 **사용자의 입력이 들어올때마다 현재 봇의 문맥(상황)에 맞는 Dialog를 실행시킬 수 있게 모드를 설정할 수 있습니다**. 기능이 실행 중이라면 **진행중이던 Dialog를 계속 진행합니다**. 
-
-Dialog는 기능/시나리오 라고 생각하면 편합니다. Dialog는 여러개가 있는데, 이 Dialog들마다 step이 존재하여 특정 시점에는 특정 Dialog의 특정 step이 실행되게 됩니다. 위의 함수는 특정 시점에서 진행중이던 Dialog의 순서를 이어서 진행시킨다 정도로 생각하면 될 것 같습니다.
-
-Dialog는 순서를 원하는대로 설정 할 수 있어서 편하고, Dialog간 이동이 자유롭다는 장점이 있습니다. 하지만 WaterfallDialog 특성상 Dialog 내에서 이전 단계(step)으로 돌아갈 때 리스크가 있다는 단점이 있습니다.
+마지막으로 `Dialog.RunAsync`는 Dialog를 실행시킬 수 있게 하는 method입니다. 이를`OnMessageActivityAsync` method의 마지막 부분에 위의 코드를 추가하여 Dialog을 실행시킬 수 있도록 합니다.
 
 ### 2. Dialogs
 
@@ -415,13 +411,28 @@ AZURE Portal에 접속한 후, 리소스 그룹에서 SQL 데이터베이스(혹
 
 쿼리 편집기로 넘어가면, 위와 같이 왼쪽에서는 테이블들과 필드, 그리고 오른쪽에는 직접 쿼리문을 쳐서 실행시킬 수 있는 편집기가 나옵니다.
 
+0. 데이터베이스 생성 CREATE
+```sql 
+CREATE TABLE [dbo].[SportsTime] (
+    [SportsID] INT NOT NULL,
+    [Configure]     String NULL,
+    [Count]    INT NULL,
+    PRIMARY KEY CLUSTERED ([SportsID] ASC)
+);
+
+
+```
 1. 데이터 조회 SELECT
+
+
 
 2. 데이터 업데이트 UPDATE
 
 3. 테이블 혹은 데이터베이스 삭제 DROP
 
 4. 데이터 삽입 INSERT
+
+### C# 코드 상에서 데이터베이스 쿼리문 이용하여 데이터 조작하기
 
 
 ## 그 외 알아낸 소소한 것들
