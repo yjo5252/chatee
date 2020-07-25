@@ -80,15 +80,13 @@
 
 실질적인 'Bot'의 역할을 하는 부분. 사용자가 처음 Healthee에 입장했을 때 환영 인사를 하거나, 사용자가 보낸 메세지에 응답을 하기 위한 기능을 구현하는 부분이 존재한다.
 
-#### 1.1 `Bots/DialogAndWelcomeBot.cs`
+#### 1.1 **사용자 환영하기**: `Bots/DialogAndWelcomeBot.cs`
 
 *사용자가 Healthee 봇에 처음 입장했을 때 환영 인사를 보낸다.*
 
 ![1](https://user-images.githubusercontent.com/41438361/87849805-76f61380-c926-11ea-9390-325600857f96.JPG)
 
-DialogAndWelcomeBot은 EchoBot을 상속받았습니다. EchoBot에 대한 설명은 바로 뒤에서 나옵니다.
-
-**사용자 환영하기**
+DialogAndWelcomeBot은 EchoBot을 상속받습니다. EchoBot에 대한 설명은 바로 뒤에서 나옵니다.
 
 **`OnMemebersAddedAsync`** : 사용자를 환영 하는 메소드. \
 이 메소드는 봇이 사용자를 처음 인식했을 때, 즉 사용자가 봇에 처음 입장했을 때 실행되는 함수입니다. 말 그대로 사용자가 추가되었을 때 봇이 할 수 있는 동작을 써 놓는 곳입니다.
@@ -108,11 +106,9 @@ DialogAndWelcomeBot은 EchoBot을 상속받았습니다. EchoBot에 대한 설�
 
 추가로 `turnContext.SendActivityAsync` method를 이용해서 사용자에게 메세지를 보냅니다.
 
-#### 1.2 `Bots/EchoBot.cs`
+#### 1.2 **사용자 응답에 대응하기**: `Bots/EchoBot.cs`
 
 *사용자가 봇에 메세지를 보내면 응답을 처리하는 부분*
-
-**사용자 응답에 대응하기** 
 
 **`OnMessageActivityAsync`** : 사용자 응답에 대응하는 메소드 \
 이 함수는 사용자가 봇에 메세지를 보낼때마다 실행이 됩니다. 즉, 사용자가 봇에 메세지를 보낸 것이 인식이 되면 실행이 됩니다. 
@@ -130,9 +126,8 @@ DialogAndWelcomeBot은 EchoBot을 상속받았습니다. EchoBot에 대한 설�
 
 사용자의 입력을 `msg_from_user` 변수로 받고, 공백을 제거하여 처리를 했습니다. 
 
-사용자의 입력을 처리한 후에는 **`MainDialog.is_running_dialog`** 가 0인지 아닌지 판별하여 봇을 실행시킵니다.
+사용자의 입력을 처리한 후에는 **`MainDialog.is_running_dialog`** 가 0인지 아닌지 판별하여 봇을 실행시킵니다. `MainDialog.is_running_dialog`는 현재 실행중인 Dialog(기능)가 있는지 없는지 확인할 수 있게 하는 변수입니다. 
 
-`MainDialog.is_running_dialog`는 현재 실행중인 Dialog(기능)가 있는지 없는지 확인할 수 있게 하는 변수입니다.\ 
 **`MainDialog.is_running_dialog`가 0이면** 현재 실행중인 Dialog가 없다는 뜻입니다.(현재 실행중인 기능이 없다. 기능 실행 명령을 대기중이다.) 이때는 사용자의 입력을 받아 사용자의 입력 메세지에 특정 기능을 나타내는 **키워드**가 있을 경우 해당 기능을 실행시킬 수 있도록 모드)(`ModeManager.mode`)를 설정합니다. 이 모드에 대한 설명도 뒤에서 보겠습니다.
 
 ![5](https://user-images.githubusercontent.com/41438361/88438660-34f83080-ce44-11ea-9eda-2a12b6e9906a.JPG)
@@ -155,13 +150,13 @@ Dialog는 봇의 기능과 같은 역할을 합니다. 즉, Dialog들은 내부�
 
 Healthee는 Dialog를 이용하여 모드에 따라 다른 기능을 실행할 수 있게, 조건을 확인하여 특정 기능을 수행할지 말지 결정합니다.
 
-#### 2.1 `Dialogs/MainDialog.cs`
+#### 2.1 **실행 중인 Dialog 확인 및 필요한 Dialog 추가/실행** : `Dialogs/MainDialog.cs`
 
 *Healthee 구동에 필요한 Dialog들을 모두 실행시키는 관리자 Dialog와 같은 역할을 합니다. 실제 Dialog 끼리의 계층은 없지만 구조상 가장 최상위 Dialog입니다. 여기서는 모드에 따라 다른 Dialog들을 직접 실행시킵니다.*
 
 **실행 중인 Dialog 있는지 확인**
 
-위에 `EchoBot.cs` 에서 현재 실행중인 Dialog가 없을때만(현재 수행중인 기능이 없을 때) 모드를 바꾼다고 했습니다.
+위에 `EchoBot.cs` 에서 현재 실행중인 Dialog가 없을때만(현재 수행중인 기능이 없을 때) 모드를 바뀝니다.
 
 ![7](https://user-images.githubusercontent.com/41438361/88439088-3413ce80-ce45-11ea-8a71-557511ee836d.JPG)
 
@@ -176,7 +171,7 @@ Dialog도 실행시키기 전에 필요한 요소들을 **생성자에서** 세�
 1. Prompt(사용자에게 입력을 촉구하는 부분)
 2. 다른 Dialog(Dialog 내에서 직접 다른 Dialog를 실행시킬 때)
 
-과 같습니다. `MainDialog.cs` 는 최상위 Dialog라고 할 수 있는데, 다른 모든 Dialog들을 `MainDialog.cs`안에서 직접 실행시킵니다. 따라서 필요한 Dialog들을 모두 `AddDialog(new DialogName())`으로 불러왔습니다. 상위 Dialog에서 하위 Dialog들을 실행시키기 위해서는 꼭 `AddDialog()` 를 통해 하위 Dialog를 추가시켜줘야 합니다.
+과 같습니다. `MainDialog.cs` 는 최상위 Dialog라고 할 수 있는데, 다른 모든 Dialog들을 `MainDialog.cs`안에서 직접 실행시킵니다. 따라서 필요한 Dialog들을 모두 `AddDialog(new DialogName())`으로 불러옵니다. 상위 Dialog에서 하위 Dialog들을 실행시키기 위해서는 꼭 `AddDialog()` 를 통해 하위 Dialog를 추가시켜줘야 합니다.
 
 맨 마지막에 있는 WaterfallDialog는 `{ }`안에 `InitialAsync`, `FinalStepAsync` 처럼 실행시키고 싶은 step(단계)를 추가해 줍니다. WaterfallDialog에 있는 step들은 위에서부터 순서대로 실행됩니다. 마지막으로 `InitialDialogId = nameof(WaterfallDialog)`를 통해 처음에 WaterfallDialog를 실행시키게 합니다.
 
@@ -196,7 +191,7 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 모든 Dialog에는 위처럼 `return await stepContext.EndDialogAsync(null, cancellationToken);` 가 포함이 되어야 합니다. 이 method는 Dialog를 종료시키는 역할을 합니다. 만약 WaterfallDialog의 중간 step에서 `EndDialogAsync` method가 실행되었다면 뒤에 얼마나 많은 step이 남았는지는  바로 해당 Dialog는 종료됩니다.
 
-#### 2.2 `Dialogs/CheckUserDialog.cs`
+#### 2.2 **사용자가 튜토리얼을 진행했는지 확인**: `Dialogs/CheckUserDialog.cs`
 
 *`CherkUserDialog`에서는 사용자가 처음 봇에 들어왔을 때 이전에 Healthee와 대화를 나눠봤는지, 아닌지 판단합니다. 만약 대화를 나눠봤다면 이전에 저장된 사용자의 데이터를 Azure Sql Database에서 가져오고 기능 카드를 출력해주고, 아닐 경우 사용자의 정보를 받는 `TutorialDialog`를 실행시킵니다.*
 
@@ -239,7 +234,7 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 ![17](https://user-images.githubusercontent.com/41438361/88441088-f619a900-ce4a-11ea-8f6d-4e298bdf0ea3.JPG)
 
 
-#### 2.3 `Dialogs/TutorialDialog.cs`
+#### 2.3 ** 사용자 정보 입력받아 DB에 저장 **:  `Dialogs/TutorialDialog.cs`
 
 ![18](https://user-images.githubusercontent.com/41438361/88441179-3f69f880-ce4b-11ea-860a-f0e45aa59262.JPG)
 
@@ -259,7 +254,7 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 후에 실행되는 `AcknowledgementStepAsync` 단계에서는 위와 같이 INSERT 쿼리문을 이용하여 데이터베이스에 값을 삽입합니다. 
 
-#### 2.4 `Dialogs/ShowFunctionsDialog.cs`
+#### 2.4 **Helathee의 기능 보여주기**: `Dialogs/ShowFunctionsDialog.cs`
 
 `ShowFunctionDialog`에서는 Healthee가 제공하는 기능들을 카드로 보여줍니다.
 
@@ -275,7 +270,7 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 오른쪽에 마우스를 갖다대면 화살표가 나와 클릭하면 카드를 이동시키며 볼 수 있습니다.
 
-#### 2.5 `Dialogs/RecommendExerciseDialog.cs`
+#### 2.5 ** 운동 추천 **:  `Dialogs/RecommendExerciseDialog.cs`
 
 ![24](https://user-images.githubusercontent.com/41438361/88441859-6aede280-ce4d-11ea-9fa7-139b55513a0a.JPG)
 
@@ -285,31 +280,31 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 마찬가지로 prompt와 db query를 이용하여 기능들을 구현했습니다.
 
-#### 2.6 `Dialogs/RecordDialog.cs`
+#### 2.6 ** 운동 기록 **: `Dialogs/RecordDialog.cs`
 
 ![25](https://user-images.githubusercontent.com/41438361/88442024-ed76a200-ce4d-11ea-9adb-7445a26db6ea.JPG)
 
 `RecordDialog`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 사용자가 운동한 부위와 시간을 확인하여 사용자 정보를 업데이트 시킵니다.
 
-#### 2.7 `Dialogs/RecommendFood.cs`
+#### 2.7 ** 음식 랜덤 추천 **: `Dialogs/RecommendFood.cs`
 
 ![26](https://user-images.githubusercontent.com/41438361/88442254-c9679080-ce4e-11ea-8e12-93f57483a3da.JPG)
 
 `RecommendFood`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 데이터베이스의 음식 테이블을 조회해 랜덤으로 음식을 하나 뽑아 추천해줍니다. 음식을 추천해줄때는 이름, 사진, 설명까지 함께 `HeroCard`로 보여줍니다.
 
-#### 2.8 `Dialogs/RecommendEquipment.cs`
+#### 2.8 ** 운동 기구 추천 **: `Dialogs/RecommendEquipment.cs`
 
 ![27](https://user-images.githubusercontent.com/41438361/88442288-e9974f80-ce4e-11ea-9e88-1efa1d093ef1.JPG)
 
 `RecommendEquipment`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 데이터베이스의 운동 기구 테이블을 조회한 다음 사용자가 설정한 운동 부위에 맞는 운동 기구를 추천해줍니다. 운동 기구를 추천해줄때는 판매처, 영상까지 함께 `HeroCard`로 보여줍니다.
 
-#### 2.9 `Dialogs/SeeMyCharacterDialog.cs`
+#### 2.9 ** 캐릭터 상태 확인 **:  `Dialogs/SeeMyCharacterDialog.cs`
 
 ![28](https://user-images.githubusercontent.com/41438361/88442433-72ae8680-ce4f-11ea-97cb-7734e92c6ec0.JPG)
 
 `SeeMyCharacterDialog`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 사용자의 정보를 조회하여 사용자의 운동 기록 횟수를 통해 캐릭터가 어떤 상태인지 판단합니다. 캐릭터의 상태에 따라 다른 이미지와 문구를 사용자에게 `HeroCard`로 보여줍니다.
 
-#### 2.10 `Dialogs/SeeMyCharacterDialog.cs`
+#### 2.10 ** 운동 기록 확인 **: `Dialogs/SeeMyRecord.cs`
 
 ![29](https://user-images.githubusercontent.com/41438361/88442505-b903e580-ce4f-11ea-956c-e9c46a092283.JPG)
 
