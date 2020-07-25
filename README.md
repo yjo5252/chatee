@@ -33,6 +33,8 @@
 |||
 |---------|----|
 |<img src="https://user-images.githubusercontent.com/41438361/88453651-d9f62600-cea3-11ea-9df4-3661cd686d8f.JPG" width="75%">|<img src="https://user-images.githubusercontent.com/41438361/88453716-73bdd300-cea4-11ea-8e1f-8b475738f534.JPG" width="75%">|
+|<img src="https://user-images.githubusercontent.com/41438361/88455290-301c9680-ceaf-11ea-99fb-c53e5a26ccfc.JPG" width="75%">|<img src="https://user-images.githubusercontent.com/41438361/88455293-314dc380-ceaf-11ea-9a71-5154aa6c7a98.JPG" width="75%">|
+|<img src="https://user-images.githubusercontent.com/41438361/88455295-327ef080-ceaf-11ea-8a46-14d59d42ec30.JPG" width="75%">|<img src="https://user-images.githubusercontent.com/41438361/88455296-33b01d80-ceaf-11ea-99d6-c264bae4f440.JPG" width="75%">|
 
 ## 구조(Final Ver)
 * Bots 폴더
