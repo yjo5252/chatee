@@ -234,7 +234,7 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 ![17](https://user-images.githubusercontent.com/41438361/88441088-f619a900-ce4a-11ea-8f6d-4e298bdf0ea3.JPG)
 
 
-#### 2.3 ** 사용자 정보 입력받아 DB에 저장 **:  `Dialogs/TutorialDialog.cs`
+#### 2.3 **사용자 정보 입력받아 DB에 저장**:  `Dialogs/TutorialDialog.cs`
 
 ![18](https://user-images.githubusercontent.com/41438361/88441179-3f69f880-ce4b-11ea-860a-f0e45aa59262.JPG)
 
@@ -270,7 +270,7 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 오른쪽에 마우스를 갖다대면 화살표가 나와 클릭하면 카드를 이동시키며 볼 수 있습니다.
 
-#### 2.5 ** 운동 추천 **:  `Dialogs/RecommendExerciseDialog.cs`
+#### 2.5 **운동 추천**:  `Dialogs/RecommendExerciseDialog.cs`
 
 ![24](https://user-images.githubusercontent.com/41438361/88441859-6aede280-ce4d-11ea-9fa7-139b55513a0a.JPG)
 
@@ -280,31 +280,31 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 마찬가지로 prompt와 db query를 이용하여 기능들을 구현했습니다.
 
-#### 2.6 ** 운동 기록 **: `Dialogs/RecordDialog.cs`
+#### 2.6 **운동 기록**: `Dialogs/RecordDialog.cs`
 
 ![25](https://user-images.githubusercontent.com/41438361/88442024-ed76a200-ce4d-11ea-9adb-7445a26db6ea.JPG)
 
 `RecordDialog`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 사용자가 운동한 부위와 시간을 확인하여 사용자 정보를 업데이트 시킵니다.
 
-#### 2.7 ** 음식 랜덤 추천 **: `Dialogs/RecommendFood.cs`
+#### 2.7 **음식 랜덤 추천**: `Dialogs/RecommendFood.cs`
 
 ![26](https://user-images.githubusercontent.com/41438361/88442254-c9679080-ce4e-11ea-8e12-93f57483a3da.JPG)
 
 `RecommendFood`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 데이터베이스의 음식 테이블을 조회해 랜덤으로 음식을 하나 뽑아 추천해줍니다. 음식을 추천해줄때는 이름, 사진, 설명까지 함께 `HeroCard`로 보여줍니다.
 
-#### 2.8 ** 운동 기구 추천 **: `Dialogs/RecommendEquipment.cs`
+#### 2.8 **운동 기구 추천**: `Dialogs/RecommendEquipment.cs`
 
 ![27](https://user-images.githubusercontent.com/41438361/88442288-e9974f80-ce4e-11ea-9e88-1efa1d093ef1.JPG)
 
 `RecommendEquipment`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 데이터베이스의 운동 기구 테이블을 조회한 다음 사용자가 설정한 운동 부위에 맞는 운동 기구를 추천해줍니다. 운동 기구를 추천해줄때는 판매처, 영상까지 함께 `HeroCard`로 보여줍니다.
 
-#### 2.9 ** 캐릭터 상태 확인 **:  `Dialogs/SeeMyCharacterDialog.cs`
+#### 2.9 **캐릭터 상태 확인**:  `Dialogs/SeeMyCharacterDialog.cs`
 
 ![28](https://user-images.githubusercontent.com/41438361/88442433-72ae8680-ce4f-11ea-97cb-7734e92c6ec0.JPG)
 
 `SeeMyCharacterDialog`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 사용자의 정보를 조회하여 사용자의 운동 기록 횟수를 통해 캐릭터가 어떤 상태인지 판단합니다. 캐릭터의 상태에 따라 다른 이미지와 문구를 사용자에게 `HeroCard`로 보여줍니다.
 
-#### 2.10 ** 운동 기록 확인 **: `Dialogs/SeeMyRecord.cs`
+#### 2.10 **운동 기록 확인**: `Dialogs/SeeMyRecord.cs`
 
 ![29](https://user-images.githubusercontent.com/41438361/88442505-b903e580-ce4f-11ea-956c-e9c46a092283.JPG)
 
