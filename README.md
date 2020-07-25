@@ -36,6 +36,8 @@
 |<img src="https://user-images.githubusercontent.com/41438361/88455290-301c9680-ceaf-11ea-99fb-c53e5a26ccfc.JPG" width="75%">|<img src="https://user-images.githubusercontent.com/41438361/88455293-314dc380-ceaf-11ea-9a71-5154aa6c7a98.JPG" width="75%">|
 |<img src="https://user-images.githubusercontent.com/41438361/88455295-327ef080-ceaf-11ea-8a46-14d59d42ec30.JPG" width="75%">|<img src="https://user-images.githubusercontent.com/41438361/88455296-33b01d80-ceaf-11ea-99d6-c264bae4f440.JPG" width="75%">|
 
+*캐릭터는 사람들이 Healthee와 더 많이 대화를 나누고 운동을 하게끔 동기 부여를 하기 위해 만든 기능입니다! 운동을 하고 많이 기록을 할 수록 캐릭터는 성장합니다.*
+
 ## 구조(Final Ver)
 * Bots 폴더
   * DialogAndWelcomeBot.cs : 새로운 사용자가 들어왔을 때 인사하는 부분. Echobot을 상속받았다.
@@ -198,6 +200,8 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 모든 Dialog에는 위처럼 `return await stepContext.EndDialogAsync(null, cancellationToken);` 가 포함이 되어야 합니다. 이 method는 Dialog를 종료시키는 역할을 합니다. 만약 WaterfallDialog의 중간 step에서 `EndDialogAsync` method가 실행되었다면 뒤에 얼마나 많은 step이 남았는지는  바로 해당 Dialog는 종료됩니다.
 
 #### 2.2 `Dialogs/CheckUserDialog.cs`
+
+*`CherkUserDialog`에서는 사용자가 처음 봇에 들어왔을 때 이전에 Healthee와 대화를 나눠봤는지, 아닌지 판단합니다. 만약 대화를 나눠봤다면 이전에 저장된 사용자의 데이터를 Azure Sql Database에서 가져오고 기능 카드를 출력해주고, 아닐 경우 사용자의 정보를 받는 `TutorialDialog`를 실행시킵니다.*
 
 ![11](https://user-images.githubusercontent.com/41438361/88439858-51e23300-ce47-11ea-8da9-8e4ca5752cbc.JPG)
 
