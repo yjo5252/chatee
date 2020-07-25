@@ -40,7 +40,7 @@
 
 ## 구조(Final Ver)
 * Bots 폴더
-  * [DialogAndWelcomeBot.cs](#1.1-`Bots/DialogAndWelcomeBot.cs`) : 새로운 사용자가 들어왔을 때 인사하는 부분. Echobot을 상속받았다.
+  * [DialogAndWelcomeBot.cs](#1.1-Bots/DialogAndWelcomeBot.cs) : 새로운 사용자가 들어왔을 때 인사하는 부분. Echobot을 상속받았다.
   * EchoBot.cs : 기존의 Echobot 변형. 사용자의 입력을 처리한다.
 
 * Dialogs 폴더
