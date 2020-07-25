@@ -350,15 +350,26 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 #### 데이터베이스 관련(방화벽)
 
+봇을 C# project로 다운받아 로컬에서 실행시켜 emulator로 확인할 때, 간혹 쿼리문과 연결 설정이 올바르게 되어 있는데도 연결 오류가 뜨는 경우가 있었습니다. 
+
+이 경우 방화벽 문제였는데, 
+
+![1](https://user-images.githubusercontent.com/41438361/88452230-fc824200-ce97-11ea-989c-72436e7fd200.PNG)
+
+Azure Portal > Sql Server > 해당 데이터베이스 > 쿼리 편집기 에서 위와 같이 로그인을 할 때 IP address와 함께 방화벽 문제로 연결이 되지 않는다는 메세지가 떴습니다.
+
+현재 Healthee의 sql 데이터베이스 설정은 아래와 같습니다.
+
 ![37](https://user-images.githubusercontent.com/41438361/88443331-d25a6100-ce52-11ea-967c-0156d9faf43c.JPG)
 
-Azue sql server 설정을 다음과 같이 해놓았지만 항상 새로운 IP에서 접속하기 위해서는 해당 IP주소를 portal을 이용해서 추가해 주어야 했습니다.
+설정을 위와 같이 해놓았지만 항상 새로운 IP에서 접속하기 위해서는 해당 IP주소를 portal을 이용해서 추가해 주어야 했습니다.
 
 ![38](https://user-images.githubusercontent.com/41438361/88443389-18afc000-ce53-11ea-9183-fd2077a7355d.JPG)
 
-만약 Chatbot을 구동중 DB 연결 오류가 계속 뜰 시에는 Azure Portal > 해당 sql server > 보안 > 방화벽 및 가상 네트워크에서 위에 있는 클라이언트 IP 주소를 시작 IP,  종료 IP에 넣어주고 추가한다음, 위에 있는 저장 버튼을 누르고 다시 접속해주세요. (규칙이름은 아무 값이나 넣어도 됩니다.)
-
+만약 Chatbot을 구동중 DB 연결 오류가 계속 뜰 시에는 Azure Portal > 해당 **sql server**(데이터베이스가 아닙니다) > 보안 > 방화벽 및 가상 네트워크에서 위에 있는 클라이언트 IP 주소를 시작 IP,  종료 IP에 넣어주고 추가한다음, 위에 있는 저장 버튼을 누르고 다시 접속해주세요. (규칙이름은 아무 값이나 넣어도 됩니다.) 이렇게 해도 안 될 경우 이 *데이터베이스 관련* 부분의 처음 사진에 있는 형광펜으로 친 IP 주소를 추가해주세요.
 
 
 ### 데이터베이스 설명
+
+
 ###
