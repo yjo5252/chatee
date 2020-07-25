@@ -3,7 +3,7 @@
 ## Topic: Hometraining을 도와줄 Azure based chatbot 
 홈 트레이닝 챗봇 **Healthee**는 홈 트레이닝을 하려는 분들에게
 
-**운동을 추천**해주고 **운동 기구, 음식에 대한 정보를 제공**하여 운동을 도와드리는 것을 목표하고 있습 니다. 
+**운동을 추천**해주고 **운동 기구, 음식에 대한 정보를 제공**하여 운동을 도와드리는 것을 목표하고 있습니다. 
 
 ## TEAM: Chatee
 <img src="https://user-images.githubusercontent.com/41981471/86508101-52734500-be18-11ea-90e0-92df415e79d2.JPG" width="50%">
@@ -59,7 +59,7 @@
   * StartTutorial.json : `TutorialDialog` 에서 처음에 사용자 환영하는 Adaptive Card 구현
   * Welcoming.json : 맨 처음 `DialogAndWelcomBot` 에서 사용자 환영하는 Adaptive Card 구현
 
-* UserProfile.cs : 사용자의 정보를 담을 클래스
+* UserProfile.cs : 사용자의 정보를 담을 클래스(사실 이 Healthee에서 필수적인 부분은 아니지만, `TutorialDialog`에서 좀 더 편하게 변수에 접근하기 위해 남겨두었습니다. UserProfile을 쓰는 부분을 UserInfoManager로 바꿔도 무방합니다.)
 * UserInfoManager.cs : 사용자의 정보를 관리하기 위한 클래스
 * Startup.cs : DialogAndWelcomeBot를 MainDialog로 실행시킨다.
 * ModeManager.cs : 봇의 모드(기능 실행 상태)를 관리하기 위한 매니저
@@ -69,9 +69,11 @@
 
 ### 코드 설명
 
-#### Bots
+#### * Bots
 
-##### `Bots/DialogAndWelcomeBot.cs`
+실질적인 'Bot'의 역할을 하는 부분. 사용자가 처음 Healthee에 입장했을 때 환영 인사를 하거나, 사용자가 보낸 메세지에 응답을 하기 위한 기능을 구현하는 부분이 존재한다.
+
+##### * `Bots/DialogAndWelcomeBot.cs`
 
 ![1](https://user-images.githubusercontent.com/41438361/87849805-76f61380-c926-11ea-9390-325600857f96.JPG)
 
@@ -93,15 +95,15 @@ reply.Attachments.Add(Cards.CreateAdaptiveCardAttachment("Welcoming.json"));
 
 에서 `CreateAdaptiveCardAttachment` method를 이용해서 Welcoming.json 파일을 Adaptive Card로 변환하여 사용자에게 보여질 수 있게 했습니다. 이 함수는 뒷부분에 설명되어 있습니다.
 
-#### `Bots/EchoBot.cs`
+#### * `Bots/EchoBot.cs`
 
 ![2](https://user-images.githubusercontent.com/41438361/88438311-66bcc780-ce43-11ea-9bb1-e36165d163ab.JPG)
 
-`OnMessageAddedAsync`에서는 먼저 QnaMaker를 불러옵니다.
+`OnMessageAddedAsync`에서는 먼저 QnaMaker를 불러옵니다. `_configuration[값]`을 통해서 `appsettings.json` 파일에 있는 값들에 접근합니다. 
 
 ![3](https://user-images.githubusercontent.com/41438361/88438359-8227d280-ce43-11ea-953a-ee1cfcdfb473.JPG)
 
-사용자의 입력을 `msg_from_user` 변수로 받고, `Trim()` method를 이용해서 앞 뒤 공백을 제거하여 처리를 했습니다.
+사용자의 입력을 `msg_from_user` 변수로 받고, 공백을 제거하여 처리를 했습니다.
 
 사용자의 입력을 처리한 후에는 `MainDialog.is_running_dialog`가 0인지 아닌지 판별하여 봇을 실행시킵니다.
 
@@ -119,44 +121,54 @@ QnA Maker를 불러오는 코드는 위와 같습니다. 이 코드를 QnA Maker
 
 다시 돌아가서,
 
-`MainDialog.is_running_dialog`가 1이면 현재 실행중인 Dialog가 있다는 말입니다.(현재 실행중인 기능이 있다. 기능이 진행중이다.)
+`MainDialog.is_running_dialog`가 1이면 현재 실행중인 Dialog가 있다는 말입니다.(현재 실행중인 기능이 있다. 기능이 진행중이다.) 따라서 이때는 현재 실행중인 기능이 있으므로 기능 수행 도중에 다른 모드로 전환이 되어버리면 안됩니다. 따라서 이때는 모드 전환 부분이 없스비다.
 
-그리고 `OnMessageActivityAsync` method의 마지막 부분에 아래와 같이 추가하여 Dialog을 실행시킬 수 있도록 합니다. 아래와 같이 설정하고 `MainDialog.cs` 및 Dialog들에서 Dialog의 흐름 및 실행되는 순서만 잘 설정하면 순서에 맞게 Dialog가 실행됩니다. 
+마지막으로 `OnMessageActivityAsync` method의 마지막 부분에 아래와 같이 추가하여 Dialog을 실행시킬 수 있도록 합니다. 
 
 ![4](https://user-images.githubusercontent.com/41438361/88438548-f06c9500-ce43-11ea-9f7f-67bb2533aee4.JPG)
 
-#### Dialogs
+위와 같이 설정하면 사용자의 입력이 들어올때마다 현재 봇의 문맥(상황)에 맞는 Dialog를 실행시킬 수 있습니다. Dialog는 기능/시나리오 라고 생각하면 편합니다. Dialog는 여러개가 있는데, 이 Dialog들마다 step이 존재하여 특정 시점에는 특정 Dialog의 특정 step이 실행되게 됩니다. 위의 함수는 특정 시점에서 진행중이던 Dialog의 순서를 이어서 진행시킨다 정도로 생각하면 될 것 같습니다.
 
-Dialog의 순서를 설정하는 법, 모드를 설정하는 부분을 보겠습니다.
+`MainDialog.cs` 및 Dialog들에서 Dialog의 흐름 및 실행되는 순서만 잘 설정하면 원하는 순서에 맞게 원하는 Dialog들을 실행시킬 수 있습니다. 
 
-##### `Dialogs/MainDialog.cs`
+#### * Dialogs
+
+Dialog는 봇의 기능과 같은 역할을 합니다. 즉, Dialog들은 저마다 개별적으로 실행시킬 수 있는 step을 가지고 있는데, 이 step들을 순차적으로 실행시켜 특정 기능을 구현하는 것이라고 생각하면 되겠습니다.
+
+예시) `Dialog A(step 1)->Dialog A(step 2)->Dialog A(step 3)->Dialog B(step 1)->Dialog B(step 2)->Dialog A(step 4)`와 같이 실행시킬 수 있습니다.
+
+Dialog의 순서를 설정하는 법, Healhee의 모드를 설정하는 부분을 보겠습니다.
+
+##### * `Dialogs/MainDialog.cs`
 
 위에 `EchoBot.cs` 에서 현재 실행중인 Dialog가 있는지 없는지 판별하여 모드를 바꾼다고 했습니다.
 
 ![7](https://user-images.githubusercontent.com/41438361/88439088-3413ce80-ce45-11ea-8a71-557511ee836d.JPG)
 
-`is_running_dialog`를 통해 현재 실행중인 Dialog가 있는지 없는지 판별합니다.
+`MainDialog.cs`에서는 이 `is_running_dialog`를 통해 현재 실행중인 Dialog가 있는지 없는지 값을 설정해줍니다.
 
 
-`MainDialog.cs` 에서는 필요한 Dialog들을 모두 모두 실행시키는 관리자 Dialog와 같은 역할을 합니다. 즉 최상위 Dialog라고 할 수 있는데, 필요한 Dialog들을 일단 모두 모아야 합니다.
+
+
+`MainDialog.cs` 에서는 Healthee 구동에 필요한 Dialog들을 모두 실행시키는 관리자 Dialog와 같은 역할을 합니다. 즉 최상위 Dialog라고 할 수 있는데, 필요한 Dialog들을 일단 모두 모아야 합니다. 이 필요한 Dialog라는 것은 `MainDialog.cs`에서 직접적인 호출로 인해 실행되는 Dialog들을 말합니다.
 
 ![8](https://user-images.githubusercontent.com/41438361/88439370-01b6a100-ce46-11ea-9322-351291627e4b.JPG)
 
 위와 같이 생성자에서 필요한 Dialog들을 모두 `AddDialog()` method를 이용해 추가해줍니다. 상위 Dialog에서 하위 Dialog들을 실행시키기 위해서는 꼭 `AddDialog()` 를 통해 하위 Dialog를 추가시켜줘야 합니다.
 
-맨 마지막에 있는 WaterFallDialog는 `{``}`안에 `InitialAsync`, `FinalStepAsync` 처럼 실행시키고 싶은 step(단계)를 추가해 줍니다. WaterFallDialog에 있는 step들은 위에서부터 순서대로 실행됩니다.
+맨 마지막에 있는 WaterFallDialog는 `{ }`안에 `InitialAsync`, `FinalStepAsync` 처럼 실행시키고 싶은 step(단계)를 추가해 줍니다. WaterFallDialog에 있는 step들은 위에서부터 순서대로 실행됩니다.
 
 ![9](https://user-images.githubusercontent.com/41438361/88439527-6c67dc80-ce46-11ea-8a7d-7572cb7d0b39.JPG)
 
-WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. 보면 `ModeManager.mode`를 참조하여 모드에 따라서 실행시킬 Dialog를 구분하여 실행시킵니다.
+WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. 보면 `ModeManager.mode`를 참조하여 모드에 따라서 실행시킬 Dialog를 구분하여 실행시킵니다. 또 `MainDialog`를 포함해서 다른 Dialog들을 실행시키게 되는 부분이므로 현재 Dialog가 실행중이라는 `is_running_dialog`를 1로 설정합니다.
 
-`return await stepContext.BeginDialogAsync(nameof(Dialog이름), null, cancellationToken);` 함수는 특정 Dialog에서 바로 다른 Dialog로 이동할 수 있게 해주는 method입니다. 
+위의 `return await stepContext.BeginDialogAsync(nameof(Dialog이름), null, cancellationToken);` 함수는 특정 Dialog에서 바로 다른 Dialog로 이동할 수 있게 해주는 method입니다. 이 method를 통해 다른 Dialog가 실행이 되고 그 Dialog가 종료된다면 이 Dialog의 다음 step이 실행되게 됩니다.
 
 ![10](https://user-images.githubusercontent.com/41438361/88439661-c2d51b00-ce46-11ea-9080-2bf228f86ce4.JPG)
 
-`is_running_dialog`를 0으로 설정하여 기능을 모두 마쳤다고 설정합니다.
+마지막인 FinalstepAsync에서는 `is_running_dialog`를 0으로 설정하여 Dialog가 끝났음을 알립니다..
 
-모든 Dialog에는 `return await stepContext.EndDialogAsync(null, cancellationToken);` 가 포함이 되어야 합니다. 이 method는 Dialog를 종료시키는 역할을 합니다. 만약 하위 Dialog에서 종료가 될 경우, 상위 Dialog에서 진행중이다가 하위 Dialog로 넘어간 step의 바로 다음 step이 진행됩니다.
+모든 Dialog에는 위처럼 `return await stepContext.EndDialogAsync(null, cancellationToken);` 가 포함이 되어야 합니다. 이 method는 Dialog를 종료시키는 역할을 합니다. 위에서도 언급했지만, 만약 하위 Dialog에서 종료가 될 경우, 상위 Dialog에서 진행중이다가 하위 Dialog로 넘어간 step의 바로 다음 step이 진행됩니다.
 
 만약 WaterfallDialog의 중간 step에서 `EndDialogAsync` method가 실행되었다면 바로 해당 Dialog는 종료됩니다.
 
@@ -164,7 +176,7 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 ![11](https://user-images.githubusercontent.com/41438361/88439858-51e23300-ce47-11ea-8da9-8e4ca5752cbc.JPG)
 
-(`DialogAndWelocomeBot.cs`의 `OnMembersAddedAsync` method에서 선언) Healthee는 처음에 모드를 InitialCheckUser 모드로 설정하여 `CheckUserDialog.cs`가 실행될 수 있도록 했습니다. 
+(윗 부분은 `DialogAndWelocomeBot.cs`의 `OnMembersAddedAsync` method에서 선언된 ) Healthee는 처음에 모드를 InitialCheckUser 모드로 설정하여 `CheckUserDialog.cs`가 실행될 수 있도록 했습니다. 
 
 정리하면, 설정된 모드로 1. `EchoBot.cs`에서 `Dialog.RunAsync()` method가 실행되면서 현재 수행중이던 Dialog, 혹은 새로 Dialog를 시작하는데 이때 새로 기능을 실행시킬 경우(`MainDialog.is_running_dialog`가 0일 경우) 먼저 2. `MainDialog.cs`가 실행되고, 3. 모드 확인 후 모드에 맞는 Dialog가 실행될 수 있도록 되는 구조입니다.
 
