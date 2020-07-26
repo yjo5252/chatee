@@ -42,7 +42,7 @@
 
 ## 구조(Final Ver)
 * Bots 폴더
-  * [DialogAndWelcomeBot.cs] : 새로운 사용자가 들어왔을 때 인사하는 부분. Echobot을 상속받았다.
+  * DialogAndWelcomeBot.cs : 새로운 사용자가 들어왔을 때 인사하는 부분. Echobot을 상속받았다.
   * EchoBot.cs : 기존의 Echobot 변형. 사용자의 입력을 처리한다.
 
 * Dialogs 폴더
@@ -246,10 +246,11 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 ![17](https://user-images.githubusercontent.com/41438361/88441088-f619a900-ce4a-11ea-8f6d-4e298bdf0ea3.JPG)
 
-만약 데이터베이스에 있다면 위와 같이 `UserInfoManager`에 정보들을 저장하고 `ShowFunctionDialog`를 실행시킵니다. 
+만약 데이터베이스에 있다면 위와 같이 `UserInfoManager`에 정보들을 저장하고 `ShowFunctionDialog`를 실행시킵니다. `UserInfoManager`에 관해서도 뒷부분에 설명을 달아놨습니다.
 
 #### 2.3 `Dialogs/TutorialDialog.cs`
 
+**필요한 요소 추가 및 Dialog의 WaterfallDialog 구성**
 
 ![18](https://user-images.githubusercontent.com/41438361/88441179-3f69f880-ce4b-11ea-860a-f0e45aa59262.JPG)
 
@@ -259,41 +260,75 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 ![20](https://user-images.githubusercontent.com/41438361/88441359-d2a32e00-ce4b-11ea-8e12-ba5e43ef375e.JPG)
 
-이 Dialog에서 실행되는 `PreWeightStepAsync` 단계에서는 사용자에게 현재 체중을 `NumberPrompt<int>`를 이용하여 int 값으로 입력하게 만듭니다. 사용자가 숫자를 입력하면, 
+예를 들어, 이 Dialog에서 실행되는 `PreWeightStepAsync` 단계에서는 사용자에게 현재 체중을 `NumberPrompt<int>`를 이용하여 int 값으로 입력하게 만듭니다. 사용자가 숫자를 입력하면, 
 
 ![21](https://user-images.githubusercontent.com/41438361/88441444-1eee6e00-ce4c-11ea-940b-37233c3b764a.JPG)
 
-위의 `PreWeightStepAsync`가 실행되어 입력한 값을 검사합니다. 만약 `>0`조건을 만족시킬 경우 다음 step으로 정상적으로 넘어가고, 만약 조건을 만족하지 않았을 경우 `RetryPrompt`가 출력되며 사용자에게 다시 입력할 것을 봇이 얘기하게 됩니다. 이처럼 특정 prompt에서 조건을 확인할 수 있는 함수를 생성할 수 있습니다.
+위의 `PreWeightStepAsync`가 실행되어 입력한 값을 검사합니다. 만약 입력한 값이 `>0`조건을 만족시킬 경우 다음 step으로 정상적으로 넘어가고, 만약 조건을 만족하지 않았을 경우 `RetryPrompt`가 출력되며 사용자에게 다시 입력할 것을 봇이 얘기하게 됩니다. 이처럼 특정 prompt에서 조건을 확인할 수 있는 함수를 생성할 수 있습니다.
+
+![10](https://user-images.githubusercontent.com/41438361/88474704-31f46180-cf64-11ea-89ab-bb043efcfe04.JPG)
+
+화면 상으로는 위와 같이 나오게 됩니다.
+
+**Dialog 실행**
 
 ![19](https://user-images.githubusercontent.com/41438361/88441267-83f59400-ce4b-11ea-8e80-782201c8c8d8.JPG)
 
-후에 실행되는 `AcknowledgementStepAsync` 단계에서는 위와 같이 INSERT 쿼리문을 이용하여 데이터베이스에 값을 삽입합니다. 
+후에 실행되는 `AcknowledgementStepAsync` 단계에서는 위와 같이 INSERT 쿼리문을 이용하여 받은 사용자 정보들을 조합하여 데이터베이스에 값을 삽입합니다.
 
-#### 2.4 **Helathee의 기능 보여주기**: `Dialogs/ShowFunctionsDialog.cs`
+![11](https://user-images.githubusercontent.com/41438361/88474743-839cec00-cf64-11ea-92fd-aeef11083937.JPG)
 
-`ShowFunctionDialog`에서는 Healthee가 제공하는 기능들을 카드로 보여줍니다.
+데이터 베이스에 값을 삽입한 후에는 위와 같이 모드를 바꾸고 `ShowFunctionsDialog` 를 실행시켜 Tutorial이 끝나자마자 기능 카드를 보여주는 Dialog를 실행시킬 수 있도록 했습니다. 뒤에서도 언급하겠지만, 모든 Healthee 기능 Dialog들 마지막에 이렇게 기능 보여주는 부분을 실행시켜 기능들이 끝나고 나서 기능들을 보여줄 수 있도록 했습니다. `Thread.Sleep(3000)` 을 한 이유는 튜토리얼이 끝나자마자 바로 기능 카드를 보여주면 이전의 메세지가 위로 바로 올라가버리기 때문에 사용자에게 메세지를 확인할 수 있는 시간을 주기 위해서입니다.
+
+#### 2.4 **Healthee의 기능 보여주기**: `Dialogs/ShowFunctionsDialog.cs`
+
+*`ShowFunctionDialog`에서는 Healthee가 제공하는 기능들을 카드로 보여줍니다.*
+
+**필요한 요소 추가 및 Dialog의 WaterfallDialog 구성**
+
+![12](https://user-images.githubusercontent.com/41438361/88474819-3ec58500-cf65-11ea-9a35-701b6bae18a0.JPG)
+
+`ShowFunctionsDialog`에서 실행시키는 step들은 위와 같습니다.
+
+**Dialog 실행**
 
 ![22](https://user-images.githubusercontent.com/41438361/88441622-93c1a800-ce4c-11ea-9705-65b52bb37ea6.JPG)
 
-카드를 보여주는 step인 `ShowCardStepAsync`에서는 위와 같이 `attachments`에 `HeroCard` 객체를 생성하여 붙입니다. `HeroCard` 안에는 다양한 필드를 이용하여 다양한 카드를 만들 수 있습니다. 여기서의 `ImBack`은 사용자가 `Button`을 누르면 `value`의 값을 봇한테 전송하는 것을 가능하게 하는 ActionType입니다.
+카드를 보여주는 step인 `ShowCardStepAsync`에서는 위와 같이 `attachments`에 `HeroCard` 객체를 생성하여 붙입니다. 객체는 `HeroCard` 뿐만 아니라 다양한 객체들이 될 수 있습니다. `HeroCard`는 카드에 이미지, 글 등 다양한 요소를 넣어 보여줄 수 있는 객체입니다. 이런 카드들에 대한 추가 예시는 [Microsoft 공식문서](https://docs.microsoft.com/ko-kr/azure/bot-service/bot-service-design-user-experience?view=azure-bot-service-4.0)에서 확인할 수 있습니다. 
 
-여기서는 `reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;`를 이용하여 카드가 회전식으로 보여지게 합니다.
+추가로 `reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;`를 이용하여 `attachments`에 붙여진 객체들을 회전식으로 보여줍니다.
+
+`HeroCard` 안에는 다양한 필드를 이용하여 다양한 카드를 만들 수 있습니다. 여기서의 `Buttons-CardAction - ActionTypes.ImBack`은 사용자가 `Button`을 누르면 `value`의 값을 봇한테 전송하는 것을 가능하게 하는 ActionType입니다.
 
 봇에서는 다음과 같이 보입니다.
 
-![23](https://user-images.githubusercontent.com/41438361/88441781-2eba8200-ce4d-11ea-813e-d2ad41fff170.JPG)
+![1](https://user-images.githubusercontent.com/41438361/88474964-87ca0900-cf66-11ea-88a5-d3ccd8877120.png)
 
-오른쪽에 마우스를 갖다대면 화살표가 나와 클릭하면 카드를 이동시키며 볼 수 있습니다.
 
-#### 2.5 **운동 추천**:  `Dialogs/RecommendExerciseDialog.cs`
+오른쪽에 마우스를 갖다대면 위의 사진처럼 화살표가 나와 클릭하면 카드를 이동시키며 볼 수 있습니다. 만약 기능 카드들에 있는 각 버튼을 클릭하면 다음과 같이 나옵니다.
+
+![image](https://user-images.githubusercontent.com/41438361/88474973-b34cf380-cf66-11ea-981a-ba6082bf9ff5.png)
+
+#### 2.5 `Dialogs/RecommendExerciseDialog.cs`
+
+*`RecommendExerciseDialog`에서는 사용자에게 운동을 추천해줍니다. 이전에 저장된 사용자 정보를 바탕으로 맞춤운동을 추천해줄 수도 있고, 새로 사용자의 입력을 받아 그 결과에 맞는 운동을 추천해줄 수도 있습니다. 운동을 추천한 후에는 사용자가 운동을 했는지 안했는지 확인하여 데이터베이스에 운동 기록 데이터를 업데이트 할 수도 있습니다.*
+
+**필요한 요소 추가 및 Dialog의 WaterfallDialog 구성**
 
 ![24](https://user-images.githubusercontent.com/41438361/88441859-6aede280-ce4d-11ea-9fa7-139b55513a0a.JPG)
 
-`RecommendExerciseDialog`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 사용자가 초기에 설정한 운동 부위, 종류, 난이도에 맞는 운동을 바로 추천받을 수도 있고, 사용자가 추가로 해당 정보들을 설정하여 운동을 새로 추천받을 수도 있습니다. 운동을 추천해줄때는 운동 이름, 세트, 시간, 영상까지 함께 `HeroCard`로 보여줍니다.
+`RecommendExerciseDialog`에서 실행되는 step들은 위와 같습니다. 
 
-마지막에는 추천 받은 운동을 했는지 확인하여 만약 운동을 했다면 데이터베이스에 사용자의 운동기록을 업데이트합니다.
+**Dialog 실행**
 
-마찬가지로 prompt와 db query를 이용하여 기능들을 구현했습니다.
+마찬가지로 prompt와 db query, herocard 및 adaptiveCard를 이용하여 기능들을 구현했습니다. `AdaptiveCard`는 사용자가 카드의 구성을 커스터마이징 하기 쉬운 형식의 카드입니다. 자세한 설명은 뒤에서 다시 다루겠습니다.
+
+결과는 다음과 같이 나옵니다.
+
+![image](https://user-images.githubusercontent.com/41438361/88475043-5dc51680-cf67-11ea-9127-963419aeb0b2.png)
+![image](https://user-images.githubusercontent.com/41438361/88475054-75040400-cf67-11ea-965e-96b42110981b.png)
+![image](https://user-images.githubusercontent.com/41438361/88475068-8e0cb500-cf67-11ea-9508-00df734e0904.png)
+![image](https://user-images.githubusercontent.com/41438361/88475077-a250b200-cf67-11ea-86d4-de3e33d0328c.png)
 
 #### 2.6 **운동 기록**: `Dialogs/RecordDialog.cs`
 
