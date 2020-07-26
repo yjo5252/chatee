@@ -1,11 +1,21 @@
 # :speech_balloon: Healthee Chatbot Service :runner:
+<img src="https://user-images.githubusercontent.com/41438361/88480682-43ecf900-cf92-11ea-875a-79df7aa29d8b.png" width="50%">
 
 ## Topic: Hometraining을 도와줄 Azure based chatbot 
 홈 트레이닝 챗봇 **Healthee**는 홈 트레이닝을 하려는 분들에게
 
 **운동을 추천**해주고 **운동 기구, 음식에 대한 정보를 제공**하여 운동을 도와드리는 것을 목표하고 있습니다. 
 
+## 시연 링크
 [Healthee랑 대화해보기💬](https://htmlpreview.github.io/?https://github.com/yjo5252/chatee/blob/master/Healthee.html)
+
+## 개발 환경
+
+* [Visual Studio 2019](https://visualstudio.microsoft.com/ko/)
+* [Microsoft Bot Framework SDK v4](Bot Framework v4 SDK Templates for Visual Studio)
+* [Bot Emulator](https://github.com/Microsoft/BotFramework-Emulator)
+* [Azure Trial](https://azure.microsoft.com/ko-kr/free/)
+* Microsoft Azure Sql
 
 ## TEAM: Chatee
 <img src="https://user-images.githubusercontent.com/41981471/86508101-52734500-be18-11ea-90e0-92df415e79d2.JPG" width="50%">
@@ -41,6 +51,17 @@
 *캐릭터는 사람들이 Healthee와 더 많이 대화를 나누고 운동을 하게끔 동기 부여를 하기 위해 만든 기능입니다! 운동을 하고 많이 기록을 할 수록 캐릭터는 성장합니다.*
 
 ## 구조(Final Ver)
+
+### 구조도
+
+<img src="https://user-images.githubusercontent.com/41438361/88481301-83691480-cf95-11ea-9d5f-e275d4cd9247.png" width="60%">
+
+### 흐름도
+
+
+
+### 구성
+
 * Bots 폴더
   * DialogAndWelcomeBot.cs : 새로운 사용자가 들어왔을 때 인사하는 부분. Echobot을 상속받았다.
   * EchoBot.cs : 기존의 Echobot 변형. 사용자의 입력을 처리한다.
