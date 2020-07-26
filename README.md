@@ -456,6 +456,85 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 직접 일일이 만들지 않아도 되는데, [AdaptiveCard 쉽게 만들기](https://adaptivecards.io/designer/)에서 쉽게 UI로 만들 수 있습니다.
 
+![image](https://user-images.githubusercontent.com/41438361/88477460-252f3800-cf7b-11ea-9cd6-3b602c012917.png)
+
+위의 사진처럼 원하는 대로 Adaptive Card를 편집할 수 있습니다. 아래쪽에 json 형식에 사용 가능한 text가 나오므로 이것을 그대로 복사하여 사용하면 됩니다.
+
+`Resources`폴더의 `CharacterShow.json`을 예시로 보겠습니다.
+
+```
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "RichTextBlock",
+          "inlines": [
+            {
+              "type": "TextRun",
+              "text": "가취가욥~~!💨💨",
+              "color": "Good",
+              "italic": true
+            }
+          ],
+          "horizontalAlignment": "Center"
+        },
+        {
+          "type": "Image",
+          "url": "https://t1.daumcdn.net/section/oc/b91f421cab1a46dd96a845f0c55b7f91",
+          "size": "Stretch"
+        },
+        {
+          "type": "Container",
+          "items": [
+            {
+              "type": "RichTextBlock",
+              "inlines": [
+                {
+                  "type": "TextRun",
+                  "text": "여러분과 함께 운동할 캐릭터에요.💪 \n\n지금은 "
+                },
+                {
+                  "type": "TextRun",
+                  "text": "비실비실",
+                  "size": "medium",
+                  "weight": "bolder"
+                },
+                {
+                  "type": "TextRun",
+                  "text": "하지만 같이 운동하면서 건강해질거에요!"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "좋아!👍",
+      "data": "좋아!"
+    }
+  ]
+}
+```
+
+위처럼 json 파일을 만들고 
+
+![image](https://user-images.githubusercontent.com/41438361/88477695-1cd7fc80-cf7d-11ea-8a5e-9d635e824323.png)
+
+`Cards.cs`의 `CreateAdaptiveCardAttachment` method를 이용하여 위처럼 코드를 사용하면
+
+![image](https://user-images.githubusercontent.com/41438361/88477730-5ad52080-cf7d-11ea-9abf-1e1c03c152f1.png)
+
+위처럼 봇에서 확인할 수 있습니다.
+
 ### 4.`Cards.cs`
 
 ![31](https://user-images.githubusercontent.com/41438361/88442694-6f67ca80-ce50-11ea-8046-754524a66c84.JPG)
@@ -467,6 +546,16 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 ![32](https://user-images.githubusercontent.com/41438361/88442761-af2eb200-ce50-11ea-91ee-eea8ff0c3a85.JPG)
 
 `ModeManager` 에서는 모드(Healthee가 지원하는 기능별로 존재)를 선언합니다. 이 모드를 다른 코드에서 바꿔가며 모드를 조작해줍니다.
+
+* InitialCheckUser : 처음에 사용자가 들어왔을 때 이전에 사용자가 Healthee와 대화해봤는지 체크해야 할 때
+* ShowFunction : 기능 카드를 보여줄 때
+* Tutorial : 튜토리얼 모드
+* Record : 사용자가 운동을 기록할 때
+* RecommendFood : 음식을 추천할 때
+* RecommendEquipment : 운동 기구 추천할 때
+* CheckCharacterState : 캐릭터 상태 확인할 때
+* SeeMyRecord : 내 기록 확인할 때
+
 
 ### 6. `UserInfoManager.cs`
 
@@ -485,6 +574,34 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 ![36](https://user-images.githubusercontent.com/41438361/88443003-91158180-ce51-11ea-8763-883c454e2355.JPG)
 
 `appsettings.json`에서는 위와 같이 필요한 key와 value를 설정합니다.
+
+#### MicrosoftApp 연결하는 방법(Azure Portal의 웹 앱과 연결-C# 프로젝트에서 게시했을 때 반영될 수 있게)
+
+* `MicrosoftAppId`, `MicrosoftAppPassword`
+
+![15](https://user-images.githubusercontent.com/41438361/88477910-ea2f0380-cf7e-11ea-9c1e-b197ac45d56c.JPG)
+
+Azure Portal에 접속하여 로그인하고 본인의 리소스 그룹으로 들어가면 위와 같은 화면이 나옵니다. 저기서 형관펜으로 친 웹 앱 봇을 클릭합니다.
+
+![16](https://user-images.githubusercontent.com/41438361/88477944-4a25aa00-cf7f-11ea-8e7e-5260a94144fe.JPG)
+
+왼쪽의 앱 서비스 설정 메뉴의 구성 탭에 들어가면 형광펜으로 친 것처럼 MicrosoftAppId, MicrosoftAppPassword를 확인할 수 있습니다. 여기에 있는 값을 `appsettings.json`에 넣으면 됩니다.
+
+#### QnA Maker 연결하는 방법
+
+우선 QnA Maker가 없다면 QnA Maker를 만듭니다. 만드는 방법은 [여기](https://docs.microsoft.com/ko-kr/azure/cognitive-services/qnamaker/quickstarts/create-publish-knowledge-base)에 나온대로 하시면 됩니다.
+
+그 다음 QnA Maker portal의 윗부분에 My knowledge bases라는 메뉴를 누르면 
+
+![17](https://user-images.githubusercontent.com/41438361/88478034-fa93ae00-cf7f-11ea-9d8c-584dcc5ab556.JPG)
+
+위처럼 만든 QnA KB를 확인할 수 있습니다. View Code를 누르면
+
+![image](https://user-images.githubusercontent.com/41438361/88478121-b3f28380-cf80-11ea-8b16-1d0c9af4dd79.png)
+
+위와 같은 창이 뜹니다. 여기서 표시해 둔 값들을 복사하여 붙이면 됩니다.
+
+*QnA Maker를 봇에 연결할 때, 만약 기존에 연결하려는 봇이 기본 EchoBot일 경우 appsettings.json에 위의 값들을 설정해도 잘 되지 않을 수 있습니다. 이럴때는 QnA Maker 포탈에서 QnA Maker를 만든 후 거기서 웹 앱 봇을 만들고 코드에서 연결하면 잘 됩니다.*
 
 
 ## 주의 사항
