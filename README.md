@@ -118,7 +118,7 @@
 
 실질적인 'Bot'의 역할을 하는 부분. 사용자가 처음 Healthee에 입장했을 때 환영 인사를 하거나, 사용자가 보낸 메세지에 응답을 하기 위한 기능을 구현하는 부분이 존재한다.
 
-#### 1.1 **사용자 환영하기**: `Bots/DialogAndWelcomeBot.cs`
+#### 1.1 `Bots/DialogAndWelcomeBot.cs`
 
 *사용자가 Healthee 봇에 처음 입장했을 때 환영 인사를 보낸다.*
 
@@ -144,7 +144,7 @@ DialogAndWelcomeBot은 EchoBot을 상속받습니다. EchoBot에 대한 설명�
 
 추가로 `turnContext.SendActivityAsync` method를 이용해서 사용자에게 메세지를 보냅니다.
 
-#### 1.2 **사용자 응답에 대응하기**: `Bots/EchoBot.cs`
+#### 1.2 `Bots/EchoBot.cs`
 
 *사용자가 봇에 메세지를 보내면 응답을 처리하는 부분*
 
@@ -186,7 +186,7 @@ Dialog는 봇의 기능과 같은 역할을 합니다. 즉, Dialog들은 내부�
 
 Healthee는 Dialog를 이용하여 모드에 따라 다른 기능을 실행할 수 있게, 조건을 확인하여 특정 기능을 수행할지 말지 결정합니다.
 
-#### 2.1 **실행 중인 Dialog 확인 및 필요한 Dialog 추가/실행** : `Dialogs/MainDialog.cs`
+#### 2.1 `Dialogs/MainDialog.cs`
 
 *Healthee 구동에 필요한 Dialog들을 모두 실행시키는 관리자 Dialog와 같은 역할을 합니다. 실제 Dialog 끼리의 계층은 없지만 구조상 가장 최상위 Dialog입니다. 여기서는 모드에 따라 다른 Dialog들을 직접 실행시킵니다.*
 
@@ -227,7 +227,7 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 모든 Dialog에는 위처럼 `return await stepContext.EndDialogAsync(null, cancellationToken);` 가 포함이 되어야 합니다. 이 method는 Dialog를 종료시키는 역할을 합니다. 만약 WaterfallDialog의 중간 step에서 `EndDialogAsync` method가 실행되었다면 뒤에 얼마나 많은 step이 남았는지는  바로 해당 Dialog는 종료됩니다.
 
-#### 2.2 **사용자가 튜토리얼을 진행했는지 확인**: `Dialogs/CheckUserDialog.cs`
+#### 2.2 `Dialogs/CheckUserDialog.cs`
 
 *`CherkUserDialog`에서는 사용자가 처음 봇에 들어왔을 때 이전에 Healthee와 대화를 나눠봤는지, 아닌지 판단합니다. 만약 대화를 나눠봤다면 이전에 저장된 사용자의 데이터를 Azure Sql Database에서 가져오고 기능 카드를 출력해주고, 아닐 경우 사용자의 정보를 받는 `TutorialDialog`를 실행시킵니다.*
 
