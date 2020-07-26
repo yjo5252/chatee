@@ -9,6 +9,14 @@
 ## 시연 링크
 [Healthee랑 대화해보기💬](https://htmlpreview.github.io/?https://github.com/yjo5252/chatee/blob/master/Healthee.html)
 
+## 따라하기
+
+1. 시작 전에, 필요한 요소들을 다운받고 세팅해주세요. [영욱님의 스튜디오 Chatbot 설명 영상](https://www.youtube.com/watch?v=g3UR61eOsiA)
+2. 프로젝트를 다운받아 주세요. 
+3. `Healthee` 폴더에서 `Healthee.sln` 프로젝트를 실행해주세요.
+4. 디버그 후 뜨는 윈도우 창에서 <img src="https://user-images.githubusercontent.com/41438361/88481906-15265100-cf99-11ea-9226-7442e8d26c5c.JPG", width"50%">에서 형광펜 친 부분을 복사해주세요.
+5. Bot Emulator를 켜서 open bot을 누른 후 <img src="https://user-images.githubusercontent.com/41438361/88481950-4b63d080-cf99-11ea-8b46-4c7bb03e8238.png" width="50%"> 에 나와있는 것처럼 복사한 값을 넣고 실행시켜 주세요.
+
 ## 개발 환경
 
 * [Visual Studio 2019](https://visualstudio.microsoft.com/ko/)
@@ -20,7 +28,7 @@
 *자세한 설명은 [이 영상에서 확인해주세요](https://www.youtube.com/watch?v=g3UR61eOsiA)*
 
 ## TEAM: Chatee
-<img src="https://user-images.githubusercontent.com/41981471/86508101-52734500-be18-11ea-90e0-92df415e79d2.JPG" width="50%">
+<img src="https://user-images.githubusercontent.com/41981471/86508101-52734500-be18-11ea-90e0-92df415e79d2.JPG" width="40%">
 
 ## 과제
 [가이드 페이지](https://blog.naver.com/formktmkt/221994807603)
