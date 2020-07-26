@@ -642,6 +642,13 @@ Azure Portal > Sql Server > 해당 데이터베이스 > 쿼리 편집기 에서 
 
 만약 Chatbot을 구동중 DB 연결 오류가 계속 뜰 시에는 Azure Portal > 해당 **sql server**(데이터베이스가 아닙니다) > 보안 > 방화벽 및 가상 네트워크에서 위에 있는 클라이언트 IP 주소를 시작 IP,  종료 IP에 넣어주고 추가한다음, 위에 있는 저장 버튼을 누르고 다시 접속해주세요. (규칙이름은 아무 값이나 넣어도 됩니다.) 이렇게 해도 안 될 경우 이 *데이터베이스 관련* 부분의 처음 사진에 있는 형광펜으로 친 IP 주소를 추가해주세요.
 
+### 특정 기능이 끝나고 왜 바로 기능카드를 보여주지 않는지
+
+주의 사항까지는 아니지만, 설명해야 하는 부분인 것 같아서 추가하였습니다.
+
+Healthee는 코드에서 `Thread.Sleep(3000);`을 이용하여 특정 기능이 끝나면 바로 기능 카드들을 보여주는 것이 아니라 일정 시간이 지나면 기능카드를 보여줍니다.
+
+그 이유는 사용자가 결과를 확인해야 하는 메세지를 봇이 보내고, 바로 기능 카드를 보여주면 결과 메세지가 바로 위로 올라가버려 사용자가 확인하기 힘들어지기 때문에 사용자가 충분히 결과를 확인할 수 있는 시간을 주기 위해서입니다.
 
 ## 데이터베이스
 
@@ -832,3 +839,74 @@ q.ExecuteNonQuery();
 위와 같이 **`ExecuteNonQuery()`** method를 이용해서 실행시켜야 합니다.
 
 ## 그 외 알아낸 소소한 것들
+
+### 모든 Dialog들은 ComponentDialog를 상속해야 합니다.
+
+```C#
+public class RecordDialog : ComponentDialog
+```
+
+### C# Project(Visual Studio)에서 Azure Sql Database 보기
+
+![image](https://user-images.githubusercontent.com/41438361/88479130-f53a6180-cf87-11ea-9fe7-ce1e9a74e586.png)
+
+Sql 개체 탐색기를 열어줍니다.
+
+![image](https://user-images.githubusercontent.com/41438361/88479163-17cc7a80-cf88-11ea-8d04-ea6175213e22.png)
+
+개체 탐색기에서 SQL Server 추가를 눌러줍니다.
+
+![image](https://user-images.githubusercontent.com/41438361/88479194-4ea29080-cf88-11ea-81d4-0c60b13ff94b.png)
+
+인증을 SQL Server 인증으로 하고, 여기에 서버 이름, 사용자 이름, 암호를 넣어줘야 합니다. 이 값들은 azure portal에서 확인할 수 있습니다.
+
+![18](https://user-images.githubusercontent.com/41438361/88479259-c1ac0700-cf88-11ea-97d7-50e0acff3bd5.JPG)
+
+위 처럼 서버 이름은 SQL 데이터베이스의 개요 탭에서 확인할 수 있습니다. 그외의 값들까지 넣어주고 연결하면
+
+![image](https://user-images.githubusercontent.com/41438361/88479295-ef914b80-cf88-11ea-82d5-2f0a2db23747.png)
+
+위와 같이 데이터베이스가 연결된 것을 확인할 수 있습니다.
+
+### Prompt의 RetryPrompt가 안 보여지는 이유
+
+```C#
+var promptOptions = new PromptOptions
+{
+   Prompt = MessageFactory.Text("목표 체중을 알려주세요(단위 : kg)"),
+   RetryPrompt = MessageFactory.Text("0보다 크고 300보다 작은 수치로 적어주세요."),
+};
+```
+
+위와 같이 코드를 짜면 원래 prompt의 특정 조건을 만족하지 않거나 유효하지 않은 값을 사용자가 입력할 경우 retryprompt를 봇이 다시 전송해야 합니다.
+
+하지만 retryprompt를 봇이 출력하기 전에 봇이 사용자에게 또 메세지를 보내는 작업이 있을 경우 retryprompt가 실행이 되지 않습니다.
+
+이게 무슨 말이냐면,
+
+![KakaoTalk_20200726_215055163](https://user-images.githubusercontent.com/41438361/88479464-477c8200-cf8a-11ea-971c-86a158edb432.jpg)
+
+원래 정상적으로 동작하는 retryprompt 의 경우 위처럼 작동해야 합니다.
+
+하지만
+
+![KakaoTalk_20200726_215108881](https://user-images.githubusercontent.com/41438361/88479473-59f6bb80-cf8a-11ea-9ec2-4739c23fe7db.jpg)
+
+위와 같이 다른 코드에서 봇이 사용자에게 메세지를 보내는 코드가 있을 경우(저같은 경우에는 `OnMessageActivityAsync`에서 사용자의 입력이 들어올때마다 모드 확인을 위해 현재 모드를 봇이 사용자에게 메세지를 보내게 했습니다.) RetryPrompt가 보여지지 않게 됩니다. 이 경우 봇이 에러가 나지는 않지만 원래 의도했던 대로 retryprompt 가 사용자에게 보여지지 않습니다.
+
+### HeroCard의 text는 markdown 문법을 사용한다.
+
+```C#
+var heroCard = new HeroCard
+{
+    Title = "#### 1. 운동 추천",
+    Text = "운동 부위, 운동 종류를 설정하여 맞춤 운동을 추천받아보세요! 운동 방법과 운동할 세트, 시간, 자세 등 운동 방법을 영상과 함께 알려드립니다."
+};
+```
+
+위와 같이 herocard를 만들 경우, `Title`의 "####"은 보여지지 않습니다. markdown 문법에서 제목 형식으로 바꿔주는 문법으로 인식이 되어 보여집니다.
+
+### QnA Maker
+
+
+
