@@ -2,7 +2,7 @@
 <img src="https://user-images.githubusercontent.com/41438361/88480682-43ecf900-cf92-11ea-875a-79df7aa29d8b.png" width="50%">
 
 ## 목차
-* [Topic](## topic)
+* [Topic](##topic:-hometraining을-도와줄-azure-based-chatbot)
 * [시연 링크](##시연-링크)
 * [따라하기](##따라하기)
 * [개발 환경](##개발-환경)
@@ -19,7 +19,7 @@
 * [데이터베이스](##데이터베이스)
 * [그 외 알아낸 소소한 것들](##그-외-알아낸-소소한-것들)
 
-## Topic: Hometraining을 도와줄 Azure based chatbot 
+## Topic: Hometraining을 도와줄 Azure based chatbot
 홈 트레이닝 챗봇 **Healthee**는 홈 트레이닝을 하려는 분들에게
 
 **운동을 추천**해주고 **운동 기구, 음식에 대한 정보를 제공**하여 운동을 도와드리는 것을 목표하고 있습니다. 
