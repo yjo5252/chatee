@@ -462,7 +462,7 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 `Resources`폴더의 `CharacterShow.json`을 예시로 보겠습니다.
 
-```
+```json
 {
   "type": "AdaptiveCard",
   "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -647,6 +647,31 @@ Azure Portal > Sql Server > 해당 데이터베이스 > 쿼리 편집기 에서 
 
 ### 데이터베이스 설명
 
+Healthee는 Azure Sql 데이터베이스를 이용하였습니다.
+
+![image](https://user-images.githubusercontent.com/41438361/88478328-7858b900-cf82-11ea-8a79-f4bccff6720c.png)
+
+* AvatarInfo : 캐릭터 정보 담기 위한 테이블
+
+![image](https://user-images.githubusercontent.com/41438361/88478355-9cb49580-cf82-11ea-8004-d8085a5ceaba.png)
+
+* Equipment : 운동 기구 정보 담기 위한 테이블
+
+![image](https://user-images.githubusercontent.com/41438361/88478382-b7870a00-cf82-11ea-9a7d-c2e531e018ac.png)
+
+* ExerciseRecord : 사용자의 운동 기록 담기 위한 테이블
+
+![image](https://user-images.githubusercontent.com/41438361/88478392-ce2d6100-cf82-11ea-859d-760d95fc271d.png)
+
+* Food : 음식 정보 담기 위한 테이블
+
+![image](https://user-images.githubusercontent.com/41438361/88478402-ebfac600-cf82-11ea-90e0-5ecd61b162b0.png)
+
+* Sports : 운동 정보 담기 위한 테이블
+
+![image](https://user-images.githubusercontent.com/41438361/88478410-07fe6780-cf83-11ea-9e39-2e3f9abb992c.png)
+
+* UserInfo : 사용자의 정보를 담기 위한 테이블
 
 ### AZURE PORTAL에서 데이터베이스 쿼리문 이용하여 데이터 조작하기
 
@@ -660,28 +685,150 @@ AZURE Portal에 접속한 후, 리소스 그룹에서 SQL 데이터베이스(혹
 
 쿼리 편집기로 넘어가면, 위와 같이 왼쪽에서는 테이블들과 필드, 그리고 오른쪽에는 직접 쿼리문을 쳐서 실행시킬 수 있는 편집기가 나옵니다.
 
-0. 데이터베이스 생성 CREATE
+0. 테이블 생성 CREATE
+
 ```sql 
-CREATE TABLE [dbo].[SportsTime] (
-    [SportsID] INT NOT NULL,
-    [Configure]     String NULL,
-    [Count]    INT NULL,
-    PRIMARY KEY CLUSTERED ([SportsID] ASC)
+CREATE TABLE [dbo].[Persons] (
+    [FirstName] VARCHAR (255) NULL,
+    [LastName]  VARCHAR (255) NULL,
+    [Age]       INT           NULL,
+    CHECK (len([FirstName])>(3) AND len([FirstName])<(50)),
+    CHECK ([Age]<=(130)),
+    CHECK (len([FirstName])>(3) AND len([FirstName])<(50))
 );
-
-
 ```
+예를 들어 `Persons` 라는 테이블을 만들고 싶다면 위처럼 입력하면 새로운 `Persons` 테이블이 만들어집니다.
+
 1. 데이터 조회 SELECT
 
+```sql
+SELECT person.Age
+FROM [dbo].[Persons] person
+WHERE FirstName = '유진'
 
+SELECT * 
+FROM [dbo].[Persons]
+WHERE Age=3
+```
+
+위와 같은 쿼리를 이용하여 특정 필드의 값을 가져올 수도 있고 조건을 설정할 수도 있습니다. 이때 중요한 것은
+
+**String 값을 비교할 때는 무조건 `"` 대신 `'`를 사용해야 한다는 것입니다.** 이것은 SELECT 문 뿐만 아니라 모든 쿼리문에 적용됩니다.
+
+만약 첫번째 쿼리문에서 `WHERE FirstName = '유진'` 대신 `WHERE FirstName = "유진"` 하면 에러가 뜹니다.
 
 2. 데이터 업데이트 UPDATE
 
+```sql
+UPDATE [dbo].[UserInfo] 
+SET [ConversationCount]=3 
+WHERE UserID=1
+```
+위와 같은 쿼리를 이용하여 데이터베이스에 있는 값을 업데이트 시킬수도 있습니다.
+
 3. 테이블 혹은 데이터베이스 삭제 DROP
+
+```sql
+DROP TABLE [dbo].[Persons]
+
+DROP DATABASE healtheeDB
+```
+위와 같은 쿼리문을 이용하여 데이터베이스나 테이블을 삭제할 수도 있습니다.
 
 4. 데이터 삽입 INSERT
 
-### C# 코드 상에서 데이터베이스 쿼리문 이용하여 데이터 조작하기
+```sql
+INSERT INTO [dbo].[Persons]
+VALUES(
+'유진',
+'정',
+100
+);
+```
 
+위와 같이 INSERT INTO VALUES를 이용하여 테이블에 값을 집어넣을 수 있습니다.
+
+### C# 코드 상에서 데이터베이스 이용하기
+
+우선 프로젝트에서 데이터베이스와 연결해줘야 합니다.
+
+```C#
+try
+{
+   SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+   builder.ConnectionString = "연결 스트링";
+
+   using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+   {
+      connection.Open();
+
+      //여기에 원하는 쿼리문을 넣어 쿼리를 실행시킵니다.
+                    
+      connection.Close();
+   }
+}
+catch (SqlException e)
+{
+}
+```
+
+위의 코드를 이용하여 데이터베이스와 연결합니다.
+
+`연결 스트링` 부분에 데이터 베이스와 연결할 수 있는 값을 넣어줘야 연결이 됩니다. 이 값은 
+
+![image](https://user-images.githubusercontent.com/41438361/88478722-8825cc80-cf85-11ea-9426-089bd226437e.png)
+
+Microsoft Azure Portal의 리소스 그룹에서 해당 데이터베이스를 선택한 뒤 설정 > 연결 문자열에 있는 값을 그대로 복사해서 넣어주시면 됩니다. 
+
+그 다음에는 쿼리문을 이용하여 데이터 베이스를 조작합니다.
+
+**SELECT를 이용할 경우와 INSERT, UPDATE를 이용할 때 사용해야 하는 함수가 다릅니다.**
+
+```C#
+StringBuilder sb = new StringBuilder();
+sb.Append("SELECT COUNT(*) FROM [dbo].[ExerciseRecord] WHERE UserID='" + UserInfoManager.keyNum + "'"); //유저의 고유번호로 DB에서 사용자 찾기
+
+String sql = sb.ToString();
+
+int count = 0;
+
+using (SqlCommand command = new SqlCommand(sql, connection))
+{
+   using (SqlDataReader reader = command.ExecuteReader())
+   {
+      while (reader.Read())
+      {
+         count = reader.GetInt32(0);
+      }
+   }
+}
+```
+
+쿼리를 넣어야 하는 부분에 위의 코드를 넣으면 SELECT를 이용할 수 있습니다. 
+
+위의 코드에서는 `reader.GetInt32(0)`를 이용하여 Count의 결과를 가져왔는데, `(int)reader.GetValue(0)`를 이용하여 값을 가져오고 타입을 변환할 수도 있습니다. `0`은 가져올 값이 몇번째 필드에 있는 값인지 그 인덱스를 나타낸 것입니다. 
+
+![image](https://user-images.githubusercontent.com/41438361/88478857-6aa53280-cf86-11ea-8c2b-292cc238ad61.png)
+
+만약 Persons 데이터베이스가 위와 같이 구성되어 있고 이 중 FirstName, Age만 가져오고 싶다면 다음과 같이 받아오면 됩니다.
+
+```C#
+firstName = (string)reader.GetValue(0);
+age = (int)reader.GetValue(2);
+```
+
+그렇다면 UPDATE 와 INSERT는 어떻게 이용해야 하는지 보겠습니다.
+
+```
+SqlCommand q;
+string query;
+
+query = "INSERT INTO [dbo].[ExerciseRecord] VALUES(" + UserInfoManager.keyNum + ", 0, 0, 0, 0, 0);"; 
+
+q = new SqlCommand(query, connection);
+q.ExecuteNonQuery();
+```
+
+위와 같이 **`ExecuteNonQuery()`** method를 이용해서 실행시켜야 합니다.
 
 ## 그 외 알아낸 소소한 것들
