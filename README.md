@@ -12,12 +12,29 @@
 * [구조](#구조(final-ver))
 * [코드 설명](#코드-설명)
   * [Bots](#1-bots)
-    * [DialogAndWelcomeBot](#11botsdialogandwelcomebotcs)
+    * [DialogAndWelcomeBot.cs](#11-botsdialogandwelcomebotcs)
+    * [EchoBot.cs](#12-botsechobotcs)
   * [Dialogs](#2-dialogs)
+    * [MainDialog.cs](#21-dialogsmaindialogcs)
+    * [CheckUserDialog.cs](#22-dialogscheckuserdialogcs)
+    * [TutorialDialog.cs](#23-dialogstutorialdialogcs)
+    * [ShowFunctionsDialog.cs](#24-dialogsshowfunctionsdialogcs)
+    * [RecommendExerciseDialog.cs](#25-dialogsrecommendexercisedialogcs)
+    * [RecordDialog.cs](#26-dialogsrecorddialogcs)
+    * [RecommendFood.cs](#27-dialogsrecommendfoodcs)
+    * [RecommendEquipment.cs](#28-dialogsrecommendequipmentcs)
+    * [SeeMyCharacterDialog.cs](#29-dialogsseemycharacterdialogcs)
+    * [SeeMyRecord.cs](#210-dialogsseemyrecordcs)
   * [Resources](#3-resources)
+  * [Cards.cs](#4-cardscs)
+  * [ModeManager.cs](#5-modemanagercs)
+  * [UserInfoManager.cs](#6-userinfomanagercs)
+  * [Startup.cs](#7-startupcs)
+  * [appsetings.json](#8-appsettingsjson)
 * [주의사항](#주의-사항)
 * [데이터베이스](#데이터베이스)
 * [그 외 알아낸 소소한 것들](#그-외-알아낸-소소한-것들)
+* [더 발전할 수 있는 부분](#더-발전할-수-있는-)
 
 ## Topic
 
@@ -337,7 +354,7 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 데이터 베이스에 값을 삽입한 후에는 위와 같이 모드를 바꾸고 `ShowFunctionsDialog` 를 실행시켜 Tutorial이 끝나자마자 기능 카드를 보여주는 Dialog를 실행시킬 수 있도록 했습니다. 뒤에서도 언급하겠지만, 모든 Healthee 기능 Dialog들 마지막에 이렇게 기능 보여주는 부분을 실행시켜 기능들이 끝나고 나서 기능들을 보여줄 수 있도록 했습니다. `Thread.Sleep(3000)` 을 한 이유는 튜토리얼이 끝나자마자 바로 기능 카드를 보여주면 이전의 메세지가 위로 바로 올라가버리기 때문에 사용자에게 메세지를 확인할 수 있는 시간을 주기 위해서입니다.
 
-#### 2.4 **Healthee의 기능 보여주기**: `Dialogs/ShowFunctionsDialog.cs`
+#### 2.4 `Dialogs/ShowFunctionsDialog.cs`
 
 *`ShowFunctionDialog`에서는 Healthee가 제공하는 기능들을 카드로 보여줍니다.*
 
@@ -397,7 +414,7 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 ![image](https://user-images.githubusercontent.com/41438361/88475068-8e0cb500-cf67-11ea-9508-00df734e0904.png)
 ![image](https://user-images.githubusercontent.com/41438361/88475077-a250b200-cf67-11ea-86d4-de3e33d0328c.png)
 
-#### 2.6 **운동 기록**: `Dialogs/RecordDialog.cs`
+#### 2.6 `Dialogs/RecordDialog.cs`
 
 * `RecordDialog`는 사용자가 운동을 기록할 수 있게 하는 기능을 구현했습니다. 사용자가 운동한 부뷔와 시간을 입력하면 운동 기록을 DB에 업데이트합니다.*
 
