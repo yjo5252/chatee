@@ -2,7 +2,7 @@
 <img src="https://user-images.githubusercontent.com/41438361/88480682-43ecf900-cf92-11ea-875a-79df7aa29d8b.png" width="50%">
 
 ## 목차
-* [Topic](##Topic)
+* [Topic](##opic)
 * [시연 링크](##시연-링크)
 * [따라하기](##따라하기)
 * [개발 환경](##개발-환경)
