@@ -5,6 +5,8 @@
 
 **운동을 추천**해주고 **운동 기구, 음식에 대한 정보를 제공**하여 운동을 도와드리는 것을 목표하고 있습니다. 
 
+[Healthee랑 대화해보기💬](https://htmlpreview.github.io/?https://github.com/yjo5252/chatee/blob/master/Healthee.html)
+
 ## TEAM: Chatee
 <img src="https://user-images.githubusercontent.com/41981471/86508101-52734500-be18-11ea-90e0-92df415e79d2.JPG" width="50%">
 
@@ -142,7 +144,7 @@ DialogAndWelcomeBot은 EchoBot을 상속받습니다. EchoBot에 대한 설명�
 
 Dialog는 봇의 기능과 같은 역할을 합니다. 즉, Dialog들은 내부에 저마다 개별적으로 실행시킬 수 있는 step을 가지고 있는데, 이 step들을 `WaterfallDialog`를 이용하여 순차적으로 실행시켜 특정 기능을 구현하는 것이라고 생각하면 되겠습니다.
 
-/*그림*/
+![7](https://user-images.githubusercontent.com/41438361/88474208-47b35800-cf5f-11ea-80c6-7ecf0c0a6cab.JPG)
 
 예시) `Dialog A(step 1)->Dialog A(step 2)->Dialog A(step 3)->Dialog B(step 1)->Dialog B(step 2)->Dialog A(step 4)`와 같이 실행시킬 수 있습니다.
 
@@ -160,7 +162,7 @@ Healthee는 Dialog를 이용하여 모드에 따라 다른 기능을 실행할 �
 
 `MainDialog.cs`에서는 이 `is_running_dialog`를 통해 현재 실행중인 Dialog가 있는지 없는지 값을 **설정**해줍니다.
 
-**필요한 Dialog 추가**
+**필요한 요소 추가**
 
 ![8](https://user-images.githubusercontent.com/41438361/88439370-01b6a100-ce46-11ea-9322-351291627e4b.JPG)
 
@@ -195,15 +197,15 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 ![11](https://user-images.githubusercontent.com/41438361/88439858-51e23300-ce47-11ea-8da9-8e4ca5752cbc.JPG)
 
-(윗 부분은 `DialogAndWelocomeBot.cs`의 `OnMembersAddedAsync` method에서 선언된 ) Healthee는 처음에 모드를 InitialCheckUser 모드로 설정하여 `CheckUserDialog.cs`가 실행될 수 있도록 했습니다. 
+(윗 부분은 `DialogAndWelocomeBot.cs`의 `OnMembersAddedAsync` method에서 선언된 부분입니다.) Healthee는 처음에 모드를 InitialCheckUser 모드로 설정하여 `CheckUserDialog.cs`가 실행될 수 있도록 했습니다. 
 
-정리하면, 설정된 모드로 1. `EchoBot.cs`에서 `Dialog.RunAsync()` method가 실행되면서 현재 수행중이던 Dialog, 혹은 새로 Dialog를 시작하는데 이때 새로 기능을 실행시킬 경우(`MainDialog.is_running_dialog`가 0일 경우) 먼저 2. `MainDialog.cs`가 실행되고, 3. 모드 확인 후 모드에 맞는 Dialog가 실행될 수 있도록 되는 구조입니다.
+정리하면, 설정된 모드로 1. `EchoBot.cs`에서 `Dialog.RunAsync()` method가 실행되면서 현재 수행중이던 Dialog, 혹은 새로 Dialog를 시작하는데 이때 새로 기능을 실행시킬 경우(`MainDialog.is_running_dialog`가 0일 경우) 먼저 2. `MainDialog.cs`가 실행되고, 3. 모드 확인 후 모드에 맞는 Dialog가 실행될 수 있도록 되는 구조입니다. 처음에 모드를 InitialCheckUser 모드로 설정하였으므로 사용자가 입장하고 나서 `MainDialog.cs` -> `CheckUserDialog.cs` 순으로 실행되는 것입니다.
 
-사용자가 Healthee에서 처음으로 실행시키는 하위 Dialog인 `CheckUserDialog`는 사용자가 이전에 Healthee를 이용했는지 확인하고, 사용자가 Healthee를 처음 만났다면 사용자의 정보를 받는 `TutorialDialog`를 실행하고 이전에 이용했다면 바로 Healthee의 기능들을 카드로 나열한 것을 보여주는 것을 실행시키는 `ShowFunctionsDialog`를 실행시킵니다.
+**필요한 요소 추가**
 
 ![12](https://user-images.githubusercontent.com/41438361/88440318-99b58a00-ce48-11ea-8d4a-bc86f4f2eed3.JPG)
 
-`MainDialog.cs`와 마찬가지로 생성자 부분에 필요한 Dialog를 추가하고 WaterfallDialog를 구현합니다. 이 Dialog의 step에서 `TutorialDialog.cs`를 실행시키므로 `AddDialog()` method를 이용해서 추가해줍니다.
+`MainDialog.cs`와 마찬가지로 생성자 부분에 필요한 Dialog를 추가하고 WaterfallDialog를 구현합니다. 이 Dialog에서는 `TutorialDialog.cs`와 `ShowFucntionDialog`를 직접 실행시키므로 `AddDialog()` method를 이용해서 추가해줍니다.
 
 `TextPrompt`, `ChoicePrompt`같은 것은 step에서 다음 step으로 넘어갈 때 사용자가 입력해야 하는 포맷이 정해져 있을 때(`TextPrompt`일 경우 사용자는 다음 step으로 넘어가기 위해 텍스트를 입력해야 하고 `ChoicePrompt`일 경우 나열되는 선택지 중에 하나를 선택해야 합니다.) 필요한 프롬프트인데, WaterfallDialog의 각 step에서 사용할 수 있습니다. 이것들도 하위 Dialog와 마찬가지로 `AddDialog()` method를 이용해서 추가시켜야 정상적으로 이용할 수 있습니다.
 
@@ -211,28 +213,43 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 예를 들어, 이 Dialog에서 가장 처음에 실행되는 `AskVisitedAsync` 단계에서는 다음 단계로 넘어가기 위해 `ChoicePrompt`를 이용하여 사용자에게 "응", "아니" 중 하나를 선택하도록 만들었습니다. 만약 사용자가 이 외의 값을 입력할 경우 둘 중 하나의 값을 무조건 입력할 때까지 이 step이 반복됩니다.
 
+![8](https://user-images.githubusercontent.com/41438361/88474335-58180280-cf60-11ea-99d1-ed7b27ee36da.JPG)
+
+화면에는 위와 같이 나오게 됩니다.
+
+`AddDialog`로 마지막에 추가시킨 `WaterfallDialog`는 `{}`안에 있는 step들을 순차적으로 실행시켜주는 역할을 합니다. 맨 마지막에 `InitialDialogId = nameof(WaterfallDialog)`때문에 이 `CheckUserDialog.cs`를 실행시키면 가장 먼저 `WaterfallDialog`가 실행되고 가장 첫 step인 `AskVisitedAsync`가 실행되게 됩니다.
+
+
+**Dialog 실행**
+
 ![14](https://user-images.githubusercontent.com/41438361/88440606-70e1c480-ce49-11ea-928f-cbcce3739287.JPG)
 
-다음에 실행되는 step인 `AskNameAsync`에서는 `((FoundChoice)stepContext.Result).Value.Trim()`를 이용해서 이전 단계에서 사용자가 입력한(선택한) 값을 가져옵니다. 이처럼 항상 사용자에게 입력값을 받으면 다음 step에서 받아올 수 있습니다.
+이 Dialog에서 두번째로 실행되는 step인 `AskNameAsync`에서는 `((FoundChoice)stepContext.Result).Value.Trim()`를 이용해서 이전 단계에서 사용자가 입력한(선택한) 값을 가져온 후 공백을 없애줍니다. 이처럼 항상 사용자에게 prompt를 통해 입력값을 받으면 다음 step에서 받아올 수 있습니다.
 
-만약 "응"을 선택했을 경우, `TextPrompt`를 이용해서 사용자에게 이름을 입력하도록 만들었고, "아니"를 선택했을 경우 `stepContext.BeginDialogAsync(nameof(TutorialDialog), null, cancellationToken);`를 이용하여 `TutorialDialog.cs`를 실행시킵니다.
+만약 "응"을 선택했을 경우, `TextPrompt`를 이용해서 사용자에게 이름을 입력하도록 만들었고, "아니"를 선택했을 경우 `stepContext.BeginDialogAsync(nameof(TutorialDialog), null, cancellationToken);`를 이용하여 `TutorialDialog.cs`를 실행시킵니다. `BeginDialogAsync` method는 특정 Dialog를 바로 실행시킬 수 있게 하는 함수입니다.
 
-`stepContext.ActiveDialog.State["stepIndex"] = (int)stepContext.ActiveDialog.State["stepIndex"] + 1;`은 WaterFallDialog에서 특정 step을 실행시키고 싶을 때 이용할 수 있습니다. 만약 마지막에 +1이 아닌 0을 했다면 바로 다음 단계가 실행됩니다. Healthee는 +1를 하여 WaterfallDialog에서 한 step을 건너뛸 수 있도록 했습니다. 만약 이렇게 설정하지 않는다면, WaterfallDialog에 있는 step들은 무조건 차례대로 실행되기 때문에 바로 다음 step이 실행됩니다. 이 코드에서는 `TutorialDialog.cs`를 마치고 다시 이 Dialog로 돌아왔을 때 한 step을 건너뛰겠다라는 말이 됩니다.
+`stepContext.ActiveDialog.State["stepIndex"] = (int)stepContext.ActiveDialog.State["stepIndex"] + 1;`은 WaterFallDialog에서 특정 step을 실행시키고 싶을 때 이용할 수 있습니다. 만약 마지막에 `+1`이 아닌 `0`을 했다면 바로 다음 단계가 실행됩니다. `-1`을 했다면 현재 단계가 다시 실행될 것입니다. Healthee는 `+1`를 하여 WaterfallDialog에서 한 step을 건너뛸 수 있도록 했습니다. 만약 이렇게 설정하지 않는다면, WaterfallDialog에 있는 step들은 무조건 차례대로 실행되기 때문에 바로 다음 step이 실행됩니다. 이 코드에서는 `TutorialDialog.cs`를 마치고 다시 이 Dialog로 돌아왔을 때 한 step을 건너뛰겠다라는 말이 됩니다.
+
+![9](https://user-images.githubusercontent.com/41438361/88474444-75010580-cf61-11ea-9084-03bed62a855a.JPG)
+
+즉 위의 그림같이 됩니다.
 
 ![15](https://user-images.githubusercontent.com/41438361/88440862-30367b00-ce4a-11ea-96db-dfae67146f51.JPG)
 
-다음 step인 `CheckValidUserAsync` 에서는 사용자의 이름을 가지고 Azure sql 에 있는 데이터베이스를 검색해 사용자 이름 정보가 `UserInfo` 테이블에 있는지 검사합니다. Azure sql과 Bot을 연결하는 부분도 후에 추가로 밑에 설명을 달아놓겠습니다.
+**Azure sql 데이터베이스 이용**
 
-쿼리들을 이용하여 해당 username이 데이터베이스에 없으면 아래와 같이 `TutorialDialog.cs`를 실행시킵니다.
+다음 step인 `CheckValidUserAsync` 에서는 사용자의 이름을 가지고 Azure sql 에 있는 데이터베이스를 검색해 사용자 이름 정보가 `UserInfo` 테이블에 있는지 검사합니다. Azure sql과 Bot을 연결하는 부분, 쿼리문을 이용하는 방법도 후에 추가로 밑에 설명을 달아놓겠습니다.
 
 ![16](https://user-images.githubusercontent.com/41438361/88441063-dda98e80-ce4a-11ea-9b9a-b1cc20bccfe1.JPG)
 
-만약 데이터베이스에 있다면 아래와 같이 `UserInfoManager`에 정보들을 저장하고 `ShowFunctionDialog`를 실행시킵니다. 
+쿼리들을 이용하여 해당 username이 데이터베이스에 없으면 위와 같이 `TutorialDialog.cs`를 실행시킵니다.
 
 ![17](https://user-images.githubusercontent.com/41438361/88441088-f619a900-ce4a-11ea-8f6d-4e298bdf0ea3.JPG)
 
+만약 데이터베이스에 있다면 위와 같이 `UserInfoManager`에 정보들을 저장하고 `ShowFunctionDialog`를 실행시킵니다. 
 
-#### 2.3 **사용자 정보 입력받아 DB에 저장**:  `Dialogs/TutorialDialog.cs`
+#### 2.3 `Dialogs/TutorialDialog.cs`
+
 
 ![18](https://user-images.githubusercontent.com/41438361/88441179-3f69f880-ce4b-11ea-860a-f0e45aa59262.JPG)
 
