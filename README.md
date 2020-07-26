@@ -319,6 +319,16 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 `RecommendExerciseDialog`에서 실행되는 step들은 위와 같습니다. 
 
+* `AskUserAsync`에서는 사용자에게 맞춤운동을 추천해줄지 물어봅니다. 
+* `CheckAnswerAsync`에서는 사용자가 이전에 답한 값을 확인합니다. 사용자가 추천해달라고 하면 바로 운동을 보여주는 `ShowExerciseAsync`단계로 넘어가고, 아니라면 사용자에게 정보를 묻는 `SelectAreaAsync`로 넘어갑니다. 이렇게 추가적인 단계를 둔 이유는 특정 단계에서 사용자에게 `prompt`로 입력을 받으면 다음 단계로 무넘어가기 때문입니다. 
+* `SelectAreaAsync`에서는 사용자가 운동할 부위를 묻습니다.
+* `SelectKindAsync`에서는 사용자가 운동할 운동의 종류를 묻습니다.
+* `SelectLevelAsync`에서는 사용자 운동할 운동의 난이도를 묻습니다.
+* `ShowExerciseAsync`에서는 정보를 바탕으로 DB에 접속하여 운동 정보를 받아와 사용자에게 운동을 추천해줍니다.
+* `DidExerciseAsync`에서는 사용자가 추천한 운동을 했는지 묻습니다.
+* `ShowResultStepAsync`에서는 사용자가 운동을 했으면 DB에 접속하여 운동 기록 정보를 업데이트 하고, 운동을 안했다면 아무런 작업도 하지 않습니다. 기능 카드를 보여주는 다이얼로그를 실행시키며 마무리합니다.
+* `EndAsync`에서는 다이얼로그를 종료시킵니다.
+
 **Dialog 실행**
 
 마찬가지로 prompt와 db query, herocard 및 adaptiveCard를 이용하여 기능들을 구현했습니다. `AdaptiveCard`는 사용자가 카드의 구성을 커스터마이징 하기 쉬운 형식의 카드입니다. 자세한 설명은 뒤에서 다시 다루겠습니다.
@@ -332,37 +342,113 @@ WaterFallDialog의 가장 첫 step인 `InitialDialog`는 위와 같습니다. �
 
 #### 2.6 **운동 기록**: `Dialogs/RecordDialog.cs`
 
+* `RecordDialog`는 사용자가 운동을 기록할 수 있게 하는 기능을 구현했습니다. 사용자가 운동한 부뷔와 시간을 입력하면 운동 기록을 DB에 업데이트합니다.*
+
+* `InitialRecordAsync`에서는 운동을 기록하겠다는 `AdaptiveCard`를 보여주고 필요한 변수들의 값을 초기화해줍니다.
+* `CheckAreaAsync`에서는 사용자가 운동한 부위를 묻습니다.
+* `CheckTimeAsync`에서는 사용자가 운동한 시간을 묻습니다.
+* `RecordAsync`에서는 사용자가 운동한 기록을 DB에 업데이트 시키고 기능 카드를 보여주는 다이얼로그를 실행시키고 마무리합니다.
+* `EndAsync`에서는 다이얼로그를 종료시킵니다.
+
+**필요한 요소 추가 및 Dialog의 WaterfallDialog 구성**
+
 ![25](https://user-images.githubusercontent.com/41438361/88442024-ed76a200-ce4d-11ea-9adb-7445a26db6ea.JPG)
 
-`RecordDialog`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 사용자가 운동한 부위와 시간을 확인하여 사용자 정보를 업데이트 시킵니다.
+`RecordDialog`에서 실행되는 step들은 위와 같습니다. 
 
-#### 2.7 **음식 랜덤 추천**: `Dialogs/RecommendFood.cs`
+**Dialog 실행**
+
+봇에서는 다음과 같이 나옵니다.
+
+![image](https://user-images.githubusercontent.com/41438361/88475534-b0083680-cf6b-11ea-85f4-886dcccf0055.png)
+
+
+#### 2.7 `Dialogs/RecommendFood.cs`
+
+*`RecommendFood`에서는 랜덤으로 사용자에게 음식을 추천해줍니다. 추천할때는 음식의 이름, 사진이 있을경우 사진, 설명까지 함께 `Herocard`로 보여줍니다.*
+
+**필요한 요소 추가 및 Dialog의 WaterfallDialog 구성**
 
 ![26](https://user-images.githubusercontent.com/41438361/88442254-c9679080-ce4e-11ea-8e12-93f57483a3da.JPG)
 
-`RecommendFood`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 데이터베이스의 음식 테이블을 조회해 랜덤으로 음식을 하나 뽑아 추천해줍니다. 음식을 추천해줄때는 이름, 사진, 설명까지 함께 `HeroCard`로 보여줍니다.
+`RecommendFood`에서 실행되는 step들은 위와 같습니다. 
 
-#### 2.8 **운동 기구 추천**: `Dialogs/RecommendEquipment.cs`
+* `InitialAsync`에서는 음식 랜덤 추천이라는 카드를 보여줍니다.
+* `RecommendResultAsync`에서는 음식 추천 카드를 보여줍니다. 기능 카드를 보여주는 Dialog를 실행시키고 마무리합니다.
+* `EndAsync`에서는 다이얼로그를 종료시킵니다.
+
+**Dialog 실행**
+
+봇에서는 다음과 같이 나옵니다.
+
+![image](https://user-images.githubusercontent.com/41438361/88475586-68ce7580-cf6c-11ea-84db-79c8eb3d60ba.png)
+
+#### 2.8 `Dialogs/RecommendEquipment.cs`
+
+*`RecommendEquipment`에서는 사용자가 선택한 정보를 토대로 운동기구를 추천해줍니다. 운동 기구를 추천해줄때는 판매처, 영상까지 함께 `HeroCard`로 보여줍니다.*
+
+**필요한 요소 추가 및 Dialog의 WaterfallDialog 구성**
 
 ![27](https://user-images.githubusercontent.com/41438361/88442288-e9974f80-ce4e-11ea-9e88-1efa1d093ef1.JPG)
 
-`RecommendEquipment`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 데이터베이스의 운동 기구 테이블을 조회한 다음 사용자가 설정한 운동 부위에 맞는 운동 기구를 추천해줍니다. 운동 기구를 추천해줄때는 판매처, 영상까지 함께 `HeroCard`로 보여줍니다.
+`RecommendEquipment`에서 실행되는 step들은 위와 같습니다. 
 
-#### 2.9 **캐릭터 상태 확인**:  `Dialogs/SeeMyCharacterDialog.cs`
+* `InitialAsync`에서는 운동 기구 추천이라는 카드를 보여줍니다.
+* `SelectAreaAsync`에서는 어떤 부위를 운동하는 기구를 추천해줄건지 물어봅니다.
+* `RecommendResultAsync`에서는 운동 기구를 추천해줍니다. 후에 기능 카드를 보여주는 Dialog를 실행시키고 마무리합니다.
+* `EndAsync`에서는 다이얼로그를 종료시킵니다.
+
+**Dialog 실행**
+
+봇에서는 다음과 같이 나옵니다.
+
+![image](https://user-images.githubusercontent.com/41438361/88475657-ff029b80-cf6c-11ea-8e6a-ae346532a287.png)
+![image](https://user-images.githubusercontent.com/41438361/88475668-0f1a7b00-cf6d-11ea-9949-4acc77080e95.png)
+
+#### 2.9 `Dialogs/SeeMyCharacterDialog.cs`
+
+*`SeeMyCharacterDialog`에서는 내 캐릭터의 상태를 보여줍니다. 이 dialog에서는 사용자의 정보를 조회하여 사용자의 운동 기록 횟수를 통해 캐릭터가 어떤 상태인지 판단합니다. 캐릭터의 상태에 따라 다른 이미지와 문구를 사용자에게 `HeroCard`로 보여줍니다.*
+
+**필요한 요소 추가 및 Dialog의 WaterfallDialog 구성**
 
 ![28](https://user-images.githubusercontent.com/41438361/88442433-72ae8680-ce4f-11ea-97cb-7734e92c6ec0.JPG)
 
-`SeeMyCharacterDialog`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 사용자의 정보를 조회하여 사용자의 운동 기록 횟수를 통해 캐릭터가 어떤 상태인지 판단합니다. 캐릭터의 상태에 따라 다른 이미지와 문구를 사용자에게 `HeroCard`로 보여줍니다.
+`SeeMyCharacterDialog`에서 실행되는 step들은 위와 같습니다. 
 
-#### 2.10 **운동 기록 확인**: `Dialogs/SeeMyRecord.cs`
+* `ShowCharacterAsync`에서는 현재 운동 기록 횟수를 확인하고 캐릭터를 보여줍니다.
+* `EndAsync`에서는 다이얼로그를 종료시킵니다.
+
+**Dialog 실행**
+
+봇에서는 다음과 같이 나옵니다.
+
+![image](https://user-images.githubusercontent.com/41438361/88475734-a384dd80-cf6d-11ea-8efd-744df6196897.png)
+
+운동을 기록하는 횟수가 늘어날 수록 아래와 같이 변화합니다. 더 많은 상태가 있습니다.
+
+![image](https://user-images.githubusercontent.com/41438361/88475763-d333e580-cf6d-11ea-96dd-14729c648b06.png)
+![image](https://user-images.githubusercontent.com/41438361/88475774-f2cb0e00-cf6d-11ea-8402-9c792b2d5676.png)
+![image](https://user-images.githubusercontent.com/41438361/88475813-36be1300-cf6e-11ea-8f34-f8083128744d.png)
+
+#### 2.10 `Dialogs/SeeMyRecord.cs`
+
+*`SeeMyRecord`에서는 DB에서 사용자의 정보를 조회하여 부위별 운동 시간을 `ReceiptCard`로 보여줍니다.*
+
+**필요한 요소 추가 및 Dialog의 WaterfallDialog 구성**
 
 ![29](https://user-images.githubusercontent.com/41438361/88442505-b903e580-ce4f-11ea-956c-e9c46a092283.JPG)
 
-`Dialogs/SeeMyCharacterDialog`에서 실행되는 step들은 위와 같습니다. 이 dialog에서는 사용자의 정보를 조회하여 부위별 운동 시간을 `ReceiptCard`로 보여줍니다.
+`Dialogs/SeeMyCharacterDialog`에서 실행되는 step들은 위와 같습니다.
+
+* `ShowRecordAsync`에서는 DB에서 사용자의 운동기록을 조회한 후 카드로 보여줍니다.
+* `EndAsync`에서는 다이얼로그를 종료시킵니다.
+
+**Dialog 실행**
+
+봇에서는 다음과 같이 나옵니다.
 
 ![30](https://user-images.githubusercontent.com/41438361/88442566-f49eaf80-ce4f-11ea-8f56-13720ce6adfc.JPG)
 
-출력 화면은 위와 같습니다.
 
 ### 3. Resources
 
