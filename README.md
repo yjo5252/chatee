@@ -4,20 +4,20 @@
 ## 목차
 * [Topic](#topic)
 * [시연 링크](#시연-링크)
-* [따라하기](##따라하기)
-* [개발 환경](##개발-환경)
-* [팀 소개](##TEAM:-Chatee)
-* [과제 소개](##과제)
-* [Healthee의 기능](##Healthee가-제공하는-기능)
-* [구조](##구조(Final-Ver))
-* [코드 설명](##코드-설명)
- * [Bots](###1.-Bots)
-  * [DialogAndWelcomeBot](####1.1-`Bots/DialogAndWelcomeBot.cs`)
- * [Dialogs](###2.-Dialogs)
- * [Resources](###3.-Resources)
-* [주의사항](##주의-사항)
-* [데이터베이스](##데이터베이스)
-* [그 외 알아낸 소소한 것들](##그-외-알아낸-소소한-것들)
+* [따라하기](#따라하기)
+* [개발 환경](#개발-환경)
+* [팀 소개](#team-chatee)
+* [과제 소개](#과제)
+* [Healthee의 기능](#healthee가-제공하는-기능)
+* [구조](#구조(final-ver))
+* [코드 설명](#코드-설명)
+  * [Bots](#1.-bots)
+    * [DialogAndWelcomeBot](#1.1-`bots/dialogandwelcomebot.cs`)
+    * [Dialogs](#2.-dialogs)
+  * [Resources](#3.-resources)
+* [주의사항](#주의-사항)
+* [데이터베이스](#데이터베이스)
+* [그 외 알아낸 소소한 것들](#그-외-알아낸-소소한-것들)
 
 ## Topic
 
@@ -53,7 +53,7 @@
 
 *자세한 설명은 [이 영상에서 확인해주세요](https://www.youtube.com/watch?v=g3UR61eOsiA)*
 
-## TEAM: Chatee
+## TEAM Chatee
 <img src="https://user-images.githubusercontent.com/41981471/86508101-52734500-be18-11ea-90e0-92df415e79d2.JPG" width="40%">
 
 ## 과제
