@@ -17,6 +17,7 @@
 4. 디버그 후 뜨는 윈도우 창에서 
 <img src="https://user-images.githubusercontent.com/41438361/88481906-15265100-cf99-11ea-9226-7442e8d26c5c.JPG" width="50%">
 에서 형광펜 친 부분을 복사해주세요.
+
 5. Bot Emulator를 켜서 open bot을 누른 후 
 <img src="https://user-images.githubusercontent.com/41438361/88481950-4b63d080-cf99-11ea-8b46-4c7bb03e8238.png" width="50%"> 
 에 나와있는 것처럼 복사한 값을 넣고 실행시켜 주세요.
