@@ -12,10 +12,12 @@
 ## 개발 환경
 
 * [Visual Studio 2019](https://visualstudio.microsoft.com/ko/)
-* [Microsoft Bot Framework SDK v4](Bot Framework v4 SDK Templates for Visual Studio)
+* [Bot Framework v4 SDK Templates for Visual Studio](https://marketplace.visualstudio.com/items?itemName=BotBuilder.botbuilderv4)
 * [Bot Emulator](https://github.com/Microsoft/BotFramework-Emulator)
 * [Azure Trial](https://azure.microsoft.com/ko-kr/free/)
 * Microsoft Azure Sql
+
+*자세한 설명은 [이 영상에서 확인해주세요](https://www.youtube.com/watch?v=g3UR61eOsiA)*
 
 ## TEAM: Chatee
 <img src="https://user-images.githubusercontent.com/41981471/86508101-52734500-be18-11ea-90e0-92df415e79d2.JPG" width="50%">
@@ -56,9 +58,9 @@
 
 <img src="https://user-images.githubusercontent.com/41438361/88481301-83691480-cf95-11ea-9d5f-e275d4cd9247.png" width="60%">
 
-### 흐름도
+### Flow Chart
 
-
+![image](https://user-images.githubusercontent.com/41438361/88481739-228f0b80-cf98-11ea-8411-381ff5dc458b.png)
 
 ### 구성
 
