@@ -49,7 +49,7 @@
 
 ## 구조 설명 동영상
 
-[!][Youtube](https://youtu.be/uEskrPs-Ka4)
+[Youtube](https://youtu.be/uEskrPs-Ka4)
 
 ## 따라하기
 
