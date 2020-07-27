@@ -47,6 +47,10 @@
 ## 시연 링크
 [Healthee랑 대화해보기💬](https://htmlpreview.github.io/?https://github.com/yjo5252/chatee/blob/master/Healthee.html)
 
+## 구조 설명 동영상
+
+[!][Youtube](https://youtu.be/uEskrPs-Ka4)
+
 ## 따라하기
 
 1. 시작 전에, 필요한 요소들을 다운받고 세팅해주세요. [영욱님의 스튜디오 Chatbot 설명 영상](https://www.youtube.com/watch?v=g3UR61eOsiA)
